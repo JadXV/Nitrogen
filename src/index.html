@@ -8,6 +8,23 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/addon/hint/show-hint.min.css">
     <style>
         :root {
+            --bg-color: rgba(20, 20, 25, 0.3);
+            --text-color: #f8f8f2;
+            --border-color: rgba(60, 60, 80, 0.3);
+            --editor-bg: rgba(20, 20, 25, 0.3);
+            --editor-content-bg: rgba(20, 20, 25, 0.3);
+            --gutter-bg: rgba(20, 20, 25, 0.3);
+            --tab-inactive: rgba(20, 20, 25, 0.3);
+            --accent-color: #1facc5;
+            --button-hover: rgba(61, 69, 102, 0.7);
+            --button-active: rgba(45, 187, 78, 0.7);
+            --button-bg: transparent;
+            --button-border: none;
+            --button-shadow: none;
+            --button-backdrop-filter: none;
+        }
+
+        .theme-classic {
             --bg-color: #1a1b24;
             --text-color: #f8f8f2;
             --border-color: #2c2e3b;
@@ -18,7 +35,114 @@
             --accent-color: #8a67c8;
             --button-hover: #3d4566;
             --button-active: #2dbb4e;
+            --button-bg: #8a67c8;
+            --button-border: none;
+            --button-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+            --button-backdrop-filter: none;
         }
+        
+        .theme-ocean {
+            --bg-color: #1a2733;
+            --text-color: #f0f5f9;
+            --border-color: #2a3f50;
+            --editor-bg: #141e27;
+            --editor-content-bg: #1a2733;
+            --gutter-bg: #141e27;
+            --tab-inactive: #1f2d3a;
+            --accent-color: #3498db;
+            --button-hover: #2980b9;
+            --button-active: #2ecc71;
+            --button-bg: #3498db;
+            --button-border: none;
+            --button-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+            --button-backdrop-filter: none;
+        }
+        
+        .theme-emerald {
+            --bg-color: #1a2420;
+            --text-color: #f0f9f5;
+            --border-color: #2a4035;
+            --editor-bg: #141e1a;
+            --editor-content-bg: #1a2420;
+            --gutter-bg: #141e1a;
+            --tab-inactive: #1f2d24;
+            --accent-color: #27ae60;
+            --button-hover: #219955;
+            --button-active: #e74c3c;
+            --button-bg: #27ae60;
+            --button-border: none;
+            --button-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+            --button-backdrop-filter: none;
+        }
+        
+        .theme-ruby {
+            --bg-color: #241a1a;
+            --text-color: #f9f0f0;
+            --border-color: #402a2a;
+            --editor-bg: #1e1414;
+            --editor-content-bg: #241a1a;
+            --gutter-bg: #1e1414;
+            --tab-inactive: #2d1f1f;
+            --accent-color: #e74c3c;
+            --button-hover: #c0392b;
+            --button-active: #27ae60;
+            --button-bg: #e74c3c;
+            --button-border: none;
+            --button-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+            --button-backdrop-filter: none;
+        }
+        
+        .theme-glassmorphism {
+            --bg-color: rgba(20, 20, 25, 0.3);
+            --text-color: #f8f8f2;
+            --border-color: rgba(60, 60, 80, 0.3);
+            --editor-bg: rgba(20, 20, 25, 0.3);
+            --editor-content-bg: rgba(20, 20, 25, 0.3);
+            --gutter-bg: rgba(20, 20, 25, 0.3);
+            --tab-inactive: rgba(20, 20, 25, 0.3);
+            --accent-color: #1facc5;
+            --button-hover: rgba(61, 69, 102, 0.7);
+            --button-active: rgba(45, 187, 78, 0.7);
+            --button-bg: transparent;
+            --button-border: none;
+            --button-shadow: none;
+            --button-backdrop-filter: none;
+        }
+
+        .scripthub-sidebar,
+        .modal-dialog,
+        .settings-modal,
+        .ai-modal-dialog {
+            background-color: rgba(25, 25, 35, 0.75) !important;
+            backdrop-filter: blur(12px);
+            border-color: rgba(60, 60, 80, 0.3) !important;
+        }
+        
+        .modal-input,
+        .ai-prompt-textarea,
+        #scripthub-search {
+            background-color: rgba(30, 30, 40, 0.6) !important;
+            border-color: rgba(70, 70, 100, 0.4) !important;
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+        
+        .modal-input:focus,
+        .ai-prompt-textarea:focus,
+        #scripthub-search:focus {
+            border-color: var(--accent-color) !important;
+            box-shadow: 0 0 0 1px rgba(138, 103, 200, 0.2);
+        }
+        
+        .script-item {
+            background-color: rgba(20, 20, 25, 0.85) !important;
+            border-color: rgba(44, 46, 59, 0.7) !important;
+        }
+        
+        .script-item:hover {
+            background-color: rgba(30, 30, 40, 0.9) !important;
+            border-color: var(--accent-color) !important;
+        }
+        
         * {margin: 0; padding: 0; box-sizing: border-box;}
         body {
             font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
@@ -87,23 +211,83 @@
             overflow: auto !important; margin: 0 !important; padding: 0 !important;
             height: 100%; outline: none; position: relative;
         }
-        .execute-btn, .scripthub-btn, .save-btn, .roblox-btn {
+        .execute-btn, .scripthub-btn, .save-btn, .roblox-btn, .settings-btn, .ai-btn {
             position: absolute; width: 50px; height: 50px; right: 20px;
-            background-color: var(--accent-color); border: none; border-radius: 50%;
+            background-color: var(--button-bg);
+            border: var(--button-border);
+            border-radius: 50%;
             color: white; display: flex; align-items: center; justify-content: center;
-            cursor: pointer; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+            cursor: pointer;
+            box-shadow: var(--button-shadow);
+            backdrop-filter: var(--button-backdrop-filter);
             transition: all 0.2s ease; z-index: 10;
         }
+        
         .execute-btn {bottom: 20px;}
         .scripthub-btn {bottom: 80px;}
         .save-btn {bottom: 140px;}
-        .roblox-btn {bottom: 200px;}
-        .execute-btn:hover, .scripthub-btn:hover, .save-btn:hover, .roblox-btn:hover {
+        .settings-btn {bottom: 200px;}
+        .roblox-btn {bottom: 260px;}
+        .ai-btn {bottom: 320px;}
+        .execute-btn:hover, .scripthub-btn:hover, .save-btn:hover, .roblox-btn:hover, .settings-btn:hover, .ai-btn:hover {
             background-color: var(--button-hover); transform: scale(1.05);
         }
-        .execute-btn:active, .scripthub-btn:active, .save-btn:active, .roblox-btn:active {
+        .execute-btn:active, .scripthub-btn:active, .save-btn:active, .roblox-btn:active, .settings-btn:active, .ai-btn:active {
             background-color: var(--button-active); transform: scale(0.95);
         }
+        
+        .ai-modal-dialog {
+            border: 1px solid var(--border-color);
+            border-radius: 15px;
+            width: 500px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+        
+        .ai-prompt-textarea {
+            width: 100%;
+            min-height: 100px;
+            padding: 12px;
+            background-color: var(--editor-content-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-color);
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 0.9rem;
+            resize: none;
+            margin-bottom: 15px;
+        }
+        
+        .ai-prompt-textarea:focus {
+            outline: none;
+            border-color: var(--accent-color);
+        }
+        
+        .ai-loading-indicator {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 60px;
+            margin-bottom: 15px;
+        }
+        
+        .ai-dots {
+            display: flex;
+        }
+        
+        .ai-dots span {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            background-color: var(--accent-color);
+            border-radius: 50%;
+            margin: 0 3px;
+            animation: loading 1.4s infinite ease-in-out both;
+        }
+        
+        .ai-dots span:nth-child(1) { animation-delay: -0.32s; }
+        .ai-dots span:nth-child(2) { animation-delay: -0.16s; }
+        
         .output-container {
             flex: 0 0 auto; display: flex; flex-direction: column; overflow: hidden;
             border-top: 1px solid var(--border-color);
@@ -358,10 +542,19 @@
         }
         .context-menu-item:hover {background-color: var(--accent-color); color: white;}
         .modal-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background-color: rgba(0, 0, 0, 0.5); z-index: 200;
-            display: flex; justify-content: center; align-items: center;
-            visibility: hidden; opacity: 0; transition: opacity 0.2s ease;
+            position: fixed; 
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5); 
+            z-index: 200;
+            display: flex; 
+            justify-content: center; 
+            align-items: center;
+            visibility: hidden; 
+            opacity: 0; 
+            transition: opacity 0.2s ease;
         }
         .modal-overlay.active {visibility: visible; opacity: 1;}
         .modal-dialog {
@@ -553,6 +746,359 @@
             color: #ff5555;
             background-color: rgba(255, 85, 85, 0.1);
         }
+
+        .settings-modal {
+            background-color: var(--editor-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 15px;
+            width: 300px;
+            max-width: 90vw;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            color: var(--text-color);
+            margin: 0 auto;
+        }
+        
+        .settings-header {
+            padding: 12px 15px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .settings-title {font-size: 1.1rem; margin: 0;}
+        .settings-close {cursor: pointer; opacity: 0.7; font-size: 1.2rem;}
+        .settings-close:hover {opacity: 1;}
+        .settings-content {padding: 12px;}
+        .settings-section {margin-bottom: 16px;}
+        .settings-section:last-child {margin-bottom: 0;}
+        .settings-section-title {margin-bottom: 12px; font-size: 1.05rem;}
+
+        .theme-option {
+            display: flex;
+            align-items: center;
+            margin-bottom: 6px;
+            padding: 6px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+        
+        .theme-option:last-child {
+            margin-bottom: 0;
+        }
+        
+        .theme-option:hover {background-color: rgba(255, 255, 255, 0.05);}
+        .theme-option input {margin-right: 8px;}
+        
+        .theme-color-preview {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            margin-right: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .theme-default-preview {background-color: #8a67c8;}
+        .theme-ocean-preview {background-color: #3498db;}
+        .theme-emerald-preview {background-color: #27ae60;}
+        .theme-ruby-preview {background-color: #e74c3c;}
+        .theme-glassmorphism-preview {background-color: rgba(255, 255, 255, 0.1);}
+        
+        .folder-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-top: 8px;
+        }
+        
+        .folder-btn {
+            padding: 7px 0;
+            width: 100%;
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: background-color 0.2s, transform 0.2s;
+            text-align: center;
+        }
+        
+        .folder-btn:hover {
+            background-color: var(--button-hover);
+            transform: translateY(-2px);
+        }
+        
+        .settings-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 15px;
+            border-top: 1px solid var(--border-color);
+            background-color: rgba(20, 20, 25, 0.3);
+            border-radius: 0 0 15px 15px;
+        }
+        
+        .version-info {
+            font-size: 0.85rem;
+            color: var(--text-color);
+            opacity: 0.7;
+        }
+        
+        #version-number {
+            font-weight: 500;
+        }
+        
+        .footer-actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .icon-btn {
+            background: transparent;
+            border: none;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: var(--text-color);
+            opacity: 0.7;
+            transition: all 0.2s ease;
+        }
+        
+        .icon-btn:hover {
+            background-color: var(--button-hover);
+            opacity: 1;
+            transform: translateY(-2px);
+        }
+        
+        .icon-btn:active {
+            transform: scale(0.95);
+        }
+
+        .ai-sidebar {
+            position: fixed;
+            right: 0;
+            top: 0;
+            bottom: 0;
+            width: 350px;
+            background-color: rgba(25, 25, 35, 0.75);
+            backdrop-filter: blur(12px);
+            border-left: 1px solid rgba(60, 60, 80, 0.3);
+            display: flex;
+            flex-direction: column;
+            z-index: 1000;
+            transform: translateX(100%);
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .ai-sidebar.active {
+            transform: translateX(0);
+        }
+
+        .ai-sidebar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            border-bottom: 1px solid rgba(60, 60, 80, 0.3);
+        }
+
+        .ai-sidebar-title {
+            font-size: 1.1rem;
+            font-weight: normal;
+            color: var(--text-color);
+        }
+
+        .ai-sidebar-close {
+            background: none;
+            border: none;
+            color: var(--text-color);
+            cursor: pointer;
+            font-size: 1.5rem;
+            opacity: 0.7;
+            transition: opacity 0.2s;
+        }
+
+        .ai-sidebar-close:hover {
+            opacity: 1;
+        }
+
+        .ai-chat-container {
+            flex: 1;
+            overflow-y: auto;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .ai-message {
+            max-width: 85%;
+            padding: 10px 15px;
+            border-radius: 15px;
+            margin-bottom: 5px;
+            word-wrap: break-word;
+            line-height: 1.4;
+            font-size: 0.95rem;
+        }
+
+        .ai-message.user {
+            align-self: flex-end;
+            background-color: var(--accent-color);
+            color: white;
+            border-bottom-right-radius: 5px;
+        }
+
+        .ai-message.assistant {
+            align-self: flex-start;
+            background-color: rgba(44, 46, 59, 0.7);
+            color: var(--text-color);
+            border-bottom-left-radius: 5px;
+        }
+        
+        .ai-message.error-message {
+            background-color: rgba(180, 30, 30, 0.7);
+            color: white;
+        }
+
+        .ai-message pre {
+            background-color: rgba(20, 20, 25, 0.6);
+            border-radius: 5px;
+            padding: 10px;
+            overflow-x: auto;
+            margin: 10px 0;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-size: 0.9rem;
+        }
+
+        .ai-message code {
+            background-color: rgba(20, 20, 25, 0.6);
+            padding: 2px 5px;
+            border-radius: 3px;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-size: 0.9rem;
+        }
+
+        .ai-use-code-btn {
+            background-color: var(--button-bg);
+            color: var(--text-color);
+            border: none;
+            border-radius: 4px;
+            padding: 5px 10px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            margin-top: 5px;
+            opacity: 0.9;
+            transition: opacity 0.2s;
+        }
+
+        .ai-use-code-btn:hover {
+            opacity: 1;
+        }
+
+        .ai-input-container {
+            padding: 15px;
+            border-top: 1px solid rgba(60, 60, 80, 0.3);
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .ai-input {
+            flex: 1;
+            background-color: rgba(30, 30, 40, 0.6);
+            border: 1px solid rgba(70, 70, 100, 0.4);
+            border-radius: 5px;
+            color: var(--text-color);
+            padding: 10px;
+            resize: none;
+            min-height: 50px;
+            max-height: 120px;
+            overflow-y: auto;
+            line-height: 1.4;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .ai-input:focus {
+            outline: none;
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 1px rgba(138, 103, 200, 0.2);
+        }
+
+        .ai-send-btn {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: var(--accent-color);
+            border: none;
+            border-radius: 50%;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .ai-send-btn:hover {
+            background-color: var(--button-hover);
+        }
+
+        .ai-loading-dots {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 5px 0;
+        }
+
+        .ai-loading-dots span {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: var(--text-color);
+            opacity: 0.7;
+            animation: ai-dots-pulse 1.4s infinite ease-in-out;
+        }
+
+        .ai-loading-dots span:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .ai-loading-dots span:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes ai-dots-pulse {
+            0%, 100% { transform: scale(0.7); opacity: 0.5; }
+            50% { transform: scale(1); opacity: 1; }
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: rgba(45, 187, 78, 0.9);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            z-index: 10000;
+            opacity: 0;
+            transform: translateY(-20px);
+            transition: opacity 0.3s, transform 0.3s;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .notification.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
     </style>
 </head>
 <body class="load-fade">
@@ -572,8 +1118,23 @@
         <div class="editor-container load-fade delay-2">
             <div class="editor-wrapper">
                 <textarea id="code-editor" spellcheck="false">print("Nitrogen!")</textarea>
+                <button class="ai-btn load-scale delay-2" id="ai-btn">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 2a2 2 0 0 1 2 2c0 .74-.4 1.39-1 1.73V7h1a7 7 0 0 1 7 7h1a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-1v1a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-1H2a1 1 0 0 1-1-1v-3a1 1 0 0 1 1-1h1a7 7 0 0 1 7-7h1V5.73c-.6-.34-1-.99-1-1.73a2 2 0 0 1 2-2z"></path>
+                        <circle cx="7.5" cy="14.5" r="1.5"></circle>
+                        <circle cx="16.5" cy="14.5" r="1.5"></circle>
+                    </svg>
+                </button>
+                <button class="settings-btn load-scale delay-3" id="settings-btn">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="3"></circle>
+                        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82 1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                    </svg>
+                </button>
                 <button class="roblox-btn load-scale delay-3" id="roblox-btn">
-                    <span style="font-size: 24px; font-weight: bold;">R</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M6 6H18V18H6V6ZM10 10V14H14V10H10Z" fill-rule="evenodd" clip-rule="evenodd" transform="rotate(22, 12, 12)" />
+                    </svg>
                 </button>
                 <button class="save-btn load-scale delay-4" id="save-btn">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -636,6 +1197,27 @@
         </div>
     </div>
     
+    <div class="ai-sidebar" id="ai-sidebar">
+        <div class="ai-sidebar-header">
+            <h3 class="ai-sidebar-title">NitroBot</h3>
+            <button class="ai-sidebar-close" id="ai-sidebar-close">×</button>
+        </div>
+        <div class="ai-chat-container" id="ai-chat-container">
+            <div class="ai-message assistant">
+                Hello! I'm NitroBot. How can I help you with your code today?
+            </div>
+        </div>
+        <div class="ai-input-container">
+            <textarea class="ai-input" id="ai-input" placeholder="Ask me anything..." spellcheck="false"></textarea>
+            <button class="ai-send-btn" id="ai-send-btn">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="22" y1="2" x2="11" y2="13"></line>
+                    <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                </svg>
+            </button>
+        </div>
+    </div>
+    
     <div class="context-menu" id="tab-context-menu">
         <div class="context-menu-item" id="context-rename">Rename</div>
         <div class="context-menu-item" id="context-save">Save</div>
@@ -659,6 +1241,63 @@
                     <button class="modal-btn modal-btn-cancel" id="modal-cancel">Cancel</button>
                     <button class="modal-btn modal-btn-submit" id="modal-submit">Save</button>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="settings-modal-overlay">
+        <div class="settings-modal">
+            <div class="settings-header">
+                <h3 class="settings-title">Settings</h3>
+                <span class="settings-close" id="settings-close">&times;</span>
+            </div>
+            <div class="settings-content">
+                <div class="settings-section">
+                    <h4 class="settings-section-title">Theme</h4>
+                    <label class="theme-option">
+                        <input type="radio" name="theme" value="glassmorphism" checked>
+                        <span class="theme-color-preview theme-glassmorphism-preview"></span>
+                        Glassmorphism
+                    </label>
+                    <label class="theme-option">
+                        <input type="radio" name="theme" value="classic">
+                        <span class="theme-color-preview theme-default-preview"></span>
+                        Classic
+                    </label>
+                    <label class="theme-option">
+                        <input type="radio" name="theme" value="ocean">
+                        <span class="theme-color-preview theme-ocean-preview"></span>
+                        Diamond 
+                    </label>
+                    <label class="theme-option">
+                        <input type="radio" name="theme" value="emerald">
+                        <span class="theme-color-preview theme-emerald-preview"></span>
+                        Emerald 
+                    </label>
+                    <label class="theme-option">
+                        <input type="radio" name="theme" value="ruby">
+                        <span class="theme-color-preview theme-ruby-preview"></span>
+                        Redstone 
+                    </label>
+                </div>
+                <div class="settings-section">
+                    <div class="folder-buttons" style="display: none;">
+                        <button id="open-workspace-btn" class="folder-btn">Open Workspace</button>
+                        <button id="open-scripts-btn" class="folder-btn">Open Scripts</button>
+                    </div>
+                </div>
+            </div>
+            <div class="settings-footer">
+                <div class="version-info">Nitrogen <span id="version-number">v3.0</span></div>
+                <div class="footer-actions">
+                    <button id="open-workspace-icon" class="icon-btn" title="Open Workspace">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
+                    </button>
+                    <button id="open-scripts-icon" class="icon-btn" title="Open Scripts">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                    </button>
+                </div>
+            </div>
             </div>
         </div>
     </div>
@@ -1264,7 +1903,11 @@
             
             scripthubBtn.addEventListener('click', toggleSidebar);
             sidebarClose.addEventListener('click', toggleSidebar);
-            sidebarOverlay.addEventListener('click', toggleSidebar);
+            sidebarOverlay.addEventListener('click', () => {
+                if (scripthubSidebar.classList.contains('active')) {
+                    toggleSidebar();
+                }
+            });
             
             document.getElementById('scripthub-search').addEventListener('input', debounce(function() {
                 const searchTerm = this.value;
@@ -1532,6 +2175,11 @@
                         saveScript(activeId);
                     }
                     
+                    else if (e.key === 'i') {
+                        e.preventDefault();
+                        toggleAiSidebar();
+                    }
+                    
                     else if (/^[1-8]$/.test(e.key)) {
                         e.preventDefault();
                         const tabIndex = parseInt(e.key) - 1; 
@@ -1551,6 +2199,281 @@
 
             document.getElementById('minimize-app-btn').addEventListener('click', () => {
                 window.pywebview.api.minimize_app();
+            });
+
+            const settingsBtn = document.getElementById('settings-btn');
+            const settingsModalOverlay = document.getElementById('settings-modal-overlay');
+            const settingsClose = document.getElementById('settings-close');
+            const themeOptions = document.querySelectorAll('input[name="theme"]');
+            
+            settingsBtn.addEventListener('click', () => {
+                settingsModalOverlay.classList.add('active');
+            });
+            
+            settingsClose.addEventListener('click', () => {
+                settingsModalOverlay.classList.remove('active');
+            });
+            
+            settingsModalOverlay.addEventListener('click', (e) => {
+                if (e.target === settingsModalOverlay) {
+                    settingsModalOverlay.classList.remove('active');
+                }
+            });
+            
+            function loadSavedTheme() {
+                if (!window.pywebview || !window.pywebview.api) {
+                    setTimeout(loadSavedTheme, 300);
+                    return;
+                }
+                
+                window.pywebview.api.get_theme()
+                    .then(response => {
+                        if (response.status === 'success') {
+                            applyTheme(response.theme);
+                        } else {
+                            applyTheme('glassmorphism'); 
+                        }
+                    })
+                    .catch(() => {
+                        applyTheme('glassmorphism');
+                    });
+            }
+            
+            function applyTheme(themeName) {
+                document.body.className = document.body.className.replace(/theme-\w+/g, '').trim();
+                
+                if (themeName) {
+                    document.body.classList.add(`theme-${themeName}`);
+                }
+                
+                const themeRadio = document.querySelector(`input[name="theme"][value="${themeName || 'glassmorphism'}"]`);
+                if (themeRadio) {
+                    themeRadio.checked = true;
+                } else {
+                    const defaultRadio = document.querySelector('input[name="theme"][value="glassmorphism"]');
+                    if (defaultRadio) defaultRadio.checked = true;
+                }
+            }
+            
+            window.addEventListener('load', () => {
+                setTimeout(loadSavedTheme, 300);
+                
+                setTimeout(() => {
+                    if (window.pywebview && window.pywebview.api) {
+                        window.pywebview.api.start_log_monitoring();
+                    }
+                }, 1000);
+            });
+            
+            themeOptions.forEach(option => {
+                option.addEventListener('change', (e) => {
+                    const selectedTheme = e.target.value;
+                    applyTheme(selectedTheme);
+                    
+                    if (window.pywebview && window.pywebview.api) {
+                        window.pywebview.api.save_theme(selectedTheme);
+                    }
+                });
+            });
+            
+            const openWorkspaceBtn = document.getElementById('open-workspace-btn');
+            const openScriptsBtn = document.getElementById('open-scripts-btn');
+            const openWorkspaceIcon = document.getElementById('open-workspace-icon');
+            const openScriptsIcon = document.getElementById('open-scripts-icon');
+            const versionNumber = document.getElementById('version-number');
+            
+            function setVersionNumber() {
+                if (window.pywebview && window.pywebview.api) {
+                    window.pywebview.api.get_version()
+                        .then(response => {
+                            if (response && response.version) {
+                                versionNumber.textContent = response.version;
+                            }
+                        })
+                        .catch(error => {
+                            console.error("Error fetching version:", error);
+                        });
+                }
+            }
+            
+            // Call once on load
+            setTimeout(setVersionNumber, 500);
+            
+            openWorkspaceBtn.addEventListener('click', () => {
+                if (window.pywebview && window.pywebview.api) {
+                    window.pywebview.api.open_workspace_folder();
+                }
+            });
+            
+            openScriptsBtn.addEventListener('click', () => {
+                if (window.pywebview && window.pywebview.api) {
+                    window.pywebview.api.open_scripts_folder();
+                }
+            });
+            
+            openWorkspaceIcon.addEventListener('click', () => {
+                if (window.pywebview && window.pywebview.api) {
+                    window.pywebview.api.open_workspace_folder();
+                }
+            });
+            
+            openScriptsIcon.addEventListener('click', () => {
+                if (window.pywebview && window.pywebview.api) {
+                    window.pywebview.api.open_scripts_folder();
+                }
+            });
+
+            const aiBtn = document.getElementById('ai-btn');
+            const aiSidebar = document.getElementById('ai-sidebar');
+            const aiSidebarClose = document.getElementById('ai-sidebar-close');
+            const aiInput = document.getElementById('ai-input');
+            const aiSendBtn = document.getElementById('ai-send-btn');
+            const aiChatContainer = document.getElementById('ai-chat-container');
+            
+            function toggleAiSidebar() {
+                aiSidebar.classList.toggle('active');
+                sidebarOverlay.classList.toggle('active');
+                
+                if (aiSidebar.classList.contains('active')) {
+                    setTimeout(() => aiInput.focus(), 100);
+                }
+            }
+            
+            function appendMessage(content, isUser = false) {
+                const messageDiv = document.createElement('div');
+                messageDiv.className = `ai-message ${isUser ? 'user' : 'assistant'}`;
+                
+                if (!isUser && content.startsWith('Error:')) {
+                    messageDiv.classList.add('error-message');
+                }
+                
+                messageDiv.textContent = content;
+                
+                aiChatContainer.appendChild(messageDiv);
+                aiChatContainer.scrollTop = aiChatContainer.scrollHeight;
+            }
+            
+            function addLoadingIndicator() {
+                const loadingDiv = document.createElement('div');
+                loadingDiv.className = 'ai-message assistant';
+                loadingDiv.innerHTML = '<div class="ai-loading-dots"><span></span><span></span><span></span></div>';
+                loadingDiv.id = 'ai-loading-indicator';
+                aiChatContainer.appendChild(loadingDiv);
+                aiChatContainer.scrollTop = aiChatContainer.scrollHeight;
+                return loadingDiv;
+            }
+            
+            function removeLoadingIndicator() {
+                const loadingIndicator = document.getElementById('ai-loading-indicator');
+                if (loadingIndicator) {
+                    loadingIndicator.remove();
+                }
+            }
+            
+            function processAiMessage() {
+                const message = aiInput.value.trim();
+                if (!message) return;
+                
+                appendMessage(message, true);
+                
+                aiInput.value = '';
+                
+                const loadingIndicator = addLoadingIndicator();
+                
+                const editorContent = cm.getValue();
+                
+                window.pywebview.api.send_ai_prompt(message, editorContent)
+                    .then(response => {
+                        removeLoadingIndicator();
+                        
+                        if (response.status === 'success') {
+                            const result = response.result;
+                            
+                            let code = result;
+                            
+                            if (result.includes('```lua')) {
+                                const codeMatch = result.match(/```lua\n([\s\S]*?)```/);
+                                if (codeMatch && codeMatch[1]) {
+                                    code = codeMatch[1];
+                                }
+                            } else if (result.includes('```')) {
+                                const codeMatch = result.match(/```\n?([\s\S]*?)```/);
+                                if (codeMatch && codeMatch[1]) {
+                                    code = codeMatch[1];
+                                }
+                            }
+                            
+                            if (code.trim() === editorContent.trim()) {
+                                appendMessage("No changes made.");
+                            } else {
+                                const oldLines = editorContent.trim().split('\n');
+                                const newLines = code.trim().split('\n');
+                                const linesChanged = countChangedLines(oldLines, newLines);
+                                
+                                scripts[activeId].content = code;
+                                cm.setValue(code);
+                                
+                                appendMessage(`Changes made, please review. ${linesChanged} line${linesChanged !== 1 ? 's' : ''} changed.`);
+                            }
+                        } else {
+                            const errorMessage = response.message || "Unknown error occurred";
+                            appendMessage(`Error: ${errorMessage}`);
+                            
+                            updateConsoleOutput(`Error: ${errorMessage}`);
+                        }
+                    })
+                    .catch(error => {
+                        removeLoadingIndicator();
+                        
+                        const errorMessage = error.message || "Failed to get AI response";
+                        let formattedError = `Error: ${errorMessage}`;
+                        
+                        appendMessage(formattedError);
+                        updateConsoleOutput(`Error: ${errorMessage}`);
+                    });
+            }
+            
+            aiBtn.addEventListener('click', toggleAiSidebar);
+            aiSidebarClose.addEventListener('click', toggleAiSidebar);
+            aiSendBtn.addEventListener('click', processAiMessage);
+            
+            sidebarOverlay.addEventListener('click', () => {
+                if (aiSidebar.classList.contains('active')) {
+                    toggleAiSidebar();
+                }
+            });
+            
+            aiInput.addEventListener('keydown', e => {
+                if (e.key === 'Enter') {
+                    if (e.shiftKey) {
+                        return;
+                    } else {
+                        e.preventDefault();
+                        processAiMessage();
+                    }
+                }
+            });
+            
+            function countChangedLines(oldLines, newLines) {
+                let changedCount = 0;
+                const maxLen = Math.max(oldLines.length, newLines.length);
+                
+                for (let i = 0; i < maxLen; i++) {
+                    const oldLine = i < oldLines.length ? oldLines[i] : null;
+                    const newLine = i < newLines.length ? newLines[i] : null;
+                    
+                    if (oldLine !== newLine) {
+                        changedCount++;
+                    }
+                }
+                
+                return changedCount;
+            }
+            
+            document.addEventListener('keydown', e => {
+                if (e.key === 'Escape' && aiSidebar.classList.contains('active')) {
+                    toggleAiSidebar();
+                }
             });
         });
     </script>

@@ -5,9 +5,10 @@ import time
 import threading
 import json
 from datetime import datetime
-from AppKit import NSApp, NSAlert
+import objc
+from AppKit import NSApp, NSAlert, NSStatusBar, NSMenu, NSMenuItem, NSVariableStatusItemLength, NSObject, NSApplication
 
-BACKEND_VERSION = "v2.0"
+BACKEND_VERSION = "v3.0"
 
 def get_latest_version():
     try:
@@ -19,8 +20,8 @@ def get_latest_version():
         print(f"Error getting latest version: {str(e)}")
         return None
     
-if get_latest_version() > BACKEND_VERSION:
-    latest_version = get_latest_version()
+latest_version = get_latest_version()
+if latest_version > BACKEND_VERSION:
     alert = NSAlert.alloc().init()
     alert.setMessageText_("Nitrogen Update Available")
     alert.setInformativeText_(f"A new version of Nitrogen is available!\n\nCurrent version: {BACKEND_VERSION}\nNew version: {latest_version}\n\nWould you like to update now?")
@@ -38,7 +39,7 @@ if get_latest_version() > BACKEND_VERSION:
         success_alert.setAlertStyle_(0)
         success_alert.runModal()
         exit(0)
-    
+
 class API:
     def __init__(self):
         self.log_thread = None
@@ -48,6 +49,7 @@ class API:
         self.directory = os.path.join(os.path.expanduser('~'), 'Documents', 'Nitrogen')
         self.scripts_directory = os.path.join(self.directory, 'scripts')
         self.hydrogen_autoexec_dir = os.path.join(os.path.expanduser('~'), 'Hydrogen', 'autoexecute')
+        self.metadata_file = os.path.join(self.directory, 'metadata.json')
 
         if not os.path.exists(self.directory):
             os.makedirs(self.directory)
@@ -57,6 +59,79 @@ class API:
             
         if not os.path.exists(self.hydrogen_autoexec_dir):
             os.makedirs(self.hydrogen_autoexec_dir)
+            
+        if not os.path.exists(self.metadata_file):
+            self._initialize_metadata()
+
+    def _initialize_metadata(self):
+        default_metadata = {
+            "theme": "default"
+        }
+        try:
+            with open(self.metadata_file, 'w') as f:
+                json.dump(default_metadata, f, indent=2)
+            print(f"Initialized metadata file with default settings")
+        except Exception as e:
+            print(f"Error initializing metadata file: {str(e)}")
+
+    def save_theme(self, theme):
+        try:              
+            metadata = {}
+            if os.path.exists(self.metadata_file):
+                try:
+                    with open(self.metadata_file, 'r') as f:
+                        metadata = json.load(f)
+                except Exception as e:
+                    print(f"Error reading metadata file, creating new: {str(e)}")
+                    metadata = {}
+            
+            metadata["theme"] = theme
+            
+            with open(self.metadata_file, 'w') as f:
+                json.dump(metadata, f, indent=2)
+            
+            print(f"Theme saved: {theme}")
+            return {"status": "success", "theme": theme}
+        except Exception as e:
+            print(f"Error saving theme: {str(e)}")
+            return {"status": "error", "message": str(e)}
+    
+    def get_theme(self):
+        try:
+            if os.path.exists(self.metadata_file):
+                with open(self.metadata_file, 'r') as f:
+                    metadata = json.load(f)
+                    theme = metadata.get("theme", "default")
+                    print(f"Retrieved theme from metadata: {theme}")
+                    return {"status": "success", "theme": theme}
+            
+            print("Metadata file not found, returning default theme")
+            return {"status": "success", "theme": "default"}
+        except Exception as e:
+            print(f"Error getting theme: {str(e)}")
+            return {"status": "success", "theme": "default"}
+    
+    def get_version(self):
+        return {"version": BACKEND_VERSION}
+    
+    def open_workspace_folder(self):
+        try:
+            workspace_path = os.path.join(os.path.expanduser('~'), 'Hydrogen', 'workspace')
+            if not os.path.exists(workspace_path):
+                os.makedirs(workspace_path)
+            os.system(f"open '{workspace_path}'")
+            return {"status": "success"}
+        except Exception as e:
+            print(f"Error opening workspace folder: {str(e)}")
+            return {"status": "error", "message": str(e)}
+    
+    def open_scripts_folder(self):
+        try:
+            os.system(f"open '{self.scripts_directory}'")
+            return {"status": "success"}
+        except Exception as e:
+            print(f"Error opening scripts folder: {str(e)}")
+            return {"status": "error", "message": str(e)}
 
     def execute_script(self, script_content):
         START_PORT = 6969
@@ -165,7 +240,7 @@ class API:
                 autoexec_path = os.path.join(self.hydrogen_autoexec_dir, name)
                 if os.path.exists(autoexec_path):
                     os.remove(autoexec_path)
-                
+            
             return {
                 'status': 'success',
                 'message': f'Script saved to {file_path}',
@@ -439,16 +514,165 @@ class API:
             if self.window:
                 self.window.evaluate_js(f"updateConsoleOutput('Log monitoring error: {str(e)}');")
 
+    def send_ai_prompt(self, prompt, editor_content=""):
+        try:
+            url = "http://nitrobot.vercel.app/generate"
+            payload = {
+                "prompt": prompt,
+                "context": editor_content
+            }
+            response = requests.post(url, json=payload)
+            
+            if response.status_code == 429:
+                return {
+                    'status': 'error',
+                    'message': 'Rate limit exceeded. Please wait a moment before trying again.'
+                }
+                
+            response.raise_for_status()
+            response_json = response.json()
+            
+            if 'result' in response_json:
+                result = response_json['result']
+                if result.startswith("```lua"):
+                    result = result[6:]
+            
+                result = result.rstrip()
+                if result.endswith("```"):
+                    result = result[:-3]
+
+                return {
+                    'status': 'success',
+                    'result': result
+                }
+            else:
+                return {
+                    'status': 'error',
+                    'message': 'No result found in response'
+                }
+                
+        except requests.exceptions.HTTPError as e:
+            status_code = e.response.status_code if hasattr(e, 'response') and hasattr(e.response, 'status_code') else 'unknown'
+            
+            if status_code == 429:
+                error_message = "Rate limit exceeded. Please wait a moment before trying again."
+            elif status_code == 404:
+                error_message = "AI service endpoint could not be reached."
+            elif status_code >= 500:
+                error_message = "AI service is currently unavailable. Please try again later."
+            else:
+                error_message = f"HTTP Error {status_code}: {str(e)}"
+                
+            return {
+                'status': 'error',
+                'message': error_message
+            }
+        except requests.exceptions.ConnectionError:
+            return {
+                'status': 'error',
+                'message': 'Connection error. Please check your internet connection.'
+            }
+        except requests.exceptions.Timeout:
+            return {
+                'status': 'error',
+                'message': 'Request timed out. Please try again.'
+            }
+        except requests.exceptions.RequestException as e:
+            return {
+                'status': 'error',
+                'message': f'Error making request: {str(e)}'
+            }
+        except Exception as e:
+            return {
+                'status': 'error',
+                'message': f'Error: {str(e)}'
+            }
+
     def quit_app(self):
         NSApp.terminate_(None)
 
-    
     def minimize_app(self):
         NSApp.hide_(None)
 
+class ScriptMenuHandler(NSObject):
+    def initWithAPI_(self, api):
+        self = objc.super(ScriptMenuHandler, self).init()
+        if self is not None:
+            self.api = api
+        return self
     
+    def executeScript_(self, sender):
+        script_name = sender.title()
+        try:
+            script_path = os.path.join(self.api.scripts_directory, script_name)
+            if os.path.exists(script_path):
+                with open(script_path, 'r') as f:
+                    script_content = f.read()
+                self.api.execute_script(script_content)
+        except Exception as e:
+            print(f"Error executing script from menu: {str(e)}")
+    
+    def menuWillOpen_(self, menu):
+        while menu.numberOfItems() > 0:
+            menu.removeItemAtIndex_(0)
+        
+        header_item = NSMenuItem.alloc().initWithTitle_action_keyEquivalent_("Nitrogen Direct", None, "")
+        header_item.setEnabled_(False)
+        menu.addItem_(header_item)
+        menu.addItem_(NSMenuItem.separatorItem())
+        
+        scripts_added = False
+        try:
+            scripts = []
+            if os.path.exists(self.api.scripts_directory):
+                scripts = [f for f in os.listdir(self.api.scripts_directory) if f.endswith('.lua')]
+            
+            if scripts:
+                scripts.sort()
+                for script_name in scripts:
+                    item = NSMenuItem.alloc().initWithTitle_action_keyEquivalent_(
+                        script_name, "executeScript:", "")
+                    item.setTarget_(self)
+                    menu.addItem_(item)
+                scripts_added = True
+        except Exception as e:
+            print(f"Error loading scripts: {str(e)}")
+        
+        if not scripts_added:
+            no_scripts = NSMenuItem.alloc().initWithTitle_action_keyEquivalent_("No scripts found", None, "")
+            no_scripts.setEnabled_(False)
+            menu.addItem_(no_scripts)
+        
+        menu.addItem_(NSMenuItem.separatorItem())
+        open_item = NSMenuItem.alloc().initWithTitle_action_keyEquivalent_("Open Nitrogen", "openNitrogen:", "")
+        open_item.setTarget_(self)
+        menu.addItem_(open_item)
+        menu.addItem_(NSMenuItem.separatorItem())
+        menu.addItem_(NSMenuItem.alloc().initWithTitle_action_keyEquivalent_("Quit", "terminate:", ""))
+    
+    def openNitrogen_(self, sender):
+        NSApp.activateIgnoringOtherApps_(True)
+
+def setup_menubar(api):
+    statusbar = NSStatusBar.systemStatusBar()
+    statusitem = statusbar.statusItemWithLength_(NSVariableStatusItemLength)
+    statusitem.setTitle_("N₂")
+    
+    menu = NSMenu.alloc().init()
+    script_handler = ScriptMenuHandler.alloc().initWithAPI_(api)
+    
+    menu.setDelegate_(script_handler)
+    statusitem.setMenu_(menu)
+    
+    return statusitem, script_handler
+
+NSApplication.sharedApplication()
 
 api = API()
-window = webview.create_window('Nitrogen', "./index.html", js_api=api, width=1280, height=720, min_size=(800,600), transparent=True, frameless=True)
+menubar_item, script_handler = setup_menubar(api)
+
+webview.DRAG_REGION_SELECTOR = '.header'
+
+window = webview.create_window('Nitrogen', './index.html', js_api=api, width=1280, height=720, min_size=(800,600), transparent=True, vibrancy=True, frameless=True, easy_drag=False)
 api.window = window
 webview.start()

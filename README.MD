@@ -10,6 +10,7 @@ Nitrogen is a modern, clean and feature-packed custom UI/wrapper for Hydrogen wi
 - **Auto-Execute** — Configure scripts to run automatically when joining games
 - **Roblox Console Integration** — Monitor and view output directly within the UI
 - **Keyboard Shortcuts** — Efficient workflow with keyboard shortcuts
+- **Customizable Themes** — Choose from a variety of themes to personalize your experience
 
 ## 📥 Installation
 
@@ -44,6 +45,14 @@ curl -fsSL https://raw.githubusercontent.com/JadXV/Nitrogen/refs/heads/main/inst
 | ⌘+T | Create new tab |
 | ⌘+W | Close current tab |
 | ⌘+[1-9] | Switch to specified tab (e.g., ⌘+1 for first tab) |
+| ⌘+I | Open AI sidebar |
+
+### Themes and Customization
+Access the settings menu to customize your Nitrogen experience:
+- Switch between a variety of themes including a transparent glassmorphic one
+- Adjust editor font size and family
+- Personalize UI elements and color schemes
+- Save your preferences for future sessions
 
 ## 📝 Script Management
 

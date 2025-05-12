@@ -28,23 +28,27 @@ fi
 echo "This builder is intended for me (JadXV) to build Nitrogen for installation, if you are just trying to use nitrogen normally, run install.sh instead."
 read -p "Press enter to compile Nitrogen for ARM64 and x86_64: "
 
-pyinstaller --windowed --icon="nitrogen.ico" --add-data "index.html:." --name "Nitrogen-ARM64" main.py
+pyinstaller --windowed --icon="nitrogen.ico" --add-data "index.html:." --name "Nitrogen" main.py
 
+echo "Renaming ARM64 build..."
+mv dist/Nitrogen.app dist/Nitrogen-ARM64.app
 echo "Cleaning up ARM64 build..."
 rm -rf build
 mv dist/Nitrogen-ARM64.app .
 rm -rf dist
-rm -f Nitrogen-ARM64.spec
+rm -f Nitrogen.spec
 
 source ./venv_x86/bin/activate
-arch -x86_64 pyinstaller --windowed --icon="nitrogen.ico" --add-data "index.html:." --name "Nitrogen-x86_64" main.py
+arch -x86_64 pyinstaller --windowed --icon="nitrogen.ico" --add-data "index.html:." --name "Nitrogen" main.py
 
+echo "Renaming x86_64 build..."
+mv dist/Nitrogen.app dist/Nitrogen-x86_64.app
 echo "Cleaning up x86_64 build..."
 rm -rf build
 mv dist/Nitrogen-x86_64.app .
 
 rm -rf dist
-rm -f Nitrogen-x86_64.spec
+rm -f Nitrogen.spec
 deactivate
 
 zip -r NitrogenCompressed.zip Nitrogen-ARM64.app Nitrogen-x86_64.app
