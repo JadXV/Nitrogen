@@ -22,15 +22,15 @@ fi
 
 if [ -d "/Applications/Nitrogen.app" ]; then
   echo "Nitrogen is already installed."
-  
+
   if [ "$INTERACTIVE" = true ]; then
     read "choice?Would you like to Update / Reinstall Nitrogen? (y/n): "
     case "$choice" in
-      y|Y|yes|Yes ) 
+      y|Y|yes|Yes )
         echo "Removing existing installation..."
         rm -rf /Applications/Nitrogen.app
         ;;
-      * ) 
+      * )
         echo "Installation cancelled."
         exit 0
         ;;
@@ -41,25 +41,41 @@ if [ -d "/Applications/Nitrogen.app" ]; then
   fi
 fi
 
-
 if [ -f "$HOME/Documents/Nitrogen/metadata.json" ]; then
   echo "Deleting metadata.json file..."
   rm "$HOME/Documents/Nitrogen/metadata.json"
 fi
 
-echo "Downloading Nitrogen"
-curl -fsSL "$Nitrogen_URL" -o "$TMP_ZIP" || echo "Failed to download Nitrogen"
+echo "Cleaning up temporary files..."
+rm -rf /tmp/Nitrogen*.app
 
-echo "Installing Nitrogen"
-unzip -q "$TMP_ZIP" -d /tmp || echo "Failed to unzip"
+echo "Downloading Nitrogen..."
+curl -fsSL "$Nitrogen_URL" -o "$TMP_ZIP" || {
+  echo "❌ Failed to download Nitrogen"
+  exit 1
+}
 
-echo "Installing $ARCH_FOLDER"
+echo "Unzipping Nitrogen..."
+unzip -o -q "$TMP_ZIP" -d /tmp || {
+  echo "❌ Failed to unzip Nitrogen"
+  exit 1
+}
 
-mv /tmp/$ARCH_FOLDER.app /tmp/Nitrogen.app || echo "Failed to move the correct version"
-mv /tmp/Nitrogen.app /Applications || echo "Failed to install"
+echo "Installing $ARCH_FOLDER..."
+mv "/tmp/$ARCH_FOLDER.app" "/tmp/Nitrogen.app" || {
+  echo "❌ Failed to rename app folder"
+  exit 1
+}
+
+mv "/tmp/Nitrogen.app" "/Applications" || {
+  echo "❌ Failed to move Nitrogen to Applications"
+  exit 1
+}
+
 xattr -rd com.apple.quarantine /Applications/Nitrogen.app
 
 rm "$TMP_ZIP"
 
-echo "Nitrogen installed successfully!"
+echo ""
+echo "✅ Nitrogen installed successfully!"
 echo "You can now open Nitrogen from your Applications folder."
