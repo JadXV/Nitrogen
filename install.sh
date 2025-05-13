@@ -41,13 +41,24 @@ if [ -d "/Applications/Nitrogen.app" ]; then
   fi
 fi
 
-if [ -f "$HOME/Documents/Nitrogen/metadata.json" ]; then
-  echo "Deleting metadata.json file..."
-  rm "$HOME/Documents/Nitrogen/metadata.json"
+if [ -d "$HOME/Documents/Nitrogen" ]; then
+  if [ -f "$HOME/Documents/Nitrogen/metadata.json" ]; then
+    echo "Deleting old metadata.json file..."
+    rm "$HOME/Documents/Nitrogen/metadata.json"
+  fi
+
+  echo "Migrating from old Documents location..."
+  mkdir -p "$HOME/Nitrogen"
+  
+  mv "$HOME/Documents/Nitrogen/"* "$HOME/Nitrogen/" 2>/dev/null || true
+  rm -rf "$HOME/Documents/Nitrogen"
+  echo "Old Documents location deleted."
+  echo "Nitrogen files migrated to $HOME/Nitrogen"
 fi
 
+
 echo "Cleaning up temporary files..."
-rm -rf /tmp/Nitrogen*.app
+rm -rf /tmp/Nitrogen*.app /tmp/Nitrogen-*.app
 
 echo "Downloading Nitrogen..."
 curl -fsSL "$Nitrogen_URL" -o "$TMP_ZIP" || {

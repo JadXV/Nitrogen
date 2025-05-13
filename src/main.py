@@ -8,7 +8,7 @@ from datetime import datetime
 import objc
 from AppKit import NSApp, NSAlert, NSStatusBar, NSMenu, NSMenuItem, NSVariableStatusItemLength, NSObject, NSApplication
 
-BACKEND_VERSION = "v3.0"
+BACKEND_VERSION = "v3.1"
 
 def get_latest_version():
     try:
@@ -46,7 +46,7 @@ class API:
         self.stop_log_monitoring = False
         self.log_refresh_rate = 0.5 
         self.window = None
-        self.directory = os.path.join(os.path.expanduser('~'), 'Documents', 'Nitrogen')
+        self.directory = os.path.join(os.path.expanduser('~'), 'Nitrogen')
         self.scripts_directory = os.path.join(self.directory, 'scripts')
         self.hydrogen_autoexec_dir = os.path.join(os.path.expanduser('~'), 'Hydrogen', 'autoexecute')
         self.metadata_file = os.path.join(self.directory, 'metadata.json')
@@ -75,7 +75,7 @@ class API:
             print(f"Error initializing metadata file: {str(e)}")
 
     def save_theme(self, theme):
-        try:              
+        try:
             metadata = {}
             if os.path.exists(self.metadata_file):
                 try:
