@@ -7,17 +7,18 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/theme/monokai.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/addon/hint/show-hint.min.css">
     <style>
+        /* Default transparent state until theme loads */
         :root {
-            --bg-color: rgba(20, 20, 25, 0.3);
-            --text-color: #f8f8f2;
-            --border-color: rgba(60, 60, 80, 0.3);
-            --editor-bg: rgba(20, 20, 25, 0.3);
-            --editor-content-bg: rgba(20, 20, 25, 0.3);
-            --gutter-bg: rgba(20, 20, 25, 0.3);
-            --tab-inactive: rgba(20, 20, 25, 0.3);
-            --accent-color: #1facc5;
-            --button-hover: rgba(61, 69, 102, 0.7);
-            --button-active: rgba(45, 187, 78, 0.7);
+            --bg-color: transparent;
+            --text-color: transparent;
+            --border-color: transparent;
+            --editor-bg: transparent;
+            --editor-content-bg: transparent;
+            --gutter-bg: transparent;
+            --tab-inactive: transparent;
+            --accent-color: transparent;
+            --button-hover: transparent;
+            --button-active: transparent;
             --button-bg: transparent;
             --button-border: none;
             --button-shadow: none;
@@ -37,11 +38,11 @@
             --button-active: #2dbb4e;
             --button-bg: #8a67c8;
             --button-border: none;
-            --button-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+            --button-shadow: none;
             --button-backdrop-filter: none;
         }
         
-        .theme-ocean {
+        .theme-diamond {
             --bg-color: #1a2733;
             --text-color: #f0f5f9;
             --border-color: #2a3f50;
@@ -54,7 +55,7 @@
             --button-active: #2ecc71;
             --button-bg: #3498db;
             --button-border: none;
-            --button-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+            --button-shadow: none;
             --button-backdrop-filter: none;
         }
         
@@ -71,11 +72,11 @@
             --button-active: #e74c3c;
             --button-bg: #27ae60;
             --button-border: none;
-            --button-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+            --button-shadow: none;
             --button-backdrop-filter: none;
         }
         
-        .theme-ruby {
+        .theme-redstone {
             --bg-color: #241a1a;
             --text-color: #f9f0f0;
             --border-color: #402a2a;
@@ -88,10 +89,10 @@
             --button-active: #27ae60;
             --button-bg: #e74c3c;
             --button-border: none;
-            --button-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+            --button-shadow: none;
             --button-backdrop-filter: none;
         }
-        
+
         .theme-glassmorphism {
             --bg-color: rgba(20, 20, 25, 0.3);
             --text-color: #f8f8f2;
@@ -100,47 +101,87 @@
             --editor-content-bg: rgba(20, 20, 25, 0.3);
             --gutter-bg: rgba(20, 20, 25, 0.3);
             --tab-inactive: rgba(20, 20, 25, 0.3);
-            --accent-color: #1facc5;
-            --button-hover: rgba(61, 69, 102, 0.7);
-            --button-active: rgba(45, 187, 78, 0.7);
-            --button-bg: transparent;
+            --accent-color: #ffffff;
+            --button-hover: rgba(255, 255, 255, 0.2);
+            --button-active: rgba(255, 255, 255, 0.3);
+            --button-bg: rgba(255, 255, 255, 0.1);
+            --button-border: 1px solid rgba(255, 255, 255, 0.2);
+            --button-shadow: 0 2px 8px rgba(255, 255, 255, 0.1);
+            --button-backdrop-filter: blur(8px);
+        }
+
+        .theme-glassmorphism .execute-btn, 
+        .theme-glassmorphism .scripthub-btn, 
+        .theme-glassmorphism .save-btn, 
+        .theme-glassmorphism .roblox-btn, 
+        .theme-glassmorphism .settings-btn, 
+        .theme-glassmorphism .ai-btn,
+        .theme-glassmorphism .script-load-btn,
+        .theme-glassmorphism .script-direct-btn,
+        .theme-glassmorphism .modal-btn-submit,
+        .theme-glassmorphism .folder-btn,
+        .theme-glassmorphism .ai-send-btn {
+            background-color: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 2px 8px rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(8px);
+            color: white;
+        }
+        
+        .theme-glassmorphism .execute-btn:hover, 
+        .theme-glassmorphism .scripthub-btn:hover, 
+        .theme-glassmorphism .save-btn:hover, 
+        .theme-glassmorphism .roblox-btn:hover, 
+        .theme-glassmorphism .settings-btn:hover, 
+        .theme-glassmorphism .ai-btn:hover,
+        .theme-glassmorphism .script-load-btn:hover,
+        .theme-glassmorphism .script-direct-btn:hover,
+        .theme-glassmorphism .modal-btn-submit:hover,
+        .theme-glassmorphism .folder-btn:hover,
+        .theme-glassmorphism .ai-send-btn:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.3);
+            box-shadow: 0 4px 16px rgba(255, 255, 255, 0.2);
+        }
+        
+        .theme-glassmorphism .execute-btn:active, 
+        .theme-glassmorphism .scripthub-btn:active, 
+        .theme-glassmorphism .save-btn:active, 
+        .theme-glassmorphism .roblox-btn:active, 
+        .theme-glassmorphism .settings-btn:active, 
+        .theme-glassmorphism .ai-btn:active {
+            background-color: rgba(255, 255, 255, 0.3);
+            border-color: rgba(255, 255, 255, 0.4);
+        }
+        
+        .theme-glassmorphism .toggle-slider {
+            background-color: rgba(60, 60, 80, 0.4);
+        }
+        
+        .theme-glassmorphism input:checked + .toggle-slider {
+            background-color: rgba(255, 255, 255, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+        }
+        
+        .theme-glassmorphism input:checked + .toggle-slider:before {
+            background-color: #000000;
+        }
+
+        .theme-midnight {
+            --bg-color: #0d0d0d;
+            --text-color: #cccccc;
+            --border-color: #2a2a2a;
+            --editor-bg: #000000;
+            --editor-content-bg: #0d0d0d;
+            --gutter-bg: #000000;
+            --tab-inactive: #1a1a1a;
+            --accent-color: #5a4b6b;
+            --button-hover: #333333;
+            --button-active: #555555;
+            --button-bg: #5a4b6b;
             --button-border: none;
             --button-shadow: none;
             --button-backdrop-filter: none;
-        }
-
-        .scripthub-sidebar,
-        .modal-dialog,
-        .settings-modal,
-        .ai-modal-dialog {
-            background-color: rgba(25, 25, 35, 0.75) !important;
-            backdrop-filter: blur(12px);
-            border-color: rgba(60, 60, 80, 0.3) !important;
-        }
-        
-        .modal-input,
-        .ai-prompt-textarea,
-        #scripthub-search {
-            background-color: rgba(30, 30, 40, 0.6) !important;
-            border-color: rgba(70, 70, 100, 0.4) !important;
-            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
-        }
-        
-        .modal-input:focus,
-        .ai-prompt-textarea:focus,
-        #scripthub-search:focus {
-            border-color: var(--accent-color) !important;
-            box-shadow: 0 0 0 1px rgba(138, 103, 200, 0.2);
-        }
-        
-        .script-item {
-            background-color: rgba(20, 20, 25, 0.85) !important;
-            border-color: rgba(44, 46, 59, 0.7) !important;
-        }
-        
-        .script-item:hover {
-            background-color: rgba(30, 30, 40, 0.9) !important;
-            border-color: var(--accent-color) !important;
         }
         
         * {margin: 0; padding: 0; box-sizing: border-box;}
@@ -164,6 +205,15 @@
         .tab-container {
             display: flex; background-color: var(--bg-color);
             border-bottom: 1px solid var(--border-color);
+            position: relative;
+        }
+        .tabs-scrollable-area {
+            display: flex;
+            overflow-x: auto; white-space: nowrap;
+            flex-grow: 1;
+        }
+        .tabs-scrollable-area::-webkit-scrollbar {
+            display: none; 
         }
         .tab {
             padding: 8px 15px; background-color: var(--tab-inactive);
@@ -179,8 +229,16 @@
             display: flex; align-items: center; justify-content: center; border-radius: 50%;
         }
         .tab-close:hover {background-color: rgba(255, 255, 255, 0.1); opacity: 1;}
+        .new-tab-btn-container {
+            position: sticky;
+            right: 0;
+            border-left: 1px solid var(--border-color);
+            background-color: var(--bg-color);
+            display: flex;
+            align-items: center;
+        }
         .new-tab-btn {
-            padding: 8px 12px; background-color: transparent; border: none;
+            padding: 8px 15px; background-color: transparent; border: none;
             color: var(--text-color); cursor: pointer; font-size: 1.2rem;
             display: flex; align-items: center; justify-content: center;
         }
@@ -207,10 +265,6 @@
             padding-right: 5px;
 
         }
-        .CodeMirror-scroll {
-            overflow: auto !important; margin: 0 !important; padding: 0 !important;
-            height: 100%; outline: none; position: relative;
-        }
         .execute-btn, .scripthub-btn, .save-btn, .roblox-btn, .settings-btn, .ai-btn {
             position: absolute; width: 50px; height: 50px; right: 20px;
             background-color: var(--button-bg);
@@ -218,7 +272,7 @@
             border-radius: 50%;
             color: white; display: flex; align-items: center; justify-content: center;
             cursor: pointer;
-            box-shadow: var(--button-shadow);
+            box-shadow: var(--button-shadow); 
             backdrop-filter: var(--button-backdrop-filter);
             transition: all 0.2s ease; z-index: 10;
         }
@@ -229,6 +283,7 @@
         .settings-btn {bottom: 200px;}
         .roblox-btn {bottom: 260px;}
         .ai-btn {bottom: 320px;}
+        
         .execute-btn:hover, .scripthub-btn:hover, .save-btn:hover, .roblox-btn:hover, .settings-btn:hover, .ai-btn:hover {
             background-color: var(--button-hover); transform: scale(1.05);
         }
@@ -236,13 +291,7 @@
             background-color: var(--button-active); transform: scale(0.95);
         }
         
-        .ai-modal-dialog {
-            border: 1px solid var(--border-color);
-            border-radius: 15px;
-            width: 500px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-            overflow: hidden;
-        }
+
         
         .ai-prompt-textarea {
             width: 100%;
@@ -317,7 +366,7 @@
             display: flex;
             align-items: center;
         }
-        .minimize-console, .clear-console {
+        .copy-console, .minimize-console, .clear-console {
             cursor: pointer;
             margin-left: 10px;
             opacity: 0.7;
@@ -325,21 +374,20 @@
             display: flex; align-items: center;
             justify-content: center;
         }
-        .minimize-console:hover, .clear-console:hover {
+        .copy-console:hover, .minimize-console:hover, .clear-console:hover {
             opacity: 1;
             color: var(--accent-color);
         }
-        .minimize-console svg {
+        .copy-console.copied {
+            color: var(--button-active);
+        }
+        .copy-console svg, .minimize-console svg, .clear-console svg {
             width: 18px;
             height: 18px;
             transition: transform 0.3s ease;
         }
         .minimize-console.minimized svg {
             transform: rotate(180deg);
-        }
-        .clear-console svg {
-            width: 18px;
-            height: 18px;
         }
         #output {
             flex: 1; background-color: var(--editor-bg); color: var(--text-color);
@@ -353,7 +401,7 @@
             background-color: var(--editor-bg) !important;
             border: 1px solid var(--border-color) !important;
             color: var(--text-color) !important;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4) !important;
+            box-shadow: none !important; 
         }
         .CodeMirror-hint {
             color: var(--text-color) !important;
@@ -364,13 +412,24 @@
             background-color: var(--accent-color) !important;
             color: white !important;
         }
+        
+        .theme-glassmorphism .CodeMirror-hint-active {
+            background-color: var(--accent-color) !important;
+            color: #1a1b24 !important;
+        }
+        
         .scripthub-sidebar {
             position: fixed; top: 0; right: -350px; width: 350px; height: 100vh;
             background-color: var(--bg-color); border-left: 1px solid var(--border-color);
             z-index: 100; transition: right 0.3s ease;
             display: flex; flex-direction: column; overflow: hidden;
             border-radius: 15px 0 0 15px;
-            box-shadow: -3px 0 15px rgba(0, 0, 0, 0.2);
+            box-shadow: none;
+        }
+        
+        .theme-glassmorphism .scripthub-sidebar {
+            background-color: rgba(25, 25, 35, 0.75) !important;
+            backdrop-filter: blur(12px);
         }
         .scripthub-sidebar.active {right: 0;}
         .sidebar-close {
@@ -412,12 +471,14 @@
         .script-item {
             background-color: var(--editor-bg); border: 1px solid var(--border-color);
             border-radius: 15px; margin-bottom: 10px; padding: 12px; cursor: pointer;
-            transition: all 0.2s; position: relative; overflow: hidden;
+            position: relative; overflow: hidden;
             transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease, background-color 0.2s ease;
         }
-        .script-item:hover {
+        .script-item:hover, .script-item-with-bg:hover {
             transform: translateY(-2px);
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+            box-shadow: var(--button-shadow); 
+        }
+        .script-item:hover {
             border-color: var(--accent-color);
             background-color: rgba(138, 103, 200, 0.05);
         }
@@ -432,12 +493,7 @@
             color: white;
             text-shadow: 0 1px 3px rgba(0,0,0,0.6);
             z-index: 1;
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
             border-radius: 15px; 
-        }
-        .script-item-with-bg:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
         }
         .script-item-with-bg:hover .script-bg-image {
             transform: scale(1.05) translateY(-2px);
@@ -487,23 +543,18 @@
         .script-source {
             font-size: 0.8rem; color: #888; margin-bottom: 5px; font-style: italic;
         }
-        .script-load-btn {
+        .script-load-btn, .script-direct-btn {
             background-color: var(--accent-color); color: white; border: none;
             padding: 5px 10px; border-radius: 3px; font-size: 0.8rem;
-            cursor: pointer; transition: background-color 0.2s, transform 0.2s;
+            cursor: pointer; transition: all 0.2s ease;
         }
-        .script-load-btn:hover {background-color: var(--button-hover);}
-        
         .script-direct-btn {
-            background-color: #013a63; color: white; border: none;
-            padding: 5px 10px; border-radius: 3px; font-size: 0.8rem;
-            cursor: pointer; margin-right: 6px; 
-            transition: all 0.2s ease;
+            margin-right: 6px; 
         }
-        .script-direct-btn:hover {
-            background-color: #333333; 
+        .script-load-btn:hover, .script-direct-btn:hover {
+            background-color: var(--button-hover);
             transform: scale(1.05);
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            box-shadow: var(--button-shadow);
         }
         .script-buttons {
             display: flex;
@@ -533,7 +584,7 @@
         .sidebar-overlay.active {opacity: 1; visibility: visible;}
         .context-menu {
             position: absolute; background-color: var(--editor-bg);
-            border: 1px solid var(--border-color); box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--border-color); box-shadow: none; 
             border-radius: 4px; padding: 5px 0; z-index: 1000; display: none;
         }
         .context-menu-item {
@@ -557,11 +608,16 @@
             transition: opacity 0.2s ease;
         }
         .modal-overlay.active {visibility: visible; opacity: 1;}
-        .modal-dialog {
-            background-color: var(--editor-bg); border: 1px solid var(--border-color);
-            border-radius: 15px; width: 350px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        .modal-dialog, .ai-modal-dialog, .settings-modal {
+            background-color: var(--editor-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 15px;
+            box-shadow: var(--button-shadow);
             overflow: hidden;
         }
+        .modal-dialog {width: 350px;}
+        .ai-modal-dialog {width: 500px;}
+        .settings-modal {width: 300px; max-width: 90vw; color: var(--text-color); margin: 0 auto;}
         .modal-header {
             padding: 15px; border-bottom: 1px solid var(--border-color);
             display: flex; justify-content: space-between; align-items: center;
@@ -570,8 +626,10 @@
         .modal-title {font-size: 1.1rem; font-weight: normal; margin: 0;}
         .modal-content {padding: 15px;}
         .modal-input {
-            width: 100%; padding: 8px 10px; background-color: var(--editor-content-bg);
-            border: 1px solid var(--border-color); color: var(--text-color);
+            width: 100%; padding: 8px 10px; 
+            background-color: var(--editor-content-bg);
+            border: 1px solid var(--border-color); 
+            color: var(--text-color);
             border-radius: 8px; font-family: inherit; font-size: 0.9rem; margin-bottom: 15px;
         }
         .modal-input:focus {outline: none; border-color: var(--accent-color);}
@@ -581,7 +639,6 @@
             cursor: pointer; border: none;
         }
         .modal-btn-cancel {background-color: var(--tab-inactive); color: var(--text-color);}
-        .modal-btn-submit {background-color: var(--accent-color); color: white;}
         .modal-btn:hover {opacity: 0.9;}
         
         .autoexec-container {
@@ -747,16 +804,7 @@
             background-color: rgba(255, 85, 85, 0.1);
         }
 
-        .settings-modal {
-            background-color: var(--editor-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 15px;
-            width: 300px;
-            max-width: 90vw;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-            color: var(--text-color);
-            margin: 0 auto;
-        }
+
         
         .settings-header {
             padding: 12px 15px;
@@ -801,10 +849,11 @@
         }
         
         .theme-default-preview {background-color: #8a67c8;}
-        .theme-ocean-preview {background-color: #3498db;}
+        .theme-diamond-preview {background-color: #3498db;}
         .theme-emerald-preview {background-color: #27ae60;}
-        .theme-ruby-preview {background-color: #e74c3c;}
-        .theme-glassmorphism-preview {background-color: rgba(255, 255, 255, 0.1);}
+        .theme-redstone-preview {background-color: #e74c3c;}
+        .theme-glassmorphism-preview {background-color: rgba(255, 255, 255, 0.8);}
+        .theme-midnight-preview {background-color: #000000;}
         
         .folder-buttons {
             display: flex;
@@ -813,21 +862,29 @@
             margin-top: 8px;
         }
         
-        .folder-btn {
-            padding: 7px 0;
-            width: 100%;
+        .folder-btn, .modal-btn-submit {
             background-color: var(--accent-color);
             color: white;
             border: none;
             border-radius: 6px;
             cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .folder-btn {
+            padding: 7px 0;
+            width: 100%;
             font-size: 0.9rem;
-            transition: background-color 0.2s, transform 0.2s;
             text-align: center;
         }
-        
-        .folder-btn:hover {
+        .modal-btn-submit {
+            padding: 6px 15px;
+            font-size: 0.9rem;
+        }
+        .folder-btn:hover, .modal-btn-submit:hover {
             background-color: var(--button-hover);
+            opacity: 0.9;
+        }
+        .folder-btn:hover {
             transform: translateY(-2px);
         }
         
@@ -887,14 +944,21 @@
             top: 0;
             bottom: 0;
             width: 350px;
-            background-color: rgba(25, 25, 35, 0.75);
-            backdrop-filter: blur(12px);
-            border-left: 1px solid rgba(60, 60, 80, 0.3);
+            background-color: var(--bg-color);
+            border-left: 1px solid var(--border-color);
             display: flex;
             flex-direction: column;
             z-index: 1000;
             transform: translateX(100%);
             transition: transform 0.3s ease-in-out;
+            border-radius: 15px 0 0 15px;
+            box-shadow: none;
+            overflow: hidden;
+        }
+        
+        .theme-glassmorphism .ai-sidebar {
+            background-color: rgba(25, 25, 35, 0.75) !important;
+            backdrop-filter: blur(12px);
         }
 
         .ai-sidebar.active {
@@ -950,21 +1014,34 @@
 
         .ai-message.user {
             align-self: flex-end;
-            background-color: var(--accent-color);
-            color: white;
+            background-color: var(--editor-bg);
+            color: var(--text-color);
             border-bottom-right-radius: 5px;
         }
 
         .ai-message.assistant {
             align-self: flex-start;
-            background-color: rgba(44, 46, 59, 0.7);
+            background-color: var(--editor-bg);
             color: var(--text-color);
             border-bottom-left-radius: 5px;
+        }
+        
+        .theme-glassmorphism .ai-message.user {
+            background-color: rgba(44, 46, 59, 0.7);
+        }
+        
+        .theme-glassmorphism .ai-message.assistant {
+            background-color: rgba(44, 46, 59, 0.7);
         }
         
         .ai-message.error-message {
             background-color: rgba(180, 30, 30, 0.7);
             color: white;
+        }
+        
+        .theme-glassmorphism .ai-message.error-message {
+            background-color: rgba(180, 30, 30, 0.7) !important;
+            color: white !important;
         }
 
         .ai-message pre {
@@ -1012,8 +1089,8 @@
 
         .ai-input {
             flex: 1;
-            background-color: rgba(30, 30, 40, 0.6);
-            border: 1px solid rgba(70, 70, 100, 0.4);
+            background-color: var(--editor-content-bg);
+            border: 1px solid var(--border-color);
             border-radius: 5px;
             color: var(--text-color);
             padding: 10px;
@@ -1023,13 +1100,18 @@
             overflow-y: auto;
             line-height: 1.4;
             font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
-            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+            box-shadow: var(--button-shadow);
+        }
+        
+        .theme-glassmorphism .ai-input {
+            background-color: rgba(30, 30, 40, 0.6) !important;
+            border-color: rgba(70, 70, 100, 0.4) !important;
         }
 
         .ai-input:focus {
             outline: none;
-            border-color: var(--accent-color);
-            box-shadow: 0 0 0 1px rgba(138, 103, 200, 0.2);
+            border-color: var(--accent-color) !important;
+            box-shadow: var(--button-shadow);
         }
 
         .ai-send-btn {
@@ -1075,29 +1157,53 @@
             animation-delay: 0.4s;
         }
 
-        @keyframes ai-dots-pulse {
-            0%, 100% { transform: scale(0.7); opacity: 0.5; }
-            50% { transform: scale(1); opacity: 1; }
+        .command-dropdown {
+            position: absolute;
+            bottom: 70px;
+            left: 15px;
+            background-color: var(--editor-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            box-shadow: var(--button-shadow); 
+            width: calc(100% - 65px - 15px); 
+            max-height: 150px;
+            overflow-y: auto;
+            z-index: 100;
+            display: none;
         }
 
-        .notification {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background-color: rgba(45, 187, 78, 0.9);
+        .theme-glassmorphism .command-dropdown {
+            background-color: rgba(25, 25, 35, 0.9);
+            backdrop-filter: blur(8px);
+        }
+
+        .command-item {
+            padding: 8px 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            transition: background-color 0.2s;
+            border-bottom: 1px solid rgba(60, 60, 80, 0.1);
+        }
+        
+        .command-item:last-child {
+            border-bottom: none;
+        }
+
+        .command-item:hover, .command-item:focus {
+            background-color: var(--accent-color);
             color: white;
-            padding: 10px 20px;
-            border-radius: 5px;
-            z-index: 10000;
-            opacity: 0;
-            transform: translateY(-20px);
-            transition: opacity 0.3s, transform 0.3s;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            outline: none;
         }
 
-        .notification.active {
-            opacity: 1;
-            transform: translateY(0);
+        .command-name {
+            font-weight: bold;
+            margin-right: 8px;
+        }
+
+        .command-description {
+            opacity: 0.7;
+            font-size: 0.85rem;
         }
     </style>
 </head>
@@ -1111,8 +1217,12 @@
     </div>
     <div class="main">
         <div class="tab-container load-slide-down delay-1">
-            <div class="tab active" data-tab-id="script1">script.lua<span class="tab-close">×</span></div>
-            <button class="new-tab-btn">+</button>
+            <div class="tabs-scrollable-area">
+                <div class="tab active" data-tab-id="script1">script.lua<span class="tab-close">×</span></div>
+            </div>
+            <div class="new-tab-btn-container">
+                <button class="new-tab-btn">+</button>
+            </div>
         </div>
         
         <div class="editor-container load-fade delay-2">
@@ -1159,8 +1269,14 @@
         
         <div class="output-container load-slide-up delay-3">
             <div class="output-header">
-                Roblox Console
+                Console
                 <div class="output-header-buttons">
+                    <span class="copy-console" id="copy-console" title="Copy last 5 console entries to clipboard">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                        </svg>
+                    </span>
                     <span class="minimize-console" id="minimize-console" title="Minimize console">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <polyline points="7 13 12 18 17 13"></polyline>
@@ -1208,6 +1324,17 @@
             </div>
         </div>
         <div class="ai-input-container">
+            <!-- Add command dropdown here -->
+            <div class="command-dropdown" id="command-dropdown">
+                <div class="command-item" tabindex="0" data-command="/clear">
+                    <span class="command-name">/clear</span>
+                    <span class="command-description">Clear chat history</span>
+                </div>
+                <div class="command-item" tabindex="0" data-command="/about">
+                    <span class="command-name">/about</span>
+                    <span class="command-description">About NitroBot</span>
+                </div>
+            </div>
             <textarea class="ai-input" id="ai-input" placeholder="Ask me anything..." spellcheck="false"></textarea>
             <button class="ai-send-btn" id="ai-send-btn">
                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -1265,8 +1392,13 @@
                         Classic
                     </label>
                     <label class="theme-option">
-                        <input type="radio" name="theme" value="ocean">
-                        <span class="theme-color-preview theme-ocean-preview"></span>
+                        <input type="radio" name="theme" value="midnight">
+                        <span class="theme-color-preview theme-midnight-preview"></span>
+                        Midnight 
+                    </label>
+                    <label class="theme-option">
+                        <input type="radio" name="theme" value="diamond">
+                        <span class="theme-color-preview theme-diamond-preview"></span>
                         Diamond 
                     </label>
                     <label class="theme-option">
@@ -1275,8 +1407,8 @@
                         Emerald 
                     </label>
                     <label class="theme-option">
-                        <input type="radio" name="theme" value="ruby">
-                        <span class="theme-color-preview theme-ruby-preview"></span>
+                        <input type="radio" name="theme" value="redstone">
+                        <span class="theme-color-preview theme-redstone-preview"></span>
                         Redstone 
                     </label>
                 </div>
@@ -1317,6 +1449,7 @@
             const luaKeywords = ["and", "break", "do", "else", "elseif", "end", "false", "for", "function", "if", "in", "local", "nil", "not", "or", "repeat", "return", "then", "true", "until", "while"];
             const luaFunctions = ["assert", "collectgarbage", "dofile", "error", "getmetatable", "ipairs", "load", "loadfile", "next", "pairs", "pcall", "print", "rawequal", "rawget", "rawset", "require", "select", "setmetatable", "tonumber", "tostring", "type", "xpcall", "string.byte", "string.char", "string.dump", "string.find", "string.format", "string.gmatch", "string.gsub", "string.len", "string.lower", "string.match", "string.rep", "string.reverse", "string.sub", "string.upper", "table.concat", "table.insert", "table.pack", "table.remove", "table.sort", "table.unpack", "math.abs", "math.acos", "math.asin", "math.atan", "math.ceil", "math.cos", "math.deg", "math.exp", "math.floor", "math.log", "math.max", "math.min", "math.pi", "math.rad", "math.random", "math.randomseed", "math.sin", "math.sqrt", "math.tan"];
             
+                                   
             CodeMirror.registerHelper("hint", "lua", (editor) => {
                 const cur = editor.getCursor(), token = editor.getTokenAt(cur);
                 const start = token.string.trim() !== "" ? token.start : cur.ch;
@@ -1332,6 +1465,7 @@
             
             const cm = CodeMirror.fromTextArea(document.getElementById('code-editor'), {
                 mode: "text/x-lua", theme: "monokai", lineNumbers: true,
+               
                 matchBrackets: true, indentUnit: 4, tabSize: 4,
                 indentWithTabs: false, smartIndent: true,
                 extraKeys: {
@@ -1340,7 +1474,6 @@
                 }
             });
             
-            const MAX_TABS = 8;
             const output = document.getElementById('output');
             const tabContainer = document.querySelector('.tab-container');
             const newTabBtn = document.querySelector('.new-tab-btn');
@@ -1362,6 +1495,15 @@
                     tab.classList.toggle('active', tab.dataset.tabId === id));
                 activeId = id;
                 cm.setValue(scripts[id].content);
+                
+                const activeTab = document.querySelector(`.tab[data-tab-id="${id}"]`);
+                if (activeTab) {
+                    const tabsScrollableArea = document.querySelector('.tabs-scrollable-area');
+                                       const tabRect = activeTab.getBoundingClientRect();
+                    const scrollableAreaRect = tabsScrollableArea.getBoundingClientRect();
+                    const scrollPosition = activeTab.offsetLeft - (scrollableAreaRect.width / 2) + (tabRect.width /  2);
+                    tabsScrollableArea.scrollTo({ left: scrollPosition, behavior: 'smooth' });
+                }
                 
                 setTimeout(() => {
                     cm.setCursor(0, 0);
@@ -1391,12 +1533,14 @@
             }
             
             function updateTabBtn() {
-                const count = Object.keys(scripts).length;
-                newTabBtn.disabled = count >= MAX_TABS;
-                newTabBtn.style.opacity = count >= MAX_TABS ? '0.5' : '1';
-                newTabBtn.style.cursor = count >= MAX_TABS ? 'not-allowed' : 'pointer';
+                newTabBtn.disabled = false;
+                newTabBtn.style.opacity = '1';
+                newTabBtn.style.cursor = 'pointer';
             }
             
+            let currentGameName = null;
+            let lastScriptBloxSearch = null;
+
             window.updateConsoleOutput = function(message) {
                 if (typeof message === 'string') {
                     const lowerMsg = message.toLowerCase();
@@ -1407,6 +1551,27 @@
                     }
 
                     if (lowerMsg.includes('[channel]') || lowerMsg.includes('channel]')) {
+                        return; 
+                    }
+                    
+                    if (message.includes('[FLog::Output]') && message.includes('NITROGEN_GAME_ID:')) {
+                        const gameIdMatch = message.match(/NITROGEN_GAME_ID:(\d+)/);
+                        if (gameIdMatch && gameIdMatch[1]) {
+                            const gameId = gameIdMatch[1];
+                            
+                            window.pywebview.api.get_game_name(gameId)
+                                .then(response => {
+                                    if (response.status === 'success' && response.game_name) {
+                                        currentGameName = response.game_name;
+                                        console.log(`Detected game: ${currentGameName} (Game ID: ${gameId})`);
+                                        
+                                        updateScriptBloxPlaceholder();
+                                    }
+                                })
+                                .catch(error => {
+                                    console.error('Error fetching game name:', error);
+                                });
+                        }
                         return; 
                     }
                     
@@ -1439,6 +1604,7 @@
                             if (wordStart >= 0) msgContent = msgContent.substring(wordStart);
                         }
                     }
+    
                     
                     if (logType) {
                         const logPrefix = document.createElement('span');
@@ -1459,6 +1625,7 @@
                     requestAnimationFrame(() => output.scrollTop = output.scrollHeight);
                 }
             };
+
             window.batchUpdateConsole = function(lines) {
                 if (Array.isArray(lines)) {
                     for (const line of lines) {
@@ -1481,25 +1648,62 @@
             });
             
             const minimizeConsoleBtn = document.getElementById('minimize-console');
+            const copyConsoleBtn = document.getElementById('copy-console');
             const outputContainer = document.querySelector('.output-container');
             
             minimizeConsoleBtn.addEventListener('click', () => {
                 outputContainer.classList.toggle('minimized');
                 minimizeConsoleBtn.classList.toggle('minimized');
                 
-                const consoleTitle = document.querySelector('.output-header').firstChild.textContent.trim() === 'Roblox Console' ?
+                const consoleTitle = document.querySelector('.output-header').firstChild.textContent.trim() === 'Console' ?
                     document.querySelector('.output-header').firstChild : 
                     document.querySelector('.output-header').childNodes[0];
                 
                 if (outputContainer.classList.contains('minimized')) {
                     consoleTitle.textContent = "-";
                 } else {
-                    consoleTitle.textContent = "Roblox Console";
+                    consoleTitle.textContent = "Console";
                     
                     setTimeout(() => {
                         requestAnimationFrame(() => output.scrollTop = output.scrollHeight);
                     }, 300);
                 }
+            });
+            
+            copyConsoleBtn.addEventListener('click', () => {
+                const entries = Array.from(output.childNodes);
+                
+                const lastFiveEntries = entries.slice(-5);
+                
+                const textContent = lastFiveEntries.map(entry => {
+                    const logPrefix = entry.querySelector('span.log-output, span.log-warning, span.log-error');
+                    
+                    if (logPrefix) {
+                        const prefixText = logPrefix.textContent;
+                        const entryText = Array.from(entry.childNodes)
+                            .filter(node => node.nodeType === Node.TEXT_NODE)
+                            .map(node => node.textContent)
+                            .join('');
+                        
+                        return prefixText + entryText;
+                    } else {
+                        return entry.textContent;
+                    }
+                }).join('\n');
+            
+                navigator.clipboard.writeText(textContent)
+                    .then(() => {
+                        copyConsoleBtn.classList.add('copied');
+                        setTimeout(() => {
+                            copyConsoleBtn.classList.remove('copied');
+                        }, 1000);
+                        
+                        updateConsoleOutput('Last 5 console entries copied to clipboard!');
+                    })
+                    .catch(err => {
+                        console.error('Failed to copy to clipboard: ', err);
+                        updateConsoleOutput('Error: Failed to copy to clipboard!');
+                    });
             });
             
             setTimeout(() => {
@@ -1531,7 +1735,7 @@
             
             document.getElementById('run-btn').addEventListener('click', executeScript);
             
-            tabContainer.addEventListener('click', e => {
+            document.querySelector('.tabs-scrollable-area').addEventListener('click', e => {
                 const tab = e.target.closest('.tab');
                 if (!tab) return;
                 
@@ -1565,18 +1769,48 @@
                     searchContainer.style.display = 'block';
                     
                     const searchInput = document.getElementById('scripthub-search');
-                    searchInput.placeholder = currentScriptsTab === 'local' ? 
-                        "Search local scripts..." : 
-                        "Search ScriptBlox...";
                     
+                    if (currentScriptsTab === 'local') {
+                        searchInput.placeholder = "Search local scripts...";
+                    } else {
+                        searchInput.placeholder = "Search ScriptBlox...";
+                    }
                     searchInput.value = '';
                     
                     if (currentScriptsTab === 'local') {
                         fetchLocalScripts();
                     } else {
                         fetchScripts();
+                        detectCurrentGame();
                     }
                 }
+            }
+            
+            function updateScriptBloxPlaceholder() {
+                if (scripthubSidebar.classList.contains('active') && currentScriptsTab === 'online') {
+                    const searchInput = document.getElementById('scripthub-search');
+                    const searchTerm = currentGameName || '';
+                    
+                    if (currentGameName) {
+                        searchInput.placeholder = `Search for "${currentGameName}"...`;
+                    } else {
+                        searchInput.placeholder = "Search ScriptBlox...";
+                    }
+                    
+                    if (lastScriptBloxSearch !== searchTerm) {
+                        lastScriptBloxSearch = searchTerm;
+                        fetchScripts(searchTerm);
+                    }
+                }
+            }
+            
+            function detectCurrentGame() {
+                const gameDetectionScript = 'print("NITROGEN_GAME_ID:" .. game.GameId)';
+                
+                window.pywebview.api.execute_script(gameDetectionScript)
+                    .catch(error => {
+                        console.log('Game detection failed (likely not in game):', error);
+                    });
             }
             
             scriptsTabs.forEach(tab => {
@@ -1587,19 +1821,16 @@
                     currentScriptsTab = tabType;
                     
                     const searchInput = document.getElementById('scripthub-search');
-                    searchInput.placeholder = tabType === 'local' ? 
-                        "Search local scripts..." : 
-                        "Search ScriptBlox...";
-                    
-                    const currentSearchTerm = searchInput.value;
-                    
                     if (tabType === 'local') {
+                        searchInput.placeholder = "Search local scripts...";
                         fetchLocalScripts();
-                        if (currentSearchTerm.trim() !== '') {
-                            filterLocalScripts(currentSearchTerm);
+                        if (searchInput.value.trim() !== '') {
+                            filterLocalScripts(searchInput.value);
                         }
                     } else {
-                        fetchScripts(currentSearchTerm);
+                        searchInput.placeholder = "Search ScriptBlox...";
+                        fetchScripts(searchInput.value);
+                        detectCurrentGame();
                     }
                 });
             });
@@ -1638,7 +1869,7 @@
                     return;
                 }
                 
-                const filtered = localScriptsCache.filter(script => 
+                const filtered = localScriptsCache.filter(script =>
                     script.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
                     (script.content && script.content.toLowerCase().includes(searchTerm.toLowerCase()))
                 );
@@ -1750,14 +1981,10 @@
                             const script = data.scripts.find(s => s.name === scriptName);
                             
                             if (script) {
-                                if (Object.keys(scripts).length >= MAX_TABS) {
-                                    output.innerHTML = `Maximum tabs reached (${MAX_TABS}). Close a tab first.`;
-                                    return;
-                                }
-                                
                                 const id = `script${nextId++}`;
                                 scripts[id] = {name: script.name, content: script.content};
-                                tabContainer.insertBefore(createTab(id, script.name), newTabBtn);
+                                const tabsScrollableArea = document.querySelector('.tabs-scrollable-area');
+                                tabsScrollableArea.appendChild(createTab(id, script.name));
                                 switchTab(id);
                                 updateTabBtn();
                                 toggleSidebar();
@@ -1777,9 +2004,16 @@
             
             function fetchScripts(searchTerm = '') {
                 scripthubContent.innerHTML = '<div class="loading-spinner"></div>';
+                
+                if (searchTerm === '' && currentGameName) {
+                    searchTerm = currentGameName;
+                }
+                
+                lastScriptBloxSearch = searchTerm;
+                
                 window.pywebview.api.getScripts(searchTerm)
                     .then(data => {
-                        if (data.result.scripts.length > 0) {
+                        if (data.result && data.result.scripts && data.result.scripts.length > 0) {
                             window.scriptHubScripts = data.result.scripts;
                             displayScripts(data.result.scripts);
                         } else {
@@ -1914,12 +2148,13 @@
             });
             
             document.getElementById('scripthub-search').addEventListener('input', debounce(function() {
-                const searchTerm = this.value;
-                if (currentScriptsTab === 'local') {
-                    filterLocalScripts(searchTerm);
-                } else {
-                    fetchScripts(searchTerm);
-                }
+            const searchTerm = this.value;
+            
+            if (currentScriptsTab === 'local') {
+                filterLocalScripts(searchTerm);
+            } else {
+                fetchScripts(searchTerm);
+            }
             }, 250)); 
             
             const contextMenu = document.getElementById('tab-context-menu');
@@ -2047,24 +2282,20 @@
             }
             
             function createNewScript() {
-                if (Object.keys(scripts).length >= MAX_TABS) {
-                    output.innerHTML = `Maximum tabs reached (${MAX_TABS}). Close a tab first.`;
-                    return;
-                }
-                
                 showModal('New Script', 'script.lua', (scriptName) => {
                     if (scriptName && scriptName.trim() !== '') {
                         const id = `script${nextId++}`;
                         const name = scriptName.endsWith('.lua') ? scriptName : `${scriptName}.lua`;
                         scripts[id] = {name, content: ''};
-                        tabContainer.insertBefore(createTab(id, name), newTabBtn);
+                        const tabsScrollableArea = document.querySelector('.tabs-scrollable-area');
+                        tabsScrollableArea.appendChild(createTab(id, name));
                         switchTab(id);
                         updateTabBtn();
                     }
                 }, 'new');
             }
             
-            tabContainer.addEventListener('contextmenu', e => {
+            document.querySelector('.tabs-scrollable-area').addEventListener('contextmenu', e => {
                 const tab = e.target.closest('.tab');
                 if (!tab) return;
                 e.preventDefault(); 
@@ -2085,12 +2316,20 @@
             });
             
             document.getElementById('context-paste').addEventListener('click', () => {
-                navigator.clipboard.readText()
-                    .then(text => {
-                        cm.replaceSelection(text);
+                window.pywebview.api.get_clipboard_content()
+                    .then(result => {
+                        if (result.status === 'success' && result.content) {
+                            cm.replaceSelection(result.content);
+                        } else {
+                            updateConsoleOutput(`Error: ${result.message || 'Could not paste text from clipboard'}`);
+                        }
                         hideContextMenu();
                     })
-                    .catch(err => console.error('Could not paste text: ', err));
+                    .catch(err => {
+                        console.error('Could not paste text: ', err);
+                        updateConsoleOutput('Error: Failed to paste from clipboard');
+                        hideContextMenu();
+                    });
             });
             
             modalCancel.addEventListener('click', hideModal);
@@ -2107,6 +2346,9 @@
                 if (e.key === 'Enter' && modalCallback) {
                     const autoExecToggle = document.getElementById('autoexec-toggle');
                     modalCallback(modalInput.value, autoExecToggle.checked);
+                    hideModal();
+                } else if (e.key === 'Escape') {
+                    e.preventDefault();
                     hideModal();
                 }
             });
@@ -2182,6 +2424,26 @@
             document.addEventListener('keydown', (e) => {       
                 const isCmdKey = e.metaKey 
                 
+                if (e.key === 'Escape') {
+                    if (settingsModalOverlay.classList.contains('active')) {
+                        e.preventDefault();
+                        settingsModalOverlay.classList.remove('active');
+                        return;
+                    }
+                    
+                    if (aiSidebar.classList.contains('active')) {
+                        e.preventDefault();
+                        toggleAiSidebar();
+                        return;
+                    }
+                    
+                    if (scripthubSidebar.classList.contains('active')) {
+                        e.preventDefault();
+                        toggleSidebar();
+                        return;
+                    }
+                }
+                
                 if (isCmdKey) {
                     if (e.key === 'w') {
                         e.preventDefault();
@@ -2203,7 +2465,7 @@
                         toggleAiSidebar();
                     }
                     
-                    else if (/^[1-8]$/.test(e.key)) {
+                    else if (/^[1-9]$/.test(e.key)) {
                         e.preventDefault();
                         const tabIndex = parseInt(e.key) - 1; 
                         const tabIds = Object.keys(scripts);
@@ -2244,11 +2506,6 @@
             });
             
             function loadSavedTheme() {
-                if (!window.pywebview || !window.pywebview.api) {
-                    setTimeout(loadSavedTheme, 300);
-                    return;
-                }
-                
                 window.pywebview.api.get_theme()
                     .then(response => {
                         if (response.status === 'success') {
@@ -2351,6 +2608,7 @@
             const aiInput = document.getElementById('ai-input');
             const aiSendBtn = document.getElementById('ai-send-btn');
             const aiChatContainer = document.getElementById('ai-chat-container');
+            const commandDropdown = document.getElementById('command-dropdown');
             
             function toggleAiSidebar() {
                 aiSidebar.classList.toggle('active');
@@ -2392,13 +2650,91 @@
                 }
             }
             
+            function clearChat() {
+                aiChatContainer.innerHTML = '';
+                
+                const clearMessage = document.createElement('div');
+                clearMessage.className = 'ai-message assistant';
+                clearMessage.textContent = 'Chat history cleared';
+                
+                aiChatContainer.appendChild(clearMessage);
+                aiChatContainer.scrollTop = 0;
+            }
+            
+            function handleCommandSelection(command) {
+                commandDropdown.style.display = 'none';
+                if (command === '/clear') {
+                    clearChat();
+                    aiInput.value = '';
+                } else if (command === '/about') {
+                    aiInput.value = command;
+                    processAiMessage();
+                }
+            }
+            
+            aiInput.addEventListener('input', () => {
+                const text = aiInput.value;
+                if (text.startsWith('/')) {
+                    commandDropdown.style.display = 'block';
+                } else {
+                    commandDropdown.style.display = 'none';
+                }
+            });
+            
+            document.querySelectorAll('.command-item').forEach(item => {
+                item.addEventListener('click', () => {
+                    const command = item.getAttribute('data-command');
+                    handleCommandSelection(command);
+                });
+            });
+            
+            aiInput.addEventListener('keydown', e => {
+                if (commandDropdown.style.display === 'block') {
+                    const visibleItems = [...commandDropdown.querySelectorAll('.command-item')];
+                    
+                    if (e.key === 'ArrowDown' || e.key === 'Tab') {
+                        e.preventDefault();
+                        const focusedItem = document.querySelector('.command-item:focus');
+                        const currentIndex = focusedItem ? visibleItems.indexOf(focusedItem) : -1;
+                        const nextIndex = (currentIndex + 1) % visibleItems.length;
+                        if (visibleItems[nextIndex]) visibleItems[nextIndex].focus();
+                    } else if (e.key === 'ArrowUp') {
+                        e.preventDefault();
+                        const focusedItem = document.querySelector('.command-item:focus');
+                        const currentIndex = focusedItem ? visibleItems.indexOf(focusedItem) : 0;
+                        const prevIndex = (currentIndex - 1 + visibleItems.length) % visibleItems.length;
+                        if (visibleItems[prevIndex]) visibleItems[prevIndex].focus();
+                    } else if (e.key === 'Enter' && document.activeElement.classList.contains('command-item')) {
+                        e.preventDefault();
+                        const command = document.activeElement.getAttribute('data-command');
+                        handleCommandSelection(command);
+                    } else if (e.key === 'Escape') {
+                        e.preventDefault();
+                        commandDropdown.style.display = 'none';
+                    }
+                }
+            });
+            
             function processAiMessage() {
                 const message = aiInput.value.trim();
                 if (!message) return;
                 
+                if (message === '/clear') {
+                    clearChat();
+                    aiInput.value = '';
+                    return;
+                }
+                
                 appendMessage(message, true);
                 
                 aiInput.value = '';
+                
+                setTimeout(() => {
+                    if (aiInput.value === '') {
+                        aiInput.blur();
+                        aiInput.focus();
+                    }
+                }, 0);
                 
                 const loadingIndicator = addLoadingIndicator();
                 
@@ -2409,33 +2745,28 @@
                         removeLoadingIndicator();
                         
                         if (response.status === 'success') {
-                            const result = response.result;
+                            const result = response.result || '';
+                            const explanation = response.explanation || '';
                             
-                            let code = result;
-                            
-                            if (result.includes('```lua')) {
-                                const codeMatch = result.match(/```lua\n([\s\S]*?)```/);
-                                if (codeMatch && codeMatch[1]) {
-                                    code = codeMatch[1];
-                                }
-                            } else if (result.includes('```')) {
-                                const codeMatch = result.match(/```\n?([\s\S]*?)```/);
-                                if (codeMatch && codeMatch[1]) {
-                                    code = codeMatch[1];
-                                }
+                            if (result && result.trim() !== '' && result.trim() !== editorContent.trim()) {
+                                scripts[activeId].content = result;
+                                
+                                cm.setValue(result);
+                                
+                                setTimeout(() => {
+                                    try {
+                                        const totalLines = cm.lineCount();
+                                        cm.autoFormatRange({line: 0, ch: 0}, {line: totalLines, ch: 0});
+                                    } catch (e) {
+                                        console.log("Auto-formatting unavailable");
+                                    }
+                                }, 50);
                             }
                             
-                            if (code.trim() === editorContent.trim()) {
-                                appendMessage("No changes made.");
-                            } else {
-                                const oldLines = editorContent.trim().split('\n');
-                                const newLines = code.trim().split('\n');
-                                const linesChanged = countChangedLines(oldLines, newLines);
-                                
-                                scripts[activeId].content = code;
-                                cm.setValue(code);
-                                
-                                appendMessage(`Changes made, please review. ${linesChanged} line${linesChanged !== 1 ? 's' : ''} changed.`);
+                            if (explanation) {
+                                appendMessage(explanation);
+                            } else if (!result || result.trim() === editorContent.trim()) {
+                                appendMessage("I understand! Let me know if you need any help with your code.");
                             }
                         } else {
                             const errorMessage = response.message || "Unknown error occurred";
@@ -2471,30 +2802,15 @@
                         return;
                     } else {
                         e.preventDefault();
+                        commandDropdown.style.display = 'none';
                         processAiMessage();
                     }
                 }
             });
             
-            function countChangedLines(oldLines, newLines) {
-                let changedCount = 0;
-                const maxLen = Math.max(oldLines.length, newLines.length);
-                
-                for (let i = 0; i < maxLen; i++) {
-                    const oldLine = i < oldLines.length ? oldLines[i] : null;
-                    const newLine = i < newLines.length ? newLines[i] : null;
-                    
-                    if (oldLine !== newLine) {
-                        changedCount++;
-                    }
-                }
-                
-                return changedCount;
-            }
-            
-            document.addEventListener('keydown', e => {
-                if (e.key === 'Escape' && aiSidebar.classList.contains('active')) {
-                    toggleAiSidebar();
+            document.addEventListener('click', (e) => {
+                if (!commandDropdown.contains(e.target) && e.target !== aiInput) {
+                    commandDropdown.style.display = 'none';
                 }
             });
         });

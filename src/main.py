@@ -7,8 +7,9 @@ import json
 from datetime import datetime
 import objc
 from AppKit import NSApp, NSAlert, NSStatusBar, NSMenu, NSMenuItem, NSVariableStatusItemLength, NSObject, NSApplication
+from AppKit import NSPasteboard, NSStringPboardType
 
-BACKEND_VERSION = "v3.1"
+BACKEND_VERSION = "v4.0"
 
 def get_latest_version():
     try:
@@ -35,7 +36,7 @@ if latest_version > BACKEND_VERSION:
         success_alert = NSAlert.alloc().init()
         success_alert.setMessageText_("Update Complete")
         success_alert.setInformativeText_(f"Nitrogen has been updated to version {latest_version}.\n\nPlease restart the application to apply the changes.")
-        success_alert.addButtonWithTitle_("bet")
+        success_alert.addButtonWithTitle_("OK")
         success_alert.setAlertStyle_(0)
         success_alert.runModal()
         exit(0)
@@ -65,7 +66,7 @@ class API:
 
     def _initialize_metadata(self):
         default_metadata = {
-            "theme": "default"
+            "theme": "glassmorphism"
         }
         try:
             with open(self.metadata_file, 'w') as f:
@@ -80,7 +81,7 @@ class API:
             if os.path.exists(self.metadata_file):
                 try:
                     with open(self.metadata_file, 'r') as f:
-                        metadata = json.load(f)
+                        metadata = json.load(f) 
                 except Exception as e:
                     print(f"Error reading metadata file, creating new: {str(e)}")
                     metadata = {}
@@ -101,15 +102,15 @@ class API:
             if os.path.exists(self.metadata_file):
                 with open(self.metadata_file, 'r') as f:
                     metadata = json.load(f)
-                    theme = metadata.get("theme", "default")
+                    theme = metadata.get("theme", "glassmorphism")
                     print(f"Retrieved theme from metadata: {theme}")
                     return {"status": "success", "theme": theme}
             
-            print("Metadata file not found, returning default theme")
-            return {"status": "success", "theme": "default"}
+            print("Metadata file not found, returning glassmorphism theme")
+            return {"status": "success", "theme": "glassmorphism"}
         except Exception as e:
             print(f"Error getting theme: {str(e)}")
-            return {"status": "success", "theme": "default"}
+            return {"status": "success", "theme": "glassmorphism"}
     
     def get_version(self):
         return {"version": BACKEND_VERSION}
@@ -120,18 +121,14 @@ class API:
             if not os.path.exists(workspace_path):
                 os.makedirs(workspace_path)
             os.system(f"open '{workspace_path}'")
-            return {"status": "success"}
         except Exception as e:
             print(f"Error opening workspace folder: {str(e)}")
-            return {"status": "error", "message": str(e)}
     
     def open_scripts_folder(self):
         try:
             os.system(f"open '{self.scripts_directory}'")
-            return {"status": "success"}
         except Exception as e:
             print(f"Error opening scripts folder: {str(e)}")
-            return {"status": "error", "message": str(e)}
 
     def execute_script(self, script_content):
         START_PORT = 6969
@@ -187,27 +184,67 @@ class API:
                 'details': messages
             }        
         
+    def get_game_name(self, universe_id):
+        """Get game name from universe ID"""
+        try:
+            game_info_url = f"https://games.roblox.com/v1/games?universeIds={universe_id}"
+            game_response = requests.get(game_info_url)
+            if game_response.status_code == 200:
+                game_data = game_response.json()
+                if game_data and "data" in game_data and len(game_data["data"]) > 0:
+                    game_name = game_data["data"][0]["name"]
+                    return {
+                        'status': 'success',
+                        'game_name': game_name
+                    }
+            
+            return {
+                'status': 'error',
+                'message': 'Game not found'
+            }
+        except Exception as e:
+            return {
+                'status': 'error',
+                'message': str(e)
+            }
+    
     def getScripts(self, script):
-        if script == "":
-            res = requests.get("https://scriptblox.com/api/script/fetch")
-            if res.status_code == 200:
-                return res.json()
+        try:
+            if script == "":
+                res = requests.get("https://scriptblox.com/api/script/fetch")
             else:
-                raise Exception(f"HTTP {res.status_code}: {res.text}")
-        else:
-            res = requests.get(f"https://scriptblox.com/api/script/search?q={script}")
-            if res.status_code == 200:
-                return res.json()
-            else:
-                raise Exception(f"HTTP {res.status_code}: {res.text}")
+                res = requests.get(f"https://scriptblox.com/api/script/search?q={script}")
                 
+            if res.status_code == 200:
+                return res.json()
+            else:
+                raise Exception(f"HTTP {res.status_code}: {res.text}")
+        except Exception as e:
+            return {
+                'status': 'error',
+                'message': str(e)
+            }
+            
     def openRoblox(self):
         try:
-            os.system("open -a Roblox")
-            return {
-                'status': 'success',
-                'message': 'Roblox opened successfully'
-            }
+            roblox_pid = None
+            for line in os.popen("ps aux | grep Roblox | grep -v grep"):
+                parts = line.split()
+                if len(parts) > 1:
+                    roblox_pid = parts[1]
+                    break
+            if roblox_pid:
+                os.system(f"kill -9 {roblox_pid}")
+                return {
+                    'status': 'error',
+                    'message': f'Roblox process killed successfully'
+                }
+            else:
+                os.system("open -a Roblox")
+                return {
+                    'status': 'success',
+                    'message': 'Roblox opened successfully'
+                }
         except Exception as e:
             return {
                 'status': 'error',
@@ -400,15 +437,11 @@ class API:
         self.log_thread = threading.Thread(target=self._monitor_log_file)
         self.log_thread.daemon = True
         self.log_thread.start()
-        
-        return {"status": "success", "message": "Started log monitoring"}
     
     def stop_log_monitoring(self):
         if self.log_thread and self.log_thread.is_alive():
             self.stop_log_monitoring = True
             self.log_thread.join(timeout=1.0)
-            return {"status": "success", "message": "Stopped log monitoring"}
-        return {"status": "not_running", "message": "Log monitoring is not running"}
     
     def set_log_refresh_rate(self, rate):
         try:
@@ -419,9 +452,8 @@ class API:
                 rate = 5.0 
                 
             self.log_refresh_rate = rate
-            return {"status": "success", "message": f"Log refresh rate set to {rate} seconds"}
         except Exception as e:
-            return {"status": "error", "message": f"Invalid refresh rate: {str(e)}"}
+            print(f"Invalid refresh rate: {str(e)}")
     
     def _monitor_log_file(self):
         try:
@@ -516,10 +548,12 @@ class API:
 
     def send_ai_prompt(self, prompt, editor_content=""):
         try:
+            currenttime = time.time()
             url = "http://nitrobot.vercel.app/generate"
             payload = {
                 "prompt": prompt,
-                "context": editor_content
+                "context": editor_content,
+                "timestamp": currenttime
             }
             response = requests.post(url, json=payload)
             
@@ -532,24 +566,20 @@ class API:
             response.raise_for_status()
             response_json = response.json()
             
-            if 'result' in response_json:
-                result = response_json['result']
-                if result.startswith("```lua"):
-                    result = result[6:]
-            
-                result = result.rstrip()
-                if result.endswith("```"):
-                    result = result[:-3]
-
-                return {
-                    'status': 'success',
-                    'result': result
-                }
-            else:
+            if 'error' in response_json:
                 return {
                     'status': 'error',
-                    'message': 'No result found in response'
+                    'message': response_json['error']
                 }
+                
+            code = response_json.get('code', '')
+            explanation = response_json.get('explanation', '')
+            
+            return {
+                'status': 'success',
+                'result': code.strip(),
+                'explanation': explanation.strip()
+            }
                 
         except requests.exceptions.HTTPError as e:
             status_code = e.response.status_code if hasattr(e, 'response') and hasattr(e.response, 'status_code') else 'unknown'
@@ -593,6 +623,29 @@ class API:
 
     def minimize_app(self):
         NSApp.hide_(None)
+
+    def get_clipboard_content(self):
+        """Get text content from system clipboard"""
+        try:
+            pasteboard = NSPasteboard.generalPasteboard()
+            content = pasteboard.stringForType_(NSStringPboardType)
+            
+            if content:
+                return {
+                    'status': 'success',
+                    'content': content
+                }
+            else:
+                return {
+                    'status': 'error',
+                    'message': 'No text content found in clipboard'
+                }
+        except Exception as e:
+            print(f"Error accessing clipboard: {str(e)}")
+            return {
+                'status': 'error', 
+                'message': f'Failed to access clipboard: {str(e)}'
+            }
 
 class ScriptMenuHandler(NSObject):
     def initWithAPI_(self, api):
@@ -673,6 +726,6 @@ menubar_item, script_handler = setup_menubar(api)
 
 webview.DRAG_REGION_SELECTOR = '.header'
 
-window = webview.create_window('Nitrogen', './index.html', js_api=api, width=1280, height=720, min_size=(800,600), transparent=True, vibrancy=True, frameless=True, easy_drag=False)
+window = webview.create_window('Nitrogen', './index.html', js_api=api, width=1280, height=720, min_size=(800,680), transparent=True, vibrancy=True, frameless=True, easy_drag=False)
 api.window = window
 webview.start()
