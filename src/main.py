@@ -9,7 +9,7 @@ import objc
 from AppKit import NSApp, NSAlert, NSStatusBar, NSMenu, NSMenuItem, NSVariableStatusItemLength, NSObject, NSApplication
 from AppKit import NSPasteboard, NSStringPboardType
 
-BACKEND_VERSION = "v4.0"
+BACKEND_VERSION = "v4.0.1"
 
 def get_latest_version():
     try:

@@ -2506,6 +2506,10 @@
             });
             
             function loadSavedTheme() {
+                if (!window.pywebview || !window.pywebview.api) {
+                    setTimeout(loadSavedTheme, 300);
+                    return;
+                }
                 window.pywebview.api.get_theme()
                     .then(response => {
                         if (response.status === 'success') {
