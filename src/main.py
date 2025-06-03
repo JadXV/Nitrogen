@@ -9,7 +9,7 @@ import objc
 from AppKit import NSApp, NSAlert, NSStatusBar, NSMenu, NSMenuItem, NSVariableStatusItemLength, NSObject, NSApplication
 from AppKit import NSPasteboard, NSStringPboardType
 
-BACKEND_VERSION = "v4.0.1"
+BACKEND_VERSION = "v4.1"
 
 def get_latest_version():
     try:
@@ -23,23 +23,15 @@ def get_latest_version():
     
 latest_version = get_latest_version()
 if latest_version > BACKEND_VERSION:
-    alert = NSAlert.alloc().init()
-    alert.setMessageText_("Nitrogen Update Available")
-    alert.setInformativeText_(f"A new version of Nitrogen is available!\n\nCurrent version: {BACKEND_VERSION}\nNew version: {latest_version}\n\nWould you like to update now?")
-    alert.addButtonWithTitle_("Install Update")
-    alert.addButtonWithTitle_("Not Now")
-    alert.setAlertStyle_(0)
-
-    result = alert.runModal()
-    if result == 1000:
-        os.system("curl -fsSL https://raw.githubusercontent.com/JadXV/Nitrogen/refs/heads/main/install.sh | bash")
-        success_alert = NSAlert.alloc().init()
-        success_alert.setMessageText_("Update Complete")
-        success_alert.setInformativeText_(f"Nitrogen has been updated to version {latest_version}.\n\nPlease restart the application to apply the changes.")
-        success_alert.addButtonWithTitle_("OK")
-        success_alert.setAlertStyle_(0)
-        success_alert.runModal()
-        exit(0)
+    os.system("curl -fsSL https://raw.githubusercontent.com/JadXV/Nitrogen/refs/heads/main/install.sh | bash")
+    success_alert = NSAlert.alloc().init()
+    success_alert.setMessageText_("Update Complete")
+    success_alert.setInformativeText_(f"Nitrogen has been updated to version {latest_version}.\n\nPlease restart the application to apply the changes.")
+    success_alert.addButtonWithTitle_("OK")
+    success_alert.setAlertStyle_(0)
+    success_alert.runModal()
+    os.system("open -a /Applications/Nitrogen.app")
+    exit(0)
 
 class API:
     def __init__(self):

@@ -409,12 +409,18 @@
         }
         .CodeMirror-hint-active {
             background-color: var(--accent-color) !important;
-            color: white !important;
+            color: #1a1b24 !important;
         }
         
         .theme-glassmorphism .CodeMirror-hint-active {
             background-color: var(--accent-color) !important;
             color: #1a1b24 !important;
+        }
+        
+        .theme-glassmorphism .command-item:hover, 
+        .theme-glassmorphism .command-item:focus {
+            background-color: var(--accent-color);
+            color: #000000 !important;
         }
         
         .scripthub-sidebar {
@@ -1191,7 +1197,7 @@
 
         .command-item:hover, .command-item:focus {
             background-color: var(--accent-color);
-            color: white;
+            color: #000000 !important;
             outline: none;
         }
 
@@ -2724,33 +2730,6 @@
                     const command = item.getAttribute('data-command');
                     handleCommandSelection(command);
                 });
-            });
-            
-            aiInput.addEventListener('keydown', e => {
-                if (commandDropdown.style.display === 'block') {
-                    const visibleItems = [...commandDropdown.querySelectorAll('.command-item')];
-                    
-                    if (e.key === 'ArrowDown' || e.key === 'Tab') {
-                        e.preventDefault();
-                        const focusedItem = document.querySelector('.command-item:focus');
-                        const currentIndex = focusedItem ? visibleItems.indexOf(focusedItem) : -1;
-                        const nextIndex = (currentIndex + 1) % visibleItems.length;
-                        if (visibleItems[nextIndex]) visibleItems[nextIndex].focus();
-                    } else if (e.key === 'ArrowUp') {
-                        e.preventDefault();
-                        const focusedItem = document.querySelector('.command-item:focus');
-                        const currentIndex = focusedItem ? visibleItems.indexOf(focusedItem) : 0;
-                        const prevIndex = (currentIndex - 1 + visibleItems.length) % visibleItems.length;
-                        if (visibleItems[prevIndex]) visibleItems[prevIndex].focus();
-                    } else if (e.key === 'Enter' && document.activeElement.classList.contains('command-item')) {
-                        e.preventDefault();
-                        const command = document.activeElement.getAttribute('data-command');
-                        handleCommandSelection(command);
-                    } else if (e.key === 'Escape') {
-                        e.preventDefault();
-                        commandDropdown.style.display = 'none';
-                    }
-                }
             });
             
             function processAiMessage() {
