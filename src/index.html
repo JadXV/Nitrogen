@@ -7,22 +7,21 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/theme/monokai.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/addon/hint/show-hint.min.css">
     <style>
-        /* Default transparent state until theme loads */
         :root {
-            --bg-color: transparent;
-            --text-color: transparent;
-            --border-color: transparent;
-            --editor-bg: transparent;
-            --editor-content-bg: transparent;
-            --gutter-bg: transparent;
-            --tab-inactive: transparent;
-            --accent-color: transparent;
-            --button-hover: transparent;
-            --button-active: transparent;
-            --button-bg: transparent;
-            --button-border: none;
-            --button-shadow: none;
-            --button-backdrop-filter: none;
+            --bg-color: rgba(20, 20, 25, 0.3);
+            --text-color: #f8f8f2;
+            --border-color: rgba(60, 60, 80, 0.3);
+            --editor-bg: rgba(20, 20, 25, 0.3);
+            --editor-content-bg: rgba(20, 20, 25, 0.3);
+            --gutter-bg: rgba(20, 20, 25, 0.3);
+            --tab-inactive: rgba(20, 20, 25, 0.3);
+            --accent-color: #ffffff;
+            --button-hover: rgba(255, 255, 255, 0.2);
+            --button-active: rgba(255, 255, 255, 0.3);
+            --button-bg: rgba(255, 255, 255, 0.1);
+            --button-border: 1px solid rgba(255, 255, 255, 0.2);
+            --button-shadow: 0 2px 8px rgba(255, 255, 255, 0.1);
+            --button-backdrop-filter: blur(8px);
         }
 
         .theme-classic {
@@ -1207,7 +1206,7 @@
         }
     </style>
 </head>
-<body class="load-fade">
+<body class="load-fade theme-glassmorphism">
     <div class="header load-slide-down">
         <h1 class="title">Nitrogen</h1>
         <div class="window-controls">
@@ -2506,40 +2505,68 @@
             });
             
             function loadSavedTheme() {
+                // Always apply glassmorphism first as fallback
+                applyTheme('glassmorphism');
+                
                 if (!window.pywebview || !window.pywebview.api) {
                     setTimeout(loadSavedTheme, 300);
                     return;
                 }
-                window.pywebview.api.get_theme()
-                    .then(response => {
-                        if (response.status === 'success') {
-                            applyTheme(response.theme);
-                        } else {
-                            applyTheme('glassmorphism'); 
-                        }
-                    })
-                    .catch(() => {
-                        applyTheme('glassmorphism');
-                    });
+                
+                try {
+                    window.pywebview.api.get_theme()
+                        .then(response => {
+                            if (response && response.status === 'success' && response.theme) {
+                                applyTheme(response.theme);
+                            } else {
+                                applyTheme('glassmorphism'); 
+                            }
+                        })
+                        .catch(() => {
+                            applyTheme('glassmorphism');
+                        });
+                } catch(error) {
+                    console.log('Error loading theme, using glassmorphism:', error);
+                    applyTheme('glassmorphism');
+                }
             }
             
             function applyTheme(themeName) {
-                document.body.className = document.body.className.replace(/theme-\w+/g, '').trim();
-                
-                if (themeName) {
-                    document.body.classList.add(`theme-${themeName}`);
+                // Always fallback to glassmorphism if themeName is invalid or empty
+                const validThemes = ['glassmorphism', 'classic', 'diamond', 'emerald', 'redstone', 'midnight'];
+                if (!themeName || !validThemes.includes(themeName)) {
+                    themeName = 'glassmorphism';
                 }
                 
-                const themeRadio = document.querySelector(`input[name="theme"][value="${themeName || 'glassmorphism'}"]`);
-                if (themeRadio) {
-                    themeRadio.checked = true;
-                } else {
+                try {
+                    document.body.className = document.body.className.replace(/theme-\w+/g, '').trim();
+                    document.body.classList.add(`theme-${themeName}`);
+                } catch(error) {
+                    console.log('Error applying theme, using glassmorphism:', error);
+                    document.body.className = document.body.className.replace(/theme-\w+/g, '').trim();
+                    document.body.classList.add('theme-glassmorphism');
+                    themeName = 'glassmorphism';
+                }
+                
+                try {
+                    const themeRadio = document.querySelector(`input[name="theme"][value="${themeName}"]`);
+                    if (themeRadio) {
+                        themeRadio.checked = true;
+                    } else {
+                        const defaultRadio = document.querySelector('input[name="theme"][value="glassmorphism"]');
+                        if (defaultRadio) defaultRadio.checked = true;
+                    }
+                } catch(error) {
+                    console.log('Error setting radio button, using glassmorphism:', error);
                     const defaultRadio = document.querySelector('input[name="theme"][value="glassmorphism"]');
                     if (defaultRadio) defaultRadio.checked = true;
                 }
             }
             
             window.addEventListener('load', () => {
+                // Apply glassmorphism immediately on load
+                applyTheme('glassmorphism');
+                
                 setTimeout(loadSavedTheme, 300);
                 
                 setTimeout(() => {
@@ -2551,11 +2578,18 @@
             
             themeOptions.forEach(option => {
                 option.addEventListener('change', (e) => {
-                    const selectedTheme = e.target.value;
-                    applyTheme(selectedTheme);
-                    
-                    if (window.pywebview && window.pywebview.api) {
-                        window.pywebview.api.save_theme(selectedTheme);
+                    try {
+                        const selectedTheme = e.target.value;
+                        applyTheme(selectedTheme);
+                        
+                        if (window.pywebview && window.pywebview.api) {
+                            window.pywebview.api.save_theme(selectedTheme).catch(() => {
+                                console.log('Failed to save theme, but theme is still applied');
+                            });
+                        }
+                    } catch(error) {
+                        console.log('Error changing theme, falling back to glassmorphism:', error);
+                        applyTheme('glassmorphism');
                     }
                 });
             });
