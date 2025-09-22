@@ -1,0 +1,29 @@
+{
+  "name": "nitrogen",
+  "author": "JadXV",
+  "version": "5.0.0",
+  "description": "Nitrogen - Modern Executor UI",
+  "scripts": {
+    "start": "electron .",
+    "build": "./build.sh"
+  },
+  "devDependencies": {
+    "electron": "^29.4.6",
+    "electron-builder": "^26.0.12"
+  },
+  "build": {
+    "asar": true,
+    "icon": "assets/icon.png",
+    "files": [
+      "assets/**/*",
+      "index.html",
+      "index.js",
+      "preload.js"
+    ],
+    "extraResources": [],
+    "extraFiles": []
+  },
+  "dependencies": {
+    "axios": "^1.6.0"
+  }
+}

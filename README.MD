@@ -1,6 +1,8 @@
 # Nitrogen ❄️
 
-Nitrogen is a modern, clean and feature-packed custom UI/wrapper for Hydrogen with a sleek interface. It provides a streamlined experience for executing, managing, and discovering scripts.
+Nitrogen is a modern, clean and feature-packed custom UI/wrapper for Hydrogen, MacSploit, and Opiumware with a sleek interface. It provides a streamlined experience for executing, managing, and discovering scripts.
+
+🌐 **Website**: [nitrogen.lol](https://nitrogen.lol)
 
 ## ✨ Features
 
@@ -46,6 +48,7 @@ curl -fsSL https://raw.githubusercontent.com/JadXV/Nitrogen/refs/heads/main/inst
 | ⌘+W | Close current tab |
 | ⌘+[1-9] | Switch to specified tab (e.g., ⌘+1 for first tab) |
 | ⌘+I | Open AI sidebar |
+| ⌘+. | Open Nitrogen Direct from any app (system-wide shortcut) |
 
 ### Themes and Customization
 Access the settings menu to customize your Nitrogen experience:

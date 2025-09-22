@@ -1,3 +1,4 @@
 NitrogenCompressed.zip
-src/venv_x86/
+src/node_modules/
 .DS_Store
+BACKUP.html

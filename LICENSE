@@ -4,26 +4,32 @@ Copyright (c) 2025 JadXV
 
 All rights reserved.
 
-1. GRANT OF LICENSE
+1. EDUCATIONAL PURPOSE AND DEVELOPER LIABILITY DISCLAIMER
+    a. This Software is provided for EDUCATIONAL PURPOSES ONLY.
+    b. The developer is NOT responsible for any misuse of this Software.
+    c. Users assume full responsibility for their actions and any consequences.
+    d. The developer is not liable for violations of third-party terms of service or applicable laws.
+
+2. GRANT OF LICENSE
     This software and associated documentation files (the "Software") may be used by the end user for personal or commercial use, subject to the restrictions below.
 
-2. ACCEPTANCE OF LICENSE
+3. ACCEPTANCE OF LICENSE
     By installing the Software, including but not limited to installation through the install.sh script, you acknowledge that you have read this License Agreement and agree to be bound by its terms and conditions.
 
-3. CONTRIBUTIONS
+4. CONTRIBUTIONS
     a. You MAY contribute to the Software through pull requests or suggestions.
     b. By submitting contributions, you grant the copyright holder the right to incorporate these changes.
 
-4. RESTRICTIONS
+5. RESTRICTIONS
     a. You may NOT distribute or copy the Software without explicit permission.
     b. You may NOT sell copies of the Software or any part thereof.
     c. You may NOT use the concepts, features, functions, structure, or ideas from the Software to create similar software.
 
-5. NO WARRANTY
+6. NO WARRANTY
     THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED.
 
-6. LIMITATION OF LIABILITY
+7. LIMITATION OF LIABILITY
     IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE.
 
-7. TERMINATION
+8. TERMINATION
     This license automatically terminates if you violate any of its terms and conditions.
