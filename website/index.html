@@ -616,159 +616,7 @@
             font-family: 'SF Mono', Monaco, monospace;
         }
 
-        /* Screenshots Section */
-        .screenshots {
-            padding: 3rem 2rem;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
 
-        .screenshot-container {
-            background: var(--bg-glass);
-            border: 1px solid var(--border-color);
-            border-radius: 16px;
-            padding: 2rem;
-            backdrop-filter: blur(20px);
-            text-align: center;
-            margin-top: 2rem;
-            transition: all 0.3s ease;
-        }
-
-        .screenshot-container:hover {
-            border-color: var(--border-hover);
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
-        }
-
-        .screenshot-placeholder {
-            width: 100%;
-            height: 600px;
-            border-radius: 16px;
-            position: relative;
-            overflow: hidden;
-            box-shadow: var(--shadow-xl);
-        }
-
-        .carousel-container {
-            width: 100%;
-            height: 100%;
-            position: relative;
-            overflow: hidden;
-            border-radius: 16px;
-        }
-
-        .carousel-track {
-            display: flex;
-            height: 100%;
-            transition: transform 0.5s ease-in-out;
-        }
-
-        .carousel-slide {
-            min-width: 100%;
-            height: 100%;
-            position: relative;
-            background-size: cover;
-            background-position: center;
-            display: flex;
-            align-items: flex-end;
-        }
-
-        .slide-content {
-            background: linear-gradient(transparent, rgba(0, 0, 0, 0.8));
-            color: white;
-            padding: 40px;
-            width: 100%;
-        }
-
-        .slide-title {
-            font-size: 2rem;
-            font-weight: 700;
-            margin-bottom: 10px;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
-        }
-
-        .slide-description {
-            font-size: 1.1rem;
-            color: rgba(255, 255, 255, 0.9);
-            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
-        }
-
-        .carousel-controls {
-            position: absolute;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            display: flex;
-            gap: 10px;
-            z-index: 10;
-        }
-
-        .carousel-dot {
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.4);
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .carousel-dot.active {
-            background: white;
-            transform: scale(1.2);
-        }
-
-        .carousel-nav {
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            background: rgba(0, 0, 0, 0.5);
-            color: white;
-            border: none;
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            cursor: pointer;
-            font-size: 18px;
-            transition: all 0.3s ease;
-            z-index: 10;
-        }
-
-        .carousel-nav:hover {
-            background: rgba(0, 0, 0, 0.8);
-            transform: translateY(-50%) scale(1.1);
-        }
-
-        .carousel-prev {
-            left: 20px;
-        }
-
-        .carousel-next {
-            right: 20px;
-        }
-
-        /* Nature image backgrounds using actual nature URLs */
-        .slide-1 {
-            background-image: url('https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80');
-        }
-
-        .slide-2 {
-            background-image: url('https://images.unsplash.com/photo-1439066615861-d1af74d74000?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80');
-        }
-
-        .slide-3 {
-            background-image: url('https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80');
-        }
-
-        .slide-4 {
-            background-image: url('https://images.unsplash.com/photo-1441974231531-c6227db76b6e?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80');
-        }
-
-        .slide-5 {
-            background-image: url('https://images.unsplash.com/photo-1501594907352-04cda38ebc29?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80');
-        }
-
-        .slide-6 {
-            background-image: url('https://images.unsplash.com/photo-1469474968028-56623f02e42e?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80');
-        }
 
         /* Stats Section */
         .stats {
@@ -1068,7 +916,6 @@
     <nav>
         <div class="nav-container">
             <ul class="nav-links">
-                <li><a href="#preview">Gallery</a></li>
                 <li><a href="#stats">Stats</a></li>
                 <li><a href="#features">Features</a></li>
                 <li><a href="#executors">Executors</a></li>
@@ -1099,66 +946,7 @@
         </div>
     </section>
 
-    <!-- Screenshots Section -->
-    <section class="screenshots" id="preview">
-        <h2 class="section-title">Gallery</h2>
-        <div class="screenshot-container">
-            <div class="screenshot-placeholder">
-                <div class="carousel-container">
-                    <div class="carousel-track" id="carousel-track">
-                        <div class="carousel-slide slide-1">
-                            <div class="slide-content">
-                                <div class="slide-title">Mountain Vista</div>
-                                <div class="slide-description">Breathtaking alpine scenery in the Swiss Alps</div>
-                            </div>
-                        </div>
-                        <div class="carousel-slide slide-2">
-                            <div class="slide-content">
-                                <div class="slide-title">Forest Lake</div>
-                                <div class="slide-description">Serene lakeside reflection in pristine wilderness</div>
-                            </div>
-                        </div>
-                        <div class="carousel-slide slide-3">
-                            <div class="slide-content">
-                                <div class="slide-title">Sunset Mountains</div>
-                                <div class="slide-description">Golden hour magic over mountain peaks</div>
-                            </div>
-                        </div>
-                        <div class="carousel-slide slide-4">
-                            <div class="slide-content">
-                                <div class="slide-title">Forest Path</div>
-                                <div class="slide-description">Mystical pathway through ancient woodlands</div>
-                            </div>
-                        </div>
-                        <div class="carousel-slide slide-5">
-                            <div class="slide-content">
-                                <div class="slide-title">Ocean Serenity</div>
-                                <div class="slide-description">Peaceful waves meeting tropical shores</div>
-                            </div>
-                        </div>
-                        <div class="carousel-slide slide-6">
-                            <div class="slide-content">
-                                <div class="slide-title">Lake Reflection</div>
-                                <div class="slide-description">Mirror-like waters reflecting the sky</div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <button class="carousel-nav carousel-prev" onclick="previousSlide()">‹</button>
-                    <button class="carousel-nav carousel-next" onclick="nextSlide()">›</button>
-                    
-                    <div class="carousel-controls">
-                        <div class="carousel-dot active" onclick="goToSlide(0)"></div>
-                        <div class="carousel-dot" onclick="goToSlide(1)"></div>
-                        <div class="carousel-dot" onclick="goToSlide(2)"></div>
-                        <div class="carousel-dot" onclick="goToSlide(3)"></div>
-                        <div class="carousel-dot" onclick="goToSlide(4)"></div>
-                        <div class="carousel-dot" onclick="goToSlide(5)"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+
 
     <!-- Stats Section -->
     <section class="stats" id="stats" style="display: none;">
@@ -1449,37 +1237,6 @@
     <script>
         // Initialize Feather icons
         feather.replace();
-
-        // Carousel functionality
-        let currentSlide = 0;
-        const totalSlides = 6;
-        const track = document.getElementById('carousel-track');
-        const dots = document.querySelectorAll('.carousel-dot');
-
-        function updateCarousel() {
-            const translateX = -currentSlide * 100;
-            track.style.transform = `translateX(${translateX}%)`;
-            
-            // Update dots
-            dots.forEach((dot, index) => {
-                dot.classList.toggle('active', index === currentSlide);
-            });
-        }
-
-        function nextSlide() {
-            currentSlide = (currentSlide + 1) % totalSlides;
-            updateCarousel();
-        }
-
-        function previousSlide() {
-            currentSlide = (currentSlide - 1 + totalSlides) % totalSlides;
-            updateCarousel();
-        }
-
-        function goToSlide(slideIndex) {
-            currentSlide = slideIndex;
-            updateCarousel();
-        }
 
         // Nitrogen Stats API
         async function loadNitrogenStats() {
