@@ -3,27 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/theme/monokai.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/addon/hint/show-hint.min.css">
+    <link
+      rel="stylesheet"
+      data-name="vs/editor/editor.main"
+      href="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.51.0/min/vs/editor/editor.main.min.css"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
     <style>
-        :root {
-            --bg-color: rgba(20, 20, 25, 0.3);
-            --text-color: #f8f8f2;
-            --border-color: rgba(60, 60, 80, 0.3);
-            --editor-bg: rgba(20, 20, 25, 0.3);
-            --editor-content-bg: rgba(20, 20, 25, 0.3);
-            --gutter-bg: rgba(20, 20, 25, 0.3);
-            --tab-inactive: rgba(20, 20, 25, 0.3);
-            --accent-color: #ffffff;
-            --button-hover: rgba(255, 255, 255, 0.2);
-            --button-active: rgba(255, 255, 255, 0.3);
-            --button-bg: rgba(255, 255, 255, 0.1);
-            --button-border: 1px solid rgba(255, 255, 255, 0.2);
-            --button-shadow: 0 2px 8px rgba(255, 255, 255, 0.1);
-            --button-backdrop-filter: blur(8px);
-        }
-
         .theme-classic {
             --bg-color: #1a1b24;
             --text-color: #f8f8f2;
@@ -31,7 +20,7 @@
             --editor-bg: #141419;
             --editor-content-bg: #1a1b24;
             --gutter-bg: #141419;
-            --tab-inactive: #1f2029;
+            --tab-inactive: #1a1b24;
             --accent-color: #8a67c8;
             --button-hover: #3d4566;
             --button-active: #2dbb4e;
@@ -39,6 +28,8 @@
             --button-border: none;
             --button-shadow: none;
             --button-backdrop-filter: none;
+            --website-btn-color: #a67ac8;
+            --website-btn-hover: #b88ad8;
         }
         
         .theme-diamond {
@@ -48,7 +39,7 @@
             --editor-bg: #141e27;
             --editor-content-bg: #1a2733;
             --gutter-bg: #141e27;
-            --tab-inactive: #1f2d3a;
+            --tab-inactive: #1a2733;
             --accent-color: #3498db;
             --button-hover: #2980b9;
             --button-active: #2ecc71;
@@ -56,6 +47,8 @@
             --button-border: none;
             --button-shadow: none;
             --button-backdrop-filter: none;
+            --website-btn-color: #5dade2;
+            --website-btn-hover: #7fb3d6;
         }
         
         .theme-emerald {
@@ -65,7 +58,7 @@
             --editor-bg: #141e1a;
             --editor-content-bg: #1a2420;
             --gutter-bg: #141e1a;
-            --tab-inactive: #1f2d24;
+            --tab-inactive: #1a2420;
             --accent-color: #27ae60;
             --button-hover: #219955;
             --button-active: #e74c3c;
@@ -73,6 +66,8 @@
             --button-border: none;
             --button-shadow: none;
             --button-backdrop-filter: none;
+            --website-btn-color: #52c882;
+            --website-btn-hover: #6dd99c;
         }
         
         .theme-redstone {
@@ -82,7 +77,7 @@
             --editor-bg: #1e1414;
             --editor-content-bg: #241a1a;
             --gutter-bg: #1e1414;
-            --tab-inactive: #2d1f1f;
+            --tab-inactive: #241a1a;
             --accent-color: #e74c3c;
             --button-hover: #c0392b;
             --button-active: #27ae60;
@@ -90,6 +85,8 @@
             --button-border: none;
             --button-shadow: none;
             --button-backdrop-filter: none;
+            --website-btn-color: #ec7063;
+            --website-btn-hover: #f1948a;
         }
 
         .theme-glassmorphism {
@@ -99,14 +96,16 @@
             --editor-bg: rgba(20, 20, 25, 0.3);
             --editor-content-bg: rgba(20, 20, 25, 0.3);
             --gutter-bg: rgba(20, 20, 25, 0.3);
-            --tab-inactive: rgba(20, 20, 25, 0.3);
+            --tab-inactive: transparent;
             --accent-color: #ffffff;
-            --button-hover: rgba(255, 255, 255, 0.2);
-            --button-active: rgba(255, 255, 255, 0.3);
-            --button-bg: rgba(255, 255, 255, 0.1);
-            --button-border: 1px solid rgba(255, 255, 255, 0.2);
-            --button-shadow: 0 2px 8px rgba(255, 255, 255, 0.1);
-            --button-backdrop-filter: blur(8px);
+            --button-hover: transparent;
+            --button-active: transparent;
+            --button-bg: transparent;
+            --button-border: 1px solid rgba(255, 255, 255, 0.15);
+            --button-shadow: none;
+            --button-backdrop-filter: none;
+            --website-btn-color: rgba(255, 255, 255, 0.9);
+            --website-btn-hover: rgba(255, 255, 255, 1);
         }
 
         .theme-glassmorphism .execute-btn, 
@@ -119,11 +118,13 @@
         .theme-glassmorphism .script-direct-btn,
         .theme-glassmorphism .modal-btn-submit,
         .theme-glassmorphism .folder-btn,
-        .theme-glassmorphism .ai-send-btn {
-            background-color: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            box-shadow: 0 2px 8px rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(8px);
+        .theme-glassmorphism .ai-send-btn,
+        .theme-glassmorphism .website-changelog-btn,
+        .theme-glassmorphism .website-visit-btn {
+            background-color: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: none;
+            backdrop-filter: none;
             color: white;
         }
         
@@ -137,10 +138,12 @@
         .theme-glassmorphism .script-direct-btn:hover,
         .theme-glassmorphism .modal-btn-submit:hover,
         .theme-glassmorphism .folder-btn:hover,
-        .theme-glassmorphism .ai-send-btn:hover {
-            background-color: rgba(255, 255, 255, 0.2);
-            border-color: rgba(255, 255, 255, 0.3);
-            box-shadow: 0 4px 16px rgba(255, 255, 255, 0.2);
+        .theme-glassmorphism .ai-send-btn:hover,
+        .theme-glassmorphism .website-changelog-btn:hover,
+        .theme-glassmorphism .website-visit-btn:hover {
+            background-color: transparent;
+            border-color: rgba(255, 255, 255, 0.35);
+            box-shadow: none;
         }
         
         .theme-glassmorphism .execute-btn:active, 
@@ -149,8 +152,8 @@
         .theme-glassmorphism .roblox-btn:active, 
         .theme-glassmorphism .settings-btn:active, 
         .theme-glassmorphism .ai-btn:active {
-            background-color: rgba(255, 255, 255, 0.3);
-            border-color: rgba(255, 255, 255, 0.4);
+            background-color: transparent;
+            border-color: rgba(255, 255, 255, 0.5);
         }
         
         .theme-glassmorphism .toggle-slider {
@@ -165,6 +168,14 @@
         .theme-glassmorphism input:checked + .toggle-slider:before {
             background-color: #000000;
         }
+        
+        .theme-glassmorphism .tab {
+            background-color: transparent !important;
+        }
+        
+        .theme-glassmorphism .tab.active {
+            background-color: transparent !important;
+        }
 
         .theme-midnight {
             --bg-color: #0d0d0d;
@@ -173,7 +184,7 @@
             --editor-bg: #000000;
             --editor-content-bg: #0d0d0d;
             --gutter-bg: #000000;
-            --tab-inactive: #1a1a1a;
+            --tab-inactive: #0d0d0d;
             --accent-color: #5a4b6b;
             --button-hover: #333333;
             --button-active: #555555;
@@ -184,10 +195,21 @@
         }
         
         * {margin: 0; padding: 0; box-sizing: border-box;}
+        
+        .scripthub-sidebar, .ai-sidebar, .sidebar-overlay {
+            transform: translateZ(0);
+            backface-visibility: hidden;
+            perspective: 1000px;
+        }
         body {
             font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
             background-color: var(--bg-color); color: var(--text-color);
             height: 100vh; display: flex; flex-direction: column; overflow: hidden;
+            user-select: none;
+        }
+        
+        input, textarea {
+            user-select: text;
         }
         .header, .sidebar-header {
             display: flex; justify-content: space-between; align-items: center;
@@ -197,9 +219,11 @@
         .sidebar-header {padding: 15px; background-color: var(--editor-bg);}
         .title {font-size: 1.2rem; font-weight: normal;}
         .sidebar-title {font-size: 1.1rem; font-weight: normal;}
-        .main {
-            display: flex; flex-direction: column; flex: 1;
-            overflow: hidden; height: calc(100vh - 45px);
+        .container {
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            overflow: hidden;
         }
         .tab-container {
             display: flex; background-color: var(--bg-color);
@@ -211,8 +235,8 @@
             overflow-x: auto; white-space: nowrap;
             flex-grow: 1;
         }
-        .tabs-scrollable-area::-webkit-scrollbar {
-            display: none; 
+        ::-webkit-scrollbar {
+            display: none;
         }
         .tab {
             padding: 8px 15px; background-color: var(--tab-inactive);
@@ -231,8 +255,8 @@
         .new-tab-btn-container {
             position: sticky;
             right: 0;
-            border-left: 1px solid var(--border-color);
-            background-color: var(--bg-color);
+            border-left: none;
+            background-color: transparent;
             display: flex;
             align-items: center;
         }
@@ -241,34 +265,49 @@
             color: var(--text-color); cursor: pointer; font-size: 1.2rem;
             display: flex; align-items: center; justify-content: center;
         }
-        .new-tab-btn:hover {background-color: rgba(255, 255, 255, 0.1);}
+        .new-tab-btn:hover {background-color: transparent;}
         .editor-container {
-            flex: 3; position: relative; display: flex;
-            flex-direction: column; min-height: 0;
+            flex: 1;
+            position: relative;
+            overflow: hidden;
+            margin: 0;
+            background: transparent;
+            min-height: 300px;
         }
-        .editor-wrapper {position: relative; flex: 1; overflow: hidden; min-height: 0;}
-        .CodeMirror {
-            height: 100%; font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
-            font-size: 14px; line-height: 1.5; 
+        .editor-wrapper {
+            width: 100%;
+            height: calc(100% - 0px);
+            display: none;
+            overflow: hidden;
+            position: absolute;
+            top: 0;
+            left: 0;
+            box-sizing: border-box;
+            padding: 8px;
+        }
+        .editor-wrapper.active {
+            display: block;
+        }
+        
+        .editor-container .editor-wrapper {
+            height: 100%; 
+            font-family: 'Fira Code', 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-size: 14px; 
+            line-height: 1.5; 
             background-color: var(--editor-content-bg) !important;
             overflow: hidden !important;
+            user-select: text;
         }
-        .CodeMirror-gutters {
-            background-color: var(--gutter-bg) !important;
-            border-right: 1px solid var(--border-color);
-        }
-        .CodeMirror-linenumber {
-            color: var(--line-number-color);
-            text-align: center;
-            padding-left: 5px;
-            padding-right: 5px;
-
+        #code-editor {
+            width: 100% !important;
+            height: 100% !important;
+            min-height: 300px !important;
         }
         .execute-btn, .scripthub-btn, .save-btn, .roblox-btn, .settings-btn, .ai-btn {
             position: absolute; width: 50px; height: 50px; right: 20px;
             background-color: var(--button-bg);
             border: var(--button-border);
-            border-radius: 50%;
+            border-radius: 15px;
             color: white; display: flex; align-items: center; justify-content: center;
             cursor: pointer;
             box-shadow: var(--button-shadow); 
@@ -287,10 +326,8 @@
             background-color: var(--button-hover); transform: scale(1.05);
         }
         .execute-btn:active, .scripthub-btn:active, .save-btn:active, .roblox-btn:active, .settings-btn:active, .ai-btn:active {
-            background-color: var(--button-active); transform: scale(0.95);
+            background-color: var(--button-hover); transform: scale(0.95);
         }
-        
-
         
         .ai-prompt-textarea {
             width: 100%;
@@ -339,13 +376,13 @@
         .output-container {
             flex: 0 0 auto; display: flex; flex-direction: column; overflow: hidden;
             border-top: 1px solid var(--border-color);
-            height: 200px; min-height: 100px; max-height: 50vh; resize: vertical;
+            height: 200px; min-height: 100px; max-height: 50vh;
             transition: height 0.3s ease, min-height 0.3s ease;
+            user-select: text;
         }
         .output-container.minimized {
             height: 30px;
             min-height: 30px;
-            resize: none;
         }
         .output-container #output {
             transition: transform 0.3s ease, opacity 0.3s ease;
@@ -360,12 +397,13 @@
             padding: 5px 15px; background-color: var(--bg-color);
             border-bottom: 1px solid var(--border-color); font-size: 0.9rem;
             display: flex; justify-content: space-between; align-items: center;
+            user-select: none;
         }
         .output-header-buttons {
             display: flex;
             align-items: center;
         }
-        .copy-console, .minimize-console, .clear-console {
+        .minimize-console, .clear-console, .website-btn {
             cursor: pointer;
             margin-left: 10px;
             opacity: 0.7;
@@ -373,17 +411,51 @@
             display: flex; align-items: center;
             justify-content: center;
         }
-        .copy-console:hover, .minimize-console:hover, .clear-console:hover {
+        .minimize-console:hover, .clear-console:hover, .website-btn:hover {
             opacity: 1;
             color: var(--accent-color);
         }
-        .copy-console.copied {
-            color: var(--button-active);
+
+        .website-btn {
+            color: var(--website-btn-color) !important;
+            opacity: 0.9 !important;
+            transition: all 0.3s ease;
         }
-        .copy-console svg, .minimize-console svg, .clear-console svg {
+        .website-btn:hover {
+            color: var(--website-btn-hover) !important;
+            opacity: 1 !important;
+            transform: scale(1.05);
+        }
+        
+        .theme-glassmorphism .website-btn {
+            color: var(--website-btn-color) !important;
+            opacity: 0.9 !important;
+            filter: none;
+            animation: none;
+        }
+        .theme-glassmorphism .website-btn:hover {
+            color: var(--website-btn-hover) !important;
+            opacity: 1 !important;
+            filter: none;
+            transform: scale(1.05);
+        }
+        .minimize-console svg, .clear-console svg, .website-btn svg {
             width: 18px;
             height: 18px;
             transition: transform 0.3s ease;
+        }
+        .website-btn svg {
+            transition: transform 0.3s ease, filter 0.3s ease;
+        }
+        .website-btn:hover svg {
+            transform: scale(1.1);
+        }
+        
+        .theme-glassmorphism .website-btn svg {
+            transition: transform 0.3s ease;
+        }
+        .theme-glassmorphism .website-btn:hover svg {
+            transform: scale(1.05);
         }
         .minimize-console.minimized svg {
             transform: rotate(180deg);
@@ -391,57 +463,63 @@
         #output {
             flex: 1; background-color: var(--editor-bg); color: var(--text-color);
             padding: 10px 15px; font-family: inherit; font-size: 14px; line-height: 1.5;
-            overflow-y: auto; white-space: pre-wrap; user-select: text;
+            overflow-y: auto; white-space: pre-wrap; 
+            user-select: text;
+            -webkit-touch-callout: default;
+            -webkit-tap-highlight-color: rgba(0,0,0,0.1);
         }
-        .log-output {color: #58ACFA;}
-        .log-warning {color: #FFA500;}
-        .log-error {color: #FF4500;}
-        .CodeMirror-hints {
-            background-color: var(--editor-bg) !important;
-            border: 1px solid var(--border-color) !important;
-            color: var(--text-color) !important;
-            box-shadow: none !important; 
-        }
-        .CodeMirror-hint {
-            color: var(--text-color) !important;
-            background-color: var(--editor-bg) !important;
-            border-radius: 0 !important;
-        }
-        .CodeMirror-hint-active {
-            background-color: var(--accent-color) !important;
-            color: white !important;
-        }
-        
-        .theme-glassmorphism .CodeMirror-hint-active {
-            background-color: var(--accent-color) !important;
-            color: #1a1b24 !important;
-        }
+        .log-output {color: #58ACFA; user-select: text;}
+        .log-warning {color: #FFA500; user-select: text;}
+        .log-error {color: #FF4500; user-select: text;}
         
         .scripthub-sidebar {
-            position: fixed; top: 0; right: -350px; width: 350px; height: 100vh;
-            background-color: var(--bg-color); border-left: 1px solid var(--border-color);
-            z-index: 100; transition: right 0.3s ease;
+            position: fixed; top: 0; right: 0; width: 350px; height: 100vh;
+            background-color: color-mix(in srgb, var(--bg-color) 85%, transparent);
+            border-left: 1px solid var(--border-color);
+            z-index: 100; 
+            transform: translateX(100%);
+            transition: transform 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            will-change: transform;
             display: flex; flex-direction: column; overflow: hidden;
             border-radius: 15px 0 0 15px;
             box-shadow: none;
+            backdrop-filter: blur(10px);
         }
         
         .theme-glassmorphism .scripthub-sidebar {
-            background-color: rgba(25, 25, 35, 0.75) !important;
+            background-color: rgba(20, 20, 25, 0.4) !important;
             backdrop-filter: blur(12px);
+            border: 1px solid rgba(60, 60, 80, 0.3) !important;
         }
-        .scripthub-sidebar.active {right: 0;}
+        
+        .theme-glassmorphism .sidebar-header {
+            background-color: rgba(20, 20, 25, 0.4) !important;
+            backdrop-filter: blur(8px);
+        }
+        
+        .theme-glassmorphism .scripts-tabs {
+            background-color: rgba(20, 20, 25, 0.4) !important;
+            backdrop-filter: blur(8px);
+        }
+        
+        .theme-glassmorphism .search-container {
+            background-color: rgba(20, 20, 25, 0.4) !important;
+            backdrop-filter: blur(8px);
+        }
+        .scripthub-sidebar.active {
+            transform: translateX(0);
+        }
         .sidebar-close {
             cursor: pointer; opacity: 0.7; font-size: 1.5rem; transition: opacity 0.2s;
         }
         .sidebar-close:hover {opacity: 1;}
         .sidebar-header {
-            padding: 15px; background-color: var(--editor-bg);
+            padding: 15px; background-color: color-mix(in srgb, var(--editor-bg) 90%, transparent);
             border-radius: 15px 0 0 0;
         }
         .scripts-tabs {
             display: flex; border-bottom: 1px solid var(--border-color);
-            background-color: var(--editor-bg);
+            background-color: color-mix(in srgb, var(--editor-bg) 90%, transparent);
         }
         .scripts-tab {
             padding: 10px 15px; cursor: pointer; font-size: 0.9rem;
@@ -452,7 +530,7 @@
             color: var(--accent-color);
         }
         .search-container {
-            padding: 10px; background-color: var(--editor-bg);
+            padding: 10px; background-color: color-mix(in srgb, var(--editor-bg) 90%, transparent);
             border-bottom: 1px solid var(--border-color);
         }
         #scripthub-search {
@@ -483,9 +561,6 @@
         }
         .script-item:hover .script-title {
             color: var(--accent-color);
-        }
-        .script-item:hover .script-load-btn {
-            transform: scale(1.05);
         }
         .script-item-with-bg {
             position: relative;
@@ -578,19 +653,11 @@
         .sidebar-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background-color: rgba(0, 0, 0, 0.5); z-index: 99;
-            opacity: 0; visibility: hidden; transition: opacity 0.3s;
+            opacity: 0; visibility: hidden; 
+            transition: opacity 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            will-change: opacity;
         }
         .sidebar-overlay.active {opacity: 1; visibility: visible;}
-        .context-menu {
-            position: absolute; background-color: var(--editor-bg);
-            border: 1px solid var(--border-color); box-shadow: none; 
-            border-radius: 4px; padding: 5px 0; z-index: 1000; display: none;
-        }
-        .context-menu-item {
-            padding: 8px 15px; cursor: pointer; font-size: 0.9rem;
-            color: var(--text-color); white-space: nowrap;
-        }
-        .context-menu-item:hover {background-color: var(--accent-color); color: white;}
         .modal-overlay {
             position: fixed; 
             top: 0; 
@@ -639,6 +706,176 @@
         }
         .modal-btn-cancel {background-color: var(--tab-inactive); color: var(--text-color);}
         .modal-btn:hover {opacity: 0.9;}
+        
+        .website-modal {
+            width: 350px;
+            max-width: 90vw;
+            background-color: var(--editor-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 15px;
+            box-shadow: var(--button-shadow);
+            overflow: hidden;
+        }
+        
+        .website-modal.changelog-modal {
+            width: 600px;
+            max-width: 90vw;
+            max-height: 80vh;
+        }
+        .website-modal .modal-header {
+            padding: 15px; 
+            border-bottom: 1px solid var(--border-color);
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center;
+            border-radius: 15px 15px 0 0;
+            background-color: var(--editor-bg);
+        }
+        .website-modal .modal-title {
+            font-size: 1.1rem; 
+            font-weight: normal; 
+            margin: 0;
+            color: var(--text-color);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .website-modal .modal-title svg {
+            color: var(--website-btn-color) !important;
+        }
+        .website-modal .modal-content {
+            padding: 15px;
+        }
+        
+        .website-modal.changelog-modal .modal-content {
+            padding: 20px;
+            max-height: 50vh;
+            overflow-y: auto;
+        }
+        .website-modal .website-description {
+            color: var(--text-color);
+            margin-bottom: 15px;
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+        
+        .website-modal .changelog-container {
+            background-color: var(--editor-content-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        
+        .website-modal .changelog-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 12px;
+            font-weight: bold;
+            color: var(--text-color);
+        }
+        
+        .website-modal .changelog-version {
+            font-size: 1.1rem;
+            margin-right: 10px;
+            color: var(--text-color);
+        }
+        
+        .website-modal .changelog-date {
+            font-size: 0.8rem;
+            opacity: 0.7;
+        }
+        
+        .website-modal .changelog-content {
+            font-size: 0.85rem;
+            line-height: 1.5;
+            white-space: pre-wrap;
+            color: var(--text-color);
+        }
+        
+        .website-modal .changelog-content h1,
+        .website-modal .changelog-content h2,
+        .website-modal .changelog-content h3 {
+            color: var(--accent-color);
+            margin: 10px 0 5px 0;
+        }
+        
+        .website-modal .changelog-content ul,
+        .website-modal .changelog-content ol {
+            padding-left: 20px;
+            margin: 5px 0;
+        }
+        
+        .website-modal .changelog-content li {
+            margin: 3px 0;
+        }
+        .website-modal .modal-buttons {
+            display: flex; 
+            justify-content: center; 
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .website-modal .website-visit-btn {
+            background-color: var(--button-bg);
+            color: var(--text-color);
+            padding: 8px 16px; 
+            border-radius: 8px; 
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer; 
+            border: var(--button-border, 1px solid var(--border-color));
+            box-shadow: var(--button-shadow);
+            backdrop-filter: var(--button-backdrop-filter);
+            transition: all 0.2s ease;
+            white-space: nowrap;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .website-modal .website-visit-btn:hover {
+            background-color: var(--button-hover);
+            transform: translateY(-1px);
+        }
+        .website-modal .website-changelog-btn {
+            background-color: var(--button-bg);
+            color: var(--text-color);
+            padding: 8px 16px; 
+            border-radius: 8px; 
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer; 
+            border: var(--button-border, 1px solid var(--border-color));
+            box-shadow: var(--button-shadow);
+            backdrop-filter: var(--button-backdrop-filter);
+            transition: all 0.2s ease;
+            white-space: nowrap;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .website-modal .website-changelog-btn:hover {
+            background-color: var(--button-hover);
+            transform: translateY(-1px);
+        }
+        .website-modal .website-close-btn {
+            background-color: var(--tab-inactive); 
+            color: var(--text-color);
+            padding: 8px 16px; 
+            border-radius: 8px; 
+            font-size: 0.9rem;
+            cursor: pointer; 
+            border: 1px solid var(--border-color);
+            transition: all 0.2s ease;
+            white-space: nowrap;
+            display: inline-flex;
+            align-items: center;
+        }
+        .website-modal .website-close-btn:hover {
+            background-color: var(--button-hover);
+            border-color: var(--accent-color);
+        }
         
         .autoexec-container {
             display: flex;
@@ -721,50 +958,51 @@
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
         }
         
         @keyframes slideUp {
-            from { transform: translateY(20px); opacity: 0; }
+            from { transform: translateY(30px); opacity: 0; }
             to { transform: translateY(0); opacity: 1; }
         }
         
         @keyframes slideDown {
-            from { transform: translateY(-20px); opacity: 0; }
+            from { transform: translateY(-25px); opacity: 0; }
             to { transform: translateY(0); opacity: 1; }
         }
         
         @keyframes scaleIn {
-            from { transform: scale(0.95); opacity: 0; }
-            to { transform: scale(1); opacity: 1; }
+            from { transform: scale(0.8) rotate(-10deg); opacity: 0; }
+            50% { transform: scale(1.05) rotate(5deg); opacity: 0.8; }
+            to { transform: scale(1) rotate(0deg); opacity: 1; }
         }
         
         .load-fade {
             opacity: 0;
-            animation: fadeIn 0.8s ease forwards;
+            animation: fadeIn 0.9s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
         }
         
         .load-slide-up {
             opacity: 0;
-            animation: slideUp 0.8s ease forwards;
+            animation: slideUp 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
         }
         
         .load-slide-down {
             opacity: 0;
-            animation: slideDown 0.8s ease forwards;
+            animation: slideDown 0.6s cubic-bezier(0.23, 1, 0.32, 1) forwards;
         }
         
         .load-scale {
             opacity: 0;
-            animation: scaleIn 0.8s ease forwards;
+            animation: scaleIn 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
         }
         
         .delay-1 { animation-delay: 0.1s; }
-        .delay-2 { animation-delay: 0.2s; }
-        .delay-3 { animation-delay: 0.3s; }
-        .delay-4 { animation-delay: 0.4s; }
-        .delay-5 { animation-delay: 0.5s; }
+        .delay-2 { animation-delay: 0.15s; }
+        .delay-3 { animation-delay: 0.25s; }
+        .delay-4 { animation-delay: 0.35s; }
+        .delay-5 { animation-delay: 0.45s; }
 
         .window-controls {
             display: flex;
@@ -837,6 +1075,35 @@
         
         .theme-option:hover {background-color: rgba(255, 255, 255, 0.05);}
         .theme-option input {margin-right: 8px;}
+        
+        .theme-option input[type="radio"] {
+            appearance: none;
+            width: 16px;
+            height: 16px;
+            border: 2px solid #666;
+            border-radius: 50%;
+            background-color: #333;
+            cursor: pointer;
+            position: relative;
+            margin-right: 8px;
+        }
+        
+        .theme-option input[type="radio"]:checked {
+            border-color: var(--accent-color);
+            background-color: #333;
+        }
+        
+        .theme-option input[type="radio"]:checked::after {
+            content: '';
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: var(--accent-color);
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
         
         .theme-color-preview {
             display: inline-block;
@@ -943,21 +1210,34 @@
             top: 0;
             bottom: 0;
             width: 350px;
-            background-color: var(--bg-color);
+            background-color: color-mix(in srgb, var(--bg-color) 85%, transparent);
             border-left: 1px solid var(--border-color);
             display: flex;
             flex-direction: column;
             z-index: 1000;
             transform: translateX(100%);
-            transition: transform 0.3s ease-in-out;
+            transition: transform 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            will-change: transform;
             border-radius: 15px 0 0 15px;
             box-shadow: none;
             overflow: hidden;
+            backdrop-filter: blur(10px);
         }
         
         .theme-glassmorphism .ai-sidebar {
-            background-color: rgba(25, 25, 35, 0.75) !important;
+            background-color: rgba(20, 20, 25, 0.4) !important;
             backdrop-filter: blur(12px);
+            border: 1px solid rgba(60, 60, 80, 0.3) !important;
+        }
+        
+        .theme-glassmorphism .ai-sidebar-header {
+            background-color: rgba(20, 20, 25, 0.4) !important;
+            backdrop-filter: blur(8px);
+        }
+        
+        .theme-glassmorphism .ai-input-container {
+            background-color: rgba(20, 20, 25, 0.4) !important;
+            backdrop-filter: blur(8px);
         }
 
         .ai-sidebar.active {
@@ -970,6 +1250,7 @@
             align-items: center;
             padding: 15px;
             border-bottom: 1px solid rgba(60, 60, 80, 0.3);
+            background-color: color-mix(in srgb, var(--editor-bg) 90%, transparent);
         }
 
         .ai-sidebar-title {
@@ -1042,7 +1323,7 @@
             background-color: rgba(180, 30, 30, 0.7) !important;
             color: white !important;
         }
-
+        
         .ai-message pre {
             background-color: rgba(20, 20, 25, 0.6);
             border-radius: 5px;
@@ -1084,6 +1365,7 @@
             display: flex;
             gap: 10px;
             align-items: center;
+            background-color: color-mix(in srgb, var(--editor-bg) 90%, transparent);
         }
 
         .ai-input {
@@ -1183,6 +1465,7 @@
             align-items: center;
             transition: background-color 0.2s;
             border-bottom: 1px solid rgba(60, 60, 80, 0.1);
+            color: var(--text-color);
         }
         
         .command-item:last-child {
@@ -1195,6 +1478,17 @@
             outline: none;
         }
 
+        .theme-glassmorphism .command-item {
+            color: #ffffff;
+        }
+
+        .theme-glassmorphism .command-item:hover, 
+        .theme-glassmorphism .command-item:focus {
+            background-color: rgba(255, 255, 255, 0.2);
+            color: #ffffff;
+            outline: none;
+        }
+
         .command-name {
             font-weight: bold;
             margin-right: 8px;
@@ -1204,9 +1498,188 @@
             opacity: 0.7;
             font-size: 0.85rem;
         }
+        
+        .monaco-editor,
+        .monaco-editor .margin,
+        .monaco-editor .monaco-editor-background,
+        .monaco-editor-background {
+            background-color: transparent !important;
+        }
+        
+        .monaco-editor .margin,
+        .monaco-editor .line-numbers,
+        .monaco-editor .margin-view-overlays {
+            user-select: none !important;
+            -webkit-user-select: none !important;
+            -moz-user-select: none !important;
+            -ms-user-select: none !important;
+        }
+        
+        .monaco-editor .suggest-widget,
+        .monaco-editor .monaco-editor-hover,
+        .monaco-editor .monaco-editor-hover .monaco-hover {
+            background: rgba(28, 28, 28, 0.82) !important;
+            z-index: 2147483647 !important;
+            backdrop-filter: blur(18px) saturate(160%) !important;
+            -webkit-backdrop-filter: blur(18px) saturate(160%) !important;
+            border-radius: 10px !important;
+            border: 1px solid rgba(255, 255, 255, 0.08) !important;
+            box-shadow: 0 4px 18px rgba(0, 0, 0, 0.25) !important;
+            color: #e0e0e0 !important;
+            transition: opacity 0.12s ease, transform 0.12s ease;
+        }
+        
+        .monaco-editor .suggest-widget .monaco-list-row,
+        .monaco-editor .suggest-widget .monaco-list-row .label-description {
+            transition: background-color 0.12s ease, color 0.12s ease, transform 0.12s ease;
+        }
+        
+        .monaco-editor .suggest-widget .monaco-list-row {
+            background: transparent !important;
+            color: #e0e0e0 !important;
+            border-radius: 6px !important;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .monaco-editor .suggest-widget .monaco-list-row:hover,
+        .monaco-editor .suggest-widget .monaco-list-row.focused {
+            background: rgba(255, 255, 255, 0.08) !important;
+        }
+        
+        .monaco-editor .suggest-widget .monaco-list-row .codicon {
+            font-size: 18px !important;
+            margin-right: 8px !important;
+            opacity: 0.95 !important;
+        }
+        
+        .monaco-editor .suggest-widget .monaco-list-row .label-description {
+            color: #b0b0b0 !important;
+        }
+        
+        .monaco-editor .suggest-widget .monaco-list-row .label-details {
+            color: #7fb4ff !important;
+        }
+        
+        .theme-glassmorphism .monaco-editor .suggest-widget,
+        .theme-glassmorphism .monaco-editor .monaco-editor-hover,
+        .theme-glassmorphism .monaco-editor .monaco-editor-hover .monaco-hover {
+            background: rgba(20, 20, 25, 0.4) !important;
+            backdrop-filter: blur(12px) saturate(140%) !important;
+            -webkit-backdrop-filter: blur(12px) saturate(140%) !important;
+            border: 1px solid rgba(255, 255, 255, 0.1) !important;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15) !important;
+        }
+        
+        .theme-glassmorphism .monaco-editor .suggest-widget .monaco-list-row:hover,
+        .theme-glassmorphism .monaco-editor .suggest-widget .monaco-list-row.focused {
+            background: rgba(255, 255, 255, 0.05) !important;
+        }
+        
+        .theme-diamond .monaco-editor .suggest-widget,
+        .theme-diamond .monaco-editor .monaco-editor-hover,
+        .theme-diamond .monaco-editor .monaco-editor-hover .monaco-hover {
+            background: rgba(26, 39, 51, 0.9) !important;
+            border: 1px solid rgba(52, 152, 219, 0.3) !important;
+            box-shadow: 0 4px 18px rgba(52, 152, 219, 0.1) !important;
+        }
+        
+        .theme-diamond .monaco-editor .suggest-widget .monaco-list-row:hover,
+        .theme-diamond .monaco-editor .suggest-widget .monaco-list-row.focused {
+            background: rgba(52, 152, 219, 0.15) !important;
+        }
+        
+        .theme-diamond .monaco-editor .suggest-widget .monaco-list-row .label-details {
+            color: #5dade2 !important;
+        }
+        
+        .theme-emerald .monaco-editor .suggest-widget,
+        .theme-emerald .monaco-editor .monaco-editor-hover,
+        .theme-emerald .monaco-editor .monaco-editor-hover .monaco-hover {
+            background: rgba(26, 36, 32, 0.9) !important;
+            border: 1px solid rgba(39, 174, 96, 0.3) !important;
+            box-shadow: 0 4px 18px rgba(39, 174, 96, 0.1) !important;
+        }
+        
+        .theme-emerald .monaco-editor .suggest-widget .monaco-list-row:hover,
+        .theme-emerald .monaco-editor .suggest-widget .monaco-list-row.focused {
+            background: rgba(39, 174, 96, 0.15) !important;
+        }
+        
+        .theme-emerald .monaco-editor .suggest-widget .monaco-list-row .label-details {
+            color: #52c882 !important;
+        }
+        
+        .theme-redstone .monaco-editor .suggest-widget,
+        .theme-redstone .monaco-editor .monaco-editor-hover,
+        .theme-redstone .monaco-editor .monaco-editor-hover .monaco-hover {
+            background: rgba(36, 26, 26, 0.9) !important;
+            border: 1px solid rgba(231, 76, 60, 0.3) !important;
+            box-shadow: 0 4px 18px rgba(231, 76, 60, 0.1) !important;
+        }
+        
+        .theme-redstone .monaco-editor .suggest-widget .monaco-list-row:hover,
+        .theme-redstone .monaco-editor .suggest-widget .monaco-list-row.focused {
+            background: rgba(231, 76, 60, 0.15) !important;
+        }
+        
+        .theme-redstone .monaco-editor .suggest-widget .monaco-list-row .label-details {
+            color: #ec7063 !important;
+        }
+        
+        .theme-classic .monaco-editor .suggest-widget,
+        .theme-classic .monaco-editor .monaco-editor-hover,
+        .theme-classic .monaco-editor .monaco-editor-hover .monaco-hover {
+            background: rgba(26, 27, 36, 0.9) !important;
+            border: 1px solid rgba(138, 103, 200, 0.3) !important;
+            box-shadow: 0 4px 18px rgba(138, 103, 200, 0.1) !important;
+        }
+        
+        .theme-classic .monaco-editor .suggest-widget .monaco-list-row:hover,
+        .theme-classic .monaco-editor .suggest-widget .monaco-list-row.focused {
+            background: rgba(138, 103, 200, 0.15) !important;
+        }
+        
+        .theme-classic .monaco-editor .suggest-widget .monaco-list-row .label-details {
+            color: #a67ac8 !important;
+        }
+        
+        .theme-midnight .monaco-editor .suggest-widget,
+        .theme-midnight .monaco-editor .monaco-editor-hover,
+        .theme-midnight .monaco-editor .monaco-editor-hover .monaco-hover {
+            background: rgba(13, 13, 13, 0.95) !important;
+            border: 1px solid rgba(90, 75, 107, 0.3) !important;
+            box-shadow: 0 4px 18px rgba(0, 0, 0, 0.4) !important;
+        }
+        
+        .theme-midnight .monaco-editor .suggest-widget .monaco-list-row:hover,
+        .theme-midnight .monaco-editor .suggest-widget .monaco-list-row.focused {
+            background: rgba(90, 75, 107, 0.15) !important;
+        }
+        
+        .theme-midnight .monaco-editor .suggest-widget .monaco-list-row .label-details {
+            color: #5a4b6b !important;
+        }
+
+        .scroll-decoration {
+            display: none;
+        }
     </style>
 </head>
-<body class="load-fade theme-glassmorphism">
+<body class="load-fade">
+<script>
+(function() {
+    try {
+        const savedTheme = localStorage.getItem('nitrogen-theme') || 'glassmorphism';
+        const validThemes = ['glassmorphism', 'classic', 'diamond', 'emerald', 'redstone', 'midnight'];
+        const theme = validThemes.includes(savedTheme) ? savedTheme : 'glassmorphism';
+        document.body.classList.add(`theme-${theme}`);
+    } catch(e) {
+        document.body.classList.add('theme-glassmorphism');
+    }
+})();
+</script>
     <div class="header load-slide-down">
         <h1 class="title">Nitrogen</h1>
         <div class="window-controls">
@@ -1214,7 +1687,7 @@
             <div class="close-app-btn" id="close-app-btn">×</div>
         </div>
     </div>
-    <div class="main">
+    <div class="container">
         <div class="tab-container load-slide-down delay-1">
             <div class="tabs-scrollable-area">
                 <div class="tab active" data-tab-id="script1">script.lua<span class="tab-close">×</span></div>
@@ -1225,8 +1698,8 @@
         </div>
         
         <div class="editor-container load-fade delay-2">
-            <div class="editor-wrapper">
-                <textarea id="code-editor" spellcheck="false">print("Nitrogen!")</textarea>
+            <div class="editor-wrapper active">
+                <div id="code-editor"></div>
                 <button class="ai-btn load-scale delay-2" id="ai-btn">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M12 2a2 2 0 0 1 2 2c0 .74-.4 1.39-1 1.73V7h1a7 7 0 0 1 7 7h1a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-1v1a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-1H2a1 1 0 0 1-1-1v-3a1 1 0 0 1 1-1h1a7 7 0 0 1 7-7h1V5.73c-.6-.34-1-.99-1-1.73a2 2 0 0 1 2-2z"></path>
@@ -1270,22 +1743,24 @@
             <div class="output-header">
                 Console
                 <div class="output-header-buttons">
-                    <span class="copy-console" id="copy-console" title="Copy last 5 console entries to clipboard">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-                        </svg>
-                    </span>
                     <span class="minimize-console" id="minimize-console" title="Minimize console">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <polyline points="7 13 12 18 17 13"></polyline>
                             <polyline points="7 6 12 11 17 6"></polyline>
                         </svg>
                     </span>
+
                     <span class="clear-console" id="clear-console" title="Clear console">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <polyline points="3 6 5 6 21 6"></polyline>
                             <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1-2 2v2"></path>
+                        </svg>
+                    </span>
+                    <span class="website-btn" id="website-btn" title="Visit our website">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="2" y1="12" x2="22" y2="12"></line>
+                            <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
                         </svg>
                     </span>
                 </div>
@@ -1323,7 +1798,6 @@
             </div>
         </div>
         <div class="ai-input-container">
-            <!-- Add command dropdown here -->
             <div class="command-dropdown" id="command-dropdown">
                 <div class="command-item" tabindex="0" data-command="/clear">
                     <span class="command-name">/clear</span>
@@ -1342,11 +1816,6 @@
                 </svg>
             </button>
         </div>
-    </div>
-    
-    <div class="context-menu" id="tab-context-menu">
-        <div class="context-menu-item" id="context-copy" style="display: none;">Copy</div>
-        <div class="context-menu-item" id="context-paste">Paste</div>
     </div>
     
     <div class="modal-overlay" id="modal-overlay">
@@ -1413,7 +1882,6 @@
                 </div>
                 <div class="settings-section">
                     <div class="folder-buttons" style="display: none;">
-                        <button id="open-workspace-btn" class="folder-btn">Open Workspace</button>
                         <button id="open-scripts-btn" class="folder-btn">Open Scripts</button>
                     </div>
                 </div>
@@ -1421,13 +1889,6 @@
             <div class="settings-footer">
                 <div class="version-info">Nitrogen <span id="version-number">v3.0</span></div>
                 <div class="footer-actions">
-                    <button id="open-workspace-icon" class="icon-btn" title="Open Workspace">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <circle cx="12" cy="12" r="10"></circle>
-                            <line x1="2" y1="12" x2="22" y2="12"></line>
-                            <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
-                        </svg>
-                    </button>
                     <button id="open-scripts-icon" class="icon-btn" title="Open Scripts">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
                     </button>
@@ -1437,48 +1898,480 @@
         </div>
     </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/lua/lua.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/addon/edit/matchbrackets.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/addon/hint/show-hint.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/addon/hint/anyword-hint.min.js"></script>
+    <div class="modal-overlay" id="website-modal-overlay">
+        <div class="website-modal">
+            <div class="modal-header">
+                <h3 class="modal-title">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="2" y1="12" x2="22" y2="12"></line>
+                        <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+                    </svg>
+                    Check out the Website!
+                </h3>
+            </div>
+            <div class="modal-content">
+                <p class="website-description">
+                    Visit Nitrogen.lol for updates, changelogs, information, community support, and news for Nitrogen!
+                </p>
+                <div class="modal-buttons">
+                    <button class="website-visit-btn" id="website-visit-btn">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                            <polyline points="15,3 21,3 21,9"></polyline>
+                            <line x1="10" y1="14" x2="21" y2="3"></line>
+                        </svg>
+                        Visit Website
+                    </button>
+                    <button class="website-changelog-btn" id="website-changelog-btn">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                            <polyline points="14,2 14,8 20,8"></polyline>
+                            <line x1="16" y1="13" x2="8" y2="13"></line>
+                            <line x1="16" y1="17" x2="8" y2="17"></line>
+                            <polyline points="10,9 9,9 8,9"></polyline>
+                        </svg>
+                        What's New
+                    </button>
+                    <button class="website-close-btn" id="website-dont-remind-btn">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="changelog-modal-overlay">
+        <div class="website-modal changelog-modal">
+            <div class="modal-header">
+                <h3 class="modal-title">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                        <polyline points="14,2 14,8 20,8"></polyline>
+                        <line x1="16" y1="13" x2="8" y2="13"></line>
+                        <line x1="16" y1="17" x2="8" y2="17"></line>
+                        <polyline points="10,9 9,9 8,9"></polyline>
+                    </svg>
+                    What's New in Nitrogen
+                </h3>
+            </div>
+            <div class="modal-content">
+                <div class="changelog-container" id="changelog-container">
+                    <div class="changelog-header">
+                        <span class="changelog-version" id="changelog-version">Loading...</span>
+                        <span class="changelog-date" id="changelog-date"></span>
+                    </div>
+                    <div class="changelog-content" id="changelog-content">
+                        Loading release information...
+                    </div>
+                </div>
+                <div class="modal-buttons">
+                    <button class="website-visit-btn" id="changelog-visit-btn">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                            <polyline points="15,3 21,3 21,9"></polyline>
+                            <line x1="10" y1="14" x2="21" y2="3"></line>
+                        </svg>
+                        Visit Website
+                    </button>
+                    <button class="website-close-btn" id="changelog-close-btn">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+      window.nodeRequire = window.require;
+      window.nodeModule = window.module;
+      window.nodeProcess = window.process;
+
+      window.require = undefined;
+      window.module = undefined;
+      window.process = undefined;
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.51.0/min/vs/loader.min.js"></script>
+    <script>
+      window.amdRequire = window.require;
+      window.amdDefine = window.define;
+
+      (function () {
+        const base = "https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.51.0/min/";
+        
+        window.MonacoEnvironment = {
+          getWorker: function () {
+            return null;
+          }
+        };
+        
+        if (window.amdRequire && window.amdRequire.config) {
+          window.amdRequire.config({ paths: { vs: base + "vs" } });
+        }
+      })();
+
+      window.require = window.nodeRequire;
+      window.module = window.nodeModule;
+      window.process = window.nodeProcess;
+    </script>
     
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            const luaKeywords = ["and", "break", "do", "else", "elseif", "end", "false", "for", "function", "if", "in", "local", "nil", "not", "or", "repeat", "return", "then", "true", "until", "while"];
-            const luaFunctions = ["assert", "collectgarbage", "dofile", "error", "getmetatable", "ipairs", "load", "loadfile", "next", "pairs", "pcall", "print", "rawequal", "rawget", "rawset", "require", "select", "setmetatable", "tonumber", "tostring", "type", "xpcall", "string.byte", "string.char", "string.dump", "string.find", "string.format", "string.gmatch", "string.gsub", "string.len", "string.lower", "string.match", "string.rep", "string.reverse", "string.sub", "string.upper", "table.concat", "table.insert", "table.pack", "table.remove", "table.sort", "table.unpack", "math.abs", "math.acos", "math.asin", "math.atan", "math.ceil", "math.cos", "math.deg", "math.exp", "math.floor", "math.log", "math.max", "math.min", "math.pi", "math.rad", "math.random", "math.randomseed", "math.sin", "math.sqrt", "math.tan"];
+            let cm = null;
             
-                                   
-            CodeMirror.registerHelper("hint", "lua", (editor) => {
-                const cur = editor.getCursor(), token = editor.getTokenAt(cur);
-                const start = token.string.trim() !== "" ? token.start : cur.ch;
-                const currentWord = token.string.trim() !== "" ? token.string : "";
-                const list = [...luaKeywords, ...luaFunctions].filter(item => item.indexOf(currentWord) === 0);
-                
-                return {
-                    list: list.length ? list : [],
-                    from: CodeMirror.Pos(cur.line, start),
-                    to: CodeMirror.Pos(cur.line, cur.ch)
-                };
-            });
-            
-            const cm = CodeMirror.fromTextArea(document.getElementById('code-editor'), {
-                mode: "text/x-lua", theme: "monokai", lineNumbers: true,
-               
-                matchBrackets: true, indentUnit: 4, tabSize: 4,
-                indentWithTabs: false, smartIndent: true,
-                extraKeys: {
-                    "Tab": cm => cm.somethingSelected() ? cm.indentSelection("add") : cm.replaceSelection("    "),
-                    "Ctrl-Space": "autocomplete"
+            async function loadCustomKeywords() {
+                try {
+                    const response = await fetch('./assets/monaco.json');
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    const data = await response.json();
+                    console.log('Custom keywords loaded:', data);
+                    return data.completions || [];
+                } catch (error) {
+                    console.warn('Failed to load custom keywords from tybigro.json:', error);
+                    return [];
                 }
-            });
+            }
+
+            async function createMonacoEditor() {
+                const editorContainer = document.getElementById('code-editor');
+                
+                const customKeywords = await loadCustomKeywords();
+                
+                const luaGlobals = [
+                    "break", "goto",
+                    "dofile", "getmetatable", "load", "loadfile", "next", "rawequal", "rawget", "rawlen", "rawset", "setmetatable", "warn",
+                    "coroutine", "coroutine.create", "coroutine.resume", "coroutine.running", "coroutine.status", "coroutine.wrap", "coroutine.yield", "coroutine.isyieldable", "coroutine.close",
+                    "table", "table.move", "table.pack", "table.unpack", "table.foreach", "table.foreachi", "table.getn", "table.isfrozen", "table.maxn",
+                    "string", "string.byte", "string.char", "string.dump", "string.gmatch", "string.rep", "string.reverse", "string.pack", "string.packsize", "string.unpack", "string.split",
+                    "math", "math.acos", "math.asin", "math.atan", "math.atan2", "math.clamp", "math.cosh", "math.deg", "math.exp", "math.fmod", "math.frexp", "math.ldexp", "math.log", "math.log10", "math.modf", "math.pow", "math.rad", "math.round", "math.sign", "math.sinh", "math.sqrt", "math.tanh", "math.pi", "math.huge", "math.noise",
+                    "io", "io.close", "io.flush", "io.input", "io.lines", "io.open", "io.output", "io.popen", "io.read", "io.stderr", "io.stdin", "io.stdout", "io.tmpfile", "io.type", "io.write",
+                    "os", "os.clock", "os.date", "os.difftime", "os.execute", "os.exit", "os.getenv", "os.remove", "os.rename", "os.setlocale", "os.time", "os.tmpname",
+                    "debug", "debug.debug", "debug.gethook", "debug.getlocal", "debug.getregistry", "debug.getupvalue", "debug.getuservalue", "debug.sethook", "debug.setlocal", "debug.setmetatable", "debug.setupvalue", "debug.setuservalue", "debug.traceback", "debug.upvalueid", "debug.upvaluejoin",
+                    "package", "package.config", "package.cpath", "package.loaded", "package.loaders", "package.loadlib", "package.path", "package.preload", "package.searchers", "package.searchpath",
+                    "utf8", "utf8.char", "utf8.charpattern", "utf8.codepoint", "utf8.codes", "utf8.len", "utf8.offset",
+                    "bit32", "bit32.arshift", "bit32.band", "bit32.bnot", "bit32.bor", "bit32.btest", "bit32.bxor", "bit32.extract", "bit32.lrotate", "bit32.lshift", "bit32.replace", "bit32.rrotate", "bit32.rshift",
+                    "getfenv", "setfenv", "shared", "script", "spawn", "delay", "tick", "time", "UserSettings", "settings", "game", "workspace", "Delay", "ElapsedTime", "elapsedTime",
+                    "Vector2", "Vector3", "Vector2int16", "Vector3int16", "CFrame", "Color3", "ColorSequence", "NumberRange", "NumberSequence", "Rect", "UDim", "UDim2", "Faces", "Axes", "BrickColor", "Enum", "Instance", "TweenInfo", "Region3", "Region3int16", "Ray", "Random", "RaycastResult"
+                ];
+                
+                function initMonaco() {
+                    amdRequire(
+                        ["vs/editor/editor.main", "vs/basic-languages/lua/lua"],
+                        function (_, luaBasics) {
+                            try {
+                                if (!monaco.languages.getLanguages().some((l) => l.id === "lua")) {
+                                    monaco.languages.register({ id: "lua" });
+                                }
+                                if (!monaco.languages.getLanguages().some((l) => l.id === "luau")) {
+                                    monaco.languages.register({
+                                        id: "luau",
+                                        aliases: ["Luau", "luau"],
+                                    });
+                                }
+                                
+                                if (luaBasics && luaBasics.language) {
+                                    monaco.languages.setMonarchTokensProvider("lua", luaBasics.language);
+                                    monaco.languages.setMonarchTokensProvider("luau", luaBasics.language);
+                                }
+                                
+                                const luaLanguageConfiguration = {
+                                    comments: {
+                                        lineComment: '--',
+                                        blockComment: ['--[[', ']]']
+                                    },
+                                    brackets: [
+                                        ['{', '}'],
+                                        ['[', ']'],
+                                        ['(', ')']
+                                    ],
+                                    autoClosingPairs: [
+                                        { open: '{', close: '}' },
+                                        { open: '[', close: ']' },
+                                        { open: '(', close: ')' },
+                                        { open: '"', close: '"' },
+                                        { open: "'", close: "'" },
+                                        { open: '--[[', close: ']]' }
+                                    ],
+                                    surroundingPairs: [
+                                        { open: '{', close: '}' },
+                                        { open: '[', close: ']' },
+                                        { open: '(', close: ')' },
+                                        { open: '"', close: '"' },
+                                        { open: "'", close: "'" }
+                                    ],
+                                    indentationRules: {
+                                        increaseIndentPattern: /^\s*(do|then|else|elseif|repeat|function|if|for|while)\b.*$/,
+                                        decreaseIndentPattern: /^\s*(end|else|elseif|until)\b.*$/
+                                    },
+                                    onEnterRules: [
+                                        {
+                                            beforeText: /^\s*(do|then|else|elseif|repeat|function|if|for|while)\b.*$/,
+                                            action: { indentAction: monaco.languages.IndentAction.Indent }
+                                        },
+                                        {
+                                            beforeText: /^\s*(end|else|elseif|until)\b.*$/,
+                                            action: { indentAction: monaco.languages.IndentAction.Outdent }
+                                        },
+                                        {
+                                            beforeText: /^\s*--.*$/,
+                                            action: { indentAction: monaco.languages.IndentAction.None }
+                                        }
+                                    ]
+                                };
+                                
+                                monaco.languages.setLanguageConfiguration("lua", luaLanguageConfiguration);
+                                monaco.languages.setLanguageConfiguration("luau", luaLanguageConfiguration);
+                                
+                                const provideLuauCompletions = {
+                                    provideCompletionItems: (model, position) => {
+                                        const word = model.getWordUntilPosition(position);
+                                        const range = {
+                                            startLineNumber: position.lineNumber,
+                                            startColumn: word.startColumn,
+                                            endLineNumber: position.lineNumber,
+                                            endColumn: word.endColumn,
+                                        };
+                                        
+                                        const kindMap = {
+                                            function: monaco.languages.CompletionItemKind.Function,
+                                            method: monaco.languages.CompletionItemKind.Method,
+                                            variable: monaco.languages.CompletionItemKind.Variable,
+                                            class: monaco.languages.CompletionItemKind.Class,
+                                            property: monaco.languages.CompletionItemKind.Property,
+                                            field: monaco.languages.CompletionItemKind.Field,
+                                            module: monaco.languages.CompletionItemKind.Module,
+                                            keyword: monaco.languages.CompletionItemKind.Keyword,
+                                            constant: monaco.languages.CompletionItemKind.Constant,
+                                            enum: monaco.languages.CompletionItemKind.Enum,
+                                            interface: monaco.languages.CompletionItemKind.Interface,
+                                            struct: monaco.languages.CompletionItemKind.Struct,
+                                            event: monaco.languages.CompletionItemKind.Event,
+                                            operator: monaco.languages.CompletionItemKind.Operator,
+                                            type: monaco.languages.CompletionItemKind.TypeParameter,
+                                        };
+                                        
+                                        function getKind(kw) {
+                                            if (/^(function|spawn|delay|wait|pcall|xpcall|coroutine|assert)$/.test(kw))
+                                                return kindMap.function;
+                                            if (/^(math|string|table|os|io|debug|package|utf8|bit32|typeof|type)$/.test(kw))
+                                                return kindMap.module;
+                                            if (/^[A-Z][A-Za-z0-9_]*$/.test(kw)) return kindMap.class;
+                                            if (/^(true|false|nil)$/.test(kw)) return kindMap.constant;
+                                            if (/^(local|end|do|then|if|else|elseif|for|while|repeat|until|break|return|continue|export|in|not|and|or)$/.test(kw))
+                                                return kindMap.keyword;
+                                            return kindMap.variable;
+                                        }
+                                        
+                                        const suggestions = [];
+                                        
+                                        customKeywords.forEach(item => {
+                                            suggestions.push({
+                                                label: item.label,
+                                                kind: kindMap[item.type] || kindMap.function,
+                                                insertText: item.label,
+                                                detail: item.detail,
+                                                documentation: {
+                                                    value: item.documentation
+                                                },
+                                                range: range
+                                            });
+                                        });
+                                        
+                                        luaGlobals.forEach((kw) => {
+                                            suggestions.push({
+                                                label: kw,
+                                                kind: getKind(kw),
+                                                insertText: kw,
+                                                range: range
+                                            });
+                                        });
+                                        
+                                        return { suggestions };
+                                    },
+                                };
+                                
+                                if (!window.__nitrogenMonacoProvidersRegistered) {
+                                    try {
+                                        monaco.languages.registerCompletionItemProvider("lua", provideLuauCompletions);
+                                        monaco.languages.registerCompletionItemProvider("luau", provideLuauCompletions);
+                                    } catch (e) {
+                                        console.warn("Failed to register completion provider:", e);
+                                    }
+                                    window.__nitrogenMonacoProvidersRegistered = true;
+                                }
+                                
+                                monaco.editor.defineTheme("nitrogen-dark", {
+                                    base: "vs-dark",
+                                    inherit: true,
+                                    rules: [
+                                        { token: "comment", foreground: "6A9955", fontStyle: "italic" },
+                                        { token: "string", foreground: "CE9178" },
+                                        { token: "number", foreground: "B5CEA8" },
+                                        { token: "keyword", foreground: "C586C0" },
+                                        { token: "operator", foreground: "D4D4D4" },
+                                        { token: "delimiter", foreground: "808080" },
+                                        { token: "variable.predefined", foreground: "9CDCFE" },
+                                        { token: "identifier.lua", foreground: "DCDCAA" },
+                                        { token: "identifier.luau", foreground: "DCDCAA" },
+                                        { token: "delimiter.parenthesis", foreground: "D4D4D4" },
+                                        { token: "delimiter.bracket", foreground: "D4D4D4" },
+                                        { token: "delimiter.brace", foreground: "D4D4D4" },
+                                        { token: "invalid", foreground: "FFFFFF", background: "F44747" },
+                                    ],
+                                    colors: {
+                                        "editor.background": "#1e1e1e",
+                                        "focusBorder": "#00000000",
+                                        "contrastBorder": "#00000000",
+                                        "editor.focusHighlightBorder": "#00000000",
+                                        "editorWidget.border": "#00000000",
+                                        "input.border": "#00000000",
+                                        "list.focusOutline": "#00000000",
+                                    },
+                                });
+                                
+                                const monacoEditor = monaco.editor.create(editorContainer, {
+                                    value: "print(\"Nitrogen!\")",
+                                    language: "luau",
+                                    theme: "nitrogen-dark",
+                                    automaticLayout: true,
+                                    autoIndent: "full",
+                                    formatOnType: true,
+                                    formatOnPaste: true,
+                                    lineNumbers: "on",
+                                    tabSize: 4,
+                                    insertSpaces: true,
+                                    detectIndentation: false,
+                                    wordWrap: "off",
+                                    matchBrackets: "always",
+                                    autoClosingBrackets: "always",
+                                    autoClosingQuotes: "always",
+                                    autoSurround: "languageDefined",
+                                    bracketPairColorization: {
+                                        enabled: true
+                                    },
+                                    guides: {
+                                        bracketPairs: true,
+                                        indentation: true
+                                    },
+                                    fontFamily: 'Fira Code, Menlo, Monaco, Consolas, "Liberation Mono", monospace',
+                                    fontLigatures: true,
+                                    fontSize: 15,
+                                    lineHeight: 22,
+                                    glyphMargin: false,
+                                    lineNumbersMinChars: 2,
+                                    lineDecorationsWidth: 4,
+                                    renderLineHighlight: "none",
+                                    padding: { top: 0, bottom: 0 },
+                                    cursorStyle: "line",
+                                    cursorSmoothCaretAnimation: true,
+                                    cursorBlinking: "phase",
+                                    cursorSurroundingLines: 15,
+                                    minimap: { enabled: false },
+                                    stickyScroll: { enabled: false },
+                                    scrollBeyondLastLine: false,
+                                    overviewRulerLanes: 0,
+                                    hideCursorInOverviewRuler: true,
+                                    overviewRulerBorder: false,
+                                    scrollbar: {
+                                        vertical: 'hidden',
+                                        horizontal: 'hidden',
+                                        verticalScrollbarSize: 0,
+                                        horizontalScrollbarSize: 0
+                                    }
+                                });
+                                
+                                setTimeout(() => {
+                                    monacoEditor.layout();
+                                }, 100);
+                                
+                                if (window.ResizeObserver) {
+                                    const resizeObserver = new ResizeObserver(() => {
+                                        monacoEditor.layout();
+                                    });
+                                    resizeObserver.observe(editorContainer);
+                                }
+                                
+                                cm = {
+                                    _editor: monacoEditor,
+                                    getValue: () => monacoEditor.getValue(),
+                                    setValue: (value) => monacoEditor.setValue(value || ""),
+                                    focus: () => monacoEditor.focus(),
+                                    setCursor: () => {},
+                                    refresh: () => {
+                                        monacoEditor.layout();
+                                        setTimeout(() => monacoEditor.layout(), 50);
+                                    },
+                                    somethingSelected: () => !monacoEditor.getSelection().isEmpty(),
+                                    indentSelection: () => monacoEditor.getAction('editor.action.indentLines').run(),
+                                    replaceSelection: (text) => {
+                                        const selection = monacoEditor.getSelection();
+                                        monacoEditor.executeEdits("replaceSelection", [{
+                                            range: selection,
+                                            text: text,
+                                            forceMoveMarkers: true
+                                        }]);
+                                    },
+                                    getSelection: () => {
+                                        const selection = monacoEditor.getSelection();
+                                        const model = monacoEditor.getModel();
+                                        return model.getValueInRange(selection);
+                                    },
+                                    lineCount: () => monacoEditor.getModel().getLineCount(),
+                                    autoFormatRange: () => {
+                                        monacoEditor.getAction('editor.action.formatDocument').run();
+                                    },
+                                    on: (event, callback) => {
+                                        if (event === 'keyup') {
+                                        }
+                                    },
+                                    showHint: () => {
+                                        monacoEditor.trigger('manual', 'editor.action.triggerSuggest', {});
+                                    }
+                                };
+                                
+                                monacoEditor.addCommand(
+                                    monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyV,
+                                    async () => {
+                                        try {
+                                            let text = "";
+                                            if (navigator.clipboard && navigator.clipboard.readText) {
+                                                text = await navigator.clipboard.readText();
+                                            }
+                                            const selection = monacoEditor.getSelection();
+                                            monacoEditor.executeEdits("paste", [{
+                                                range: selection,
+                                                text: text,
+                                                forceMoveMarkers: true
+                                            }]);
+                                            monacoEditor.focus();
+                                        } catch (e) {}
+                                    }
+                                );
+                                
+                                initializeScripts();
+                                
+                            } catch (err) {
+                                console.error("Failed to initialize Monaco:", err);
+                            }
+                        }
+                    );
+                }
+                
+                initMonaco();
+            }
             
+            function initializeScripts() {
+                scripts = {'script1': {name: 'script.lua', content: 'print("Nitrogen!")'}};
+                activeId = 'script1';
+                nextId = 2;
+            }
+            
+            (async () => {
+                await createMonacoEditor();
+            })();
+            
+            let scripts, activeId, nextId;
             const output = document.getElementById('output');
             const tabContainer = document.querySelector('.tab-container');
             const newTabBtn = document.querySelector('.new-tab-btn');
-            
-            let scripts = {'script1': {name: 'script.lua'}};
-            let activeId = 'script1', nextId = 2;
             
             function createTab(id, name, active = false) {
                 const tab = document.createElement('div');
@@ -1505,8 +2398,7 @@
                 }
                 
                 setTimeout(() => {
-                    cm.setCursor(0, 0);
-                    cm.focus();
+                    if (cm) cm.focus();
                 }, 0);
             }
             
@@ -1540,6 +2432,21 @@
             let currentGameName = null;
             let lastScriptBloxSearch = null;
 
+            const electronAPI = {
+                isElectron: window.require !== undefined,
+                ipcRenderer: window.require ? window.require('electron').ipcRenderer : null
+            };
+
+            if (electronAPI.isElectron && electronAPI.ipcRenderer) {
+                electronAPI.ipcRenderer.on('updateConsoleOutput', (event, message) => {
+                    updateConsoleOutput(message);
+                });
+
+                electronAPI.ipcRenderer.on('batchUpdateConsole', (event, lines) => {
+                    batchUpdateConsole(lines);
+                });
+            }
+
             window.updateConsoleOutput = function(message) {
                 if (typeof message === 'string') {
                     const lowerMsg = message.toLowerCase();
@@ -1558,18 +2465,23 @@
                         if (gameIdMatch && gameIdMatch[1]) {
                             const gameId = gameIdMatch[1];
                             
-                            window.pywebview.api.get_game_name(gameId)
-                                .then(response => {
-                                    if (response.status === 'success' && response.game_name) {
-                                        currentGameName = response.game_name;
-                                        console.log(`Detected game: ${currentGameName} (Game ID: ${gameId})`);
-                                        
-                                        updateScriptBloxPlaceholder();
-                                    }
-                                })
-                                .catch(error => {
-                                    console.error('Error fetching game name:', error);
-                                });
+                            if (electronAPI.isElectron && electronAPI.ipcRenderer) {
+                                electronAPI.ipcRenderer.invoke('get-game-name', gameId)
+                                    .then(response => {
+                                        if (response.status === 'success' && response.game_name) {
+                                            let cleanedGameName = response.game_name;
+                                            cleanedGameName = cleanedGameName.replace(/^\[[^\]]*\]\s*/, '');
+                                            
+                                            currentGameName = cleanedGameName;
+                                            console.log(`Detected game: ${currentGameName} (Game ID: ${gameId})`);
+                                            
+                                            updateScriptBloxPlaceholder();
+                                        }
+                                    })
+                                    .catch(error => {
+                                        console.error('Error fetching game name:', error);
+                                    });
+                            }
                         }
                         return; 
                     }
@@ -1602,6 +2514,18 @@
                             const wordStart = msgContent.search(/[a-zA-Z_](?![^a-zA-Z_]*[0-9a-fA-F,.:\-])/);
                             if (wordStart >= 0) msgContent = msgContent.substring(wordStart);
                         }
+                    } else if (message.startsWith('[Output]:')) {
+                        logType = 'log-output';
+                        prefix = '[Output]: ';
+                        msgContent = message.replace('[Output]:', '').trim();
+                    } else if (message.startsWith('[Warning]:')) {
+                        logType = 'log-warning';
+                        prefix = '[Warning]: ';
+                        msgContent = message.replace('[Warning]:', '').trim();
+                    } else if (message.startsWith('[Error]:')) {
+                        logType = 'log-error';
+                        prefix = '[Error]: ';
+                        msgContent = message.replace('[Error]:', '').trim();
                     }
     
                     
@@ -1633,12 +2557,6 @@
                 }
             };
             
-            window.addEventListener('load', () => {
-                setTimeout(() => {
-                    window.pywebview.api.start_log_monitoring()
-                }, 1000);
-            });
-            
             document.getElementById('clear-console').addEventListener('click', () => {
                 const logMessages = Array.from(output.childNodes).filter(node => 
                     node.textContent && node.textContent.includes('Monitoring log file'));
@@ -1646,8 +2564,141 @@
                 logMessages.forEach(node => output.appendChild(node));
             });
             
+            const websiteBtn = document.getElementById('website-btn');
+            const websiteModalOverlay = document.getElementById('website-modal-overlay');
+            const changelogModalOverlay = document.getElementById('changelog-modal-overlay');
+            const websiteVisitBtn = document.getElementById('website-visit-btn');
+            const websiteChangelogBtn = document.getElementById('website-changelog-btn');
+            const websiteDontRemindBtn = document.getElementById('website-dont-remind-btn');
+            const changelogCloseBtn = document.getElementById('changelog-close-btn');
+            const changelogVisitBtn = document.getElementById('changelog-visit-btn');
+            
+            let cachedReleaseInfo = null;
+            
+            async function showChangelogModal() {
+                updateChangelogModal(null); 
+                changelogModalOverlay.classList.add('active');
+                
+                if (!cachedReleaseInfo) {
+                    try {
+                        let releaseInfo;
+                        if (electronAPI.isElectron && electronAPI.ipcRenderer) {
+                            releaseInfo = await electronAPI.ipcRenderer.invoke('get-latest-release-info');
+                        } else {
+                            releaseInfo = { status: 'error' };
+                        }
+                        
+                        if (releaseInfo && releaseInfo.status === 'success') {
+                            cachedReleaseInfo = releaseInfo;
+                            updateChangelogModal(releaseInfo);
+                        } else {
+                            const fallbackInfo = {
+                                version: 'Latest',
+                                name: 'Latest Release', 
+                                description: 'Visit Nitrogen.lol for the latest updates, changelogs, information, community support, and news for Nitrogen!',
+                                published_at: '',
+                                html_url: 'https://nitrogen.lol'
+                            };
+                            cachedReleaseInfo = fallbackInfo;
+                            updateChangelogModal(fallbackInfo);
+                        }
+                    } catch (error) {
+                        console.error('Error loading release info:', error);
+                        const fallbackInfo = {
+                            version: 'Latest',
+                            name: 'Latest Release', 
+                            description: 'Visit Nitrogen.lol for the latest updates, changelogs, information, community support, and news for Nitrogen!',
+                            published_at: '',
+                            html_url: 'https://nitrogen.lol'
+                        };
+                        cachedReleaseInfo = fallbackInfo;
+                        updateChangelogModal(fallbackInfo);
+                    }
+                } else {
+                    updateChangelogModal(cachedReleaseInfo);
+                }
+            }
+
+            websiteBtn.addEventListener('click', () => {
+                websiteModalOverlay.classList.add('active');
+            });
+            
+            websiteVisitBtn.addEventListener('click', async () => {
+                try {
+                    let result;
+                    if (electronAPI.isElectron && electronAPI.ipcRenderer) {
+                        result = await electronAPI.ipcRenderer.invoke('join-website');
+                    } else {
+                        window.open('https://nitrogen.lol', '_blank');
+                        result = { status: 'success' };
+                    }
+                    
+                    if (result.status === 'success') {
+                        updateConsoleOutput('Successfully opened nitrogen.lol!');
+                    } else if (result.status === 'error') {
+                        updateConsoleOutput(`Error: ${result.message}`);
+                    } else {
+                        updateConsoleOutput('Unknown error occurred while opening website.');
+                    }
+                } catch (error) {
+                    console.error('Error opening website:', error);
+                    updateConsoleOutput('Error: Failed to open website!');
+                }
+                
+                websiteModalOverlay.classList.remove('active');
+            });
+            
+            websiteChangelogBtn.addEventListener('click', () => {
+                websiteModalOverlay.classList.remove('active');
+                showChangelogModal();
+            });
+            
+            changelogVisitBtn.addEventListener('click', async () => {
+                try {
+                    let result;
+                    if (electronAPI.isElectron && electronAPI.ipcRenderer) {
+                        result = await electronAPI.ipcRenderer.invoke('join-website');
+                    } else {
+                        window.open('https://nitrogen.lol', '_blank');
+                        result = { status: 'success' };
+                    }
+                    
+                    if (result.status === 'success') {
+                        updateConsoleOutput('Successfully opened nitrogen.lol!');
+                    } else if (result.status === 'error') {
+                        updateConsoleOutput(`Error: ${result.message}`);
+                    } else {
+                        updateConsoleOutput('Unknown error occurred while opening website.');
+                    }
+                } catch (error) {
+                    console.error('Error opening website:', error);
+                    updateConsoleOutput('Error: Failed to open website!');
+                }
+                
+                changelogModalOverlay.classList.remove('active');
+            });
+            
+            websiteDontRemindBtn.addEventListener('click', () => {
+                websiteModalOverlay.classList.remove('active');
+            });
+            
+            changelogCloseBtn.addEventListener('click', () => {
+                changelogModalOverlay.classList.remove('active');
+            });
+            
+            websiteModalOverlay.addEventListener('click', (e) => {
+                if (e.target === websiteModalOverlay) {
+                    websiteModalOverlay.classList.remove('active');
+                }
+            });
+            
+            changelogModalOverlay.addEventListener('click', (e) => {
+                if (e.target === changelogModalOverlay) {
+                    changelogModalOverlay.classList.remove('active');
+                }
+            });
+            
             const minimizeConsoleBtn = document.getElementById('minimize-console');
-            const copyConsoleBtn = document.getElementById('copy-console');
             const outputContainer = document.querySelector('.output-container');
             
             minimizeConsoleBtn.addEventListener('click', () => {
@@ -1669,41 +2720,7 @@
                 }
             });
             
-            copyConsoleBtn.addEventListener('click', () => {
-                const entries = Array.from(output.childNodes);
-                
-                const lastFiveEntries = entries.slice(-5);
-                
-                const textContent = lastFiveEntries.map(entry => {
-                    const logPrefix = entry.querySelector('span.log-output, span.log-warning, span.log-error');
-                    
-                    if (logPrefix) {
-                        const prefixText = logPrefix.textContent;
-                        const entryText = Array.from(entry.childNodes)
-                            .filter(node => node.nodeType === Node.TEXT_NODE)
-                            .map(node => node.textContent)
-                            .join('');
-                        
-                        return prefixText + entryText;
-                    } else {
-                        return entry.textContent;
-                    }
-                }).join('\n');
-            
-                navigator.clipboard.writeText(textContent)
-                    .then(() => {
-                        copyConsoleBtn.classList.add('copied');
-                        setTimeout(() => {
-                            copyConsoleBtn.classList.remove('copied');
-                        }, 1000);
-                        
-                        updateConsoleOutput('Last 5 console entries copied to clipboard!');
-                    })
-                    .catch(err => {
-                        console.error('Failed to copy to clipboard: ', err);
-                        updateConsoleOutput('Error: Failed to copy to clipboard!');
-                    });
-            });
+
             
             setTimeout(() => {
                 document.querySelectorAll('.load-fade, .load-slide-up, .load-slide-down, .load-scale')
@@ -1713,7 +2730,7 @@
                         el.classList.remove('load-fade', 'load-slide-up', 'load-slide-down', 'load-scale',
                                             'delay-1', 'delay-2', 'delay-3', 'delay-4', 'delay-5');
                     });
-            }, 2000);
+            }, 1800);
             
             function executeScript() {
                 const logMessages = Array.from(output.childNodes).filter(node => 
@@ -1722,14 +2739,18 @@
                 const code = cm.getValue();
                 scripts[activeId].content = code;
                 
-                window.pywebview.api.execute_script(code)
-                    .then(data => {
-                        updateConsoleOutput(data.message);
-                        if (data.details && Array.isArray(data.details)) {
-                            data.details.forEach(detail => updateConsoleOutput(detail));
-                        }
-                    })
-                    .catch(error => updateConsoleOutput(`Error: ${error.message}`));
+                if (electronAPI.isElectron && electronAPI.ipcRenderer) {
+                    electronAPI.ipcRenderer.invoke('execute-script', code)
+                        .then(data => {
+                            updateConsoleOutput(data.message);
+                            if (data.details && Array.isArray(data.details)) {
+                                data.details.forEach(detail => updateConsoleOutput(detail));
+                            }
+                        })
+                        .catch(error => updateConsoleOutput(`Error: ${error.message}`));
+                } else {
+                    updateConsoleOutput('Script execution not available in this environment');
+                }
             }
             
             document.getElementById('run-btn').addEventListener('click', executeScript);
@@ -1743,12 +2764,6 @@
             });
             
             updateTabBtn();
-            
-            cm.on("keyup", (cm, e) => {
-                if (!cm.state.completionActive && e.keyCode >= 65 && e.keyCode <= 90) {
-                    cm.showHint({completeSingle: false});
-                }
-            });
 
             const scripthubBtn = document.getElementById('scripthub-btn');
             const scripthubSidebar = document.querySelector('.scripthub-sidebar');
@@ -1806,10 +2821,12 @@
             function detectCurrentGame() {
                 const gameDetectionScript = 'print("NITROGEN_GAME_ID:" .. game.GameId)';
                 
-                window.pywebview.api.execute_script(gameDetectionScript)
-                    .catch(error => {
-                        console.log('Game detection failed (likely not in game):', error);
-                    });
+                if (electronAPI.isElectron && electronAPI.ipcRenderer) {
+                    electronAPI.ipcRenderer.invoke('execute-script', gameDetectionScript)
+                        .catch(error => {
+                            console.log('Game detection failed (likely not in game):', error);
+                        });
+                }
             }
             
             scriptsTabs.forEach(tab => {
@@ -1847,19 +2864,24 @@
             
             function fetchLocalScripts() {
                 scripthubContent.innerHTML = '<div class="loading-spinner"></div>';
-                window.pywebview.api.getLocalScripts()
-                    .then(data => {
-                        if (data.status === 'success' && data.scripts.length > 0) {
-                            localScriptsCache = data.scripts;
-                            displayLocalScripts(data.scripts);
-                        } else {
-                            scripthubContent.innerHTML = '<p style="padding: 20px;">No local scripts found</p>';
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error fetching local scripts:', error);
-                        scripthubContent.innerHTML = '<p style="padding: 20px;">Error fetching local scripts</p>';
-                    });
+                
+                if (electronAPI.isElectron && electronAPI.ipcRenderer) {
+                    electronAPI.ipcRenderer.invoke('get-local-scripts')
+                        .then(data => {
+                            if (data.status === 'success' && data.scripts.length > 0) {
+                                localScriptsCache = data.scripts;
+                                displayLocalScripts(data.scripts);
+                            } else {
+                                scripthubContent.innerHTML = '<p style="padding: 20px;">No local scripts found</p>';
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error fetching local scripts:', error);
+                            scripthubContent.innerHTML = '<p style="padding: 20px;">Error fetching local scripts</p>';
+                        });
+                } else {
+                    scripthubContent.innerHTML = '<p style="padding: 20px;">Local scripts not available in this environment</p>';
+                }
             }
             
             function filterLocalScripts(searchTerm) {
@@ -1942,19 +2964,25 @@
                 document.querySelectorAll('.script-autoexec-toggle').forEach(toggle => {
                     toggle.addEventListener('change', (e) => {
                         e.stopPropagation();
-                        window.pywebview.api.toggleAutoExec(toggle.dataset.scriptName, toggle.checked)
-                            .then(result => {
-                                if (result.status === 'success') {
-                                    updateConsoleOutput(`Auto-execute ${toggle.checked ? 'enabled' : 'disabled'} for "${toggle.dataset.scriptName}"`);
-                                } else {
-                                    toggle.checked = !toggle.checked; 
-                                    updateConsoleOutput(`Error: ${result.message}`);
-                                }
-                            })
-                            .catch(error => {
-                                toggle.checked = !toggle.checked;
-                                updateConsoleOutput(`Error toggling auto-execute: ${error.message}`);
-                            });
+                        
+                        if (electronAPI.isElectron && electronAPI.ipcRenderer) {
+                            electronAPI.ipcRenderer.invoke('toggle-autoexec', toggle.dataset.scriptName, toggle.checked)
+                                .then(result => {
+                                    if (result.status === 'success') {
+                                        updateConsoleOutput(`Auto-execute ${toggle.checked ? 'enabled' : 'disabled'} for "${toggle.dataset.scriptName}"`);
+                                    } else {
+                                        toggle.checked = !toggle.checked; 
+                                        updateConsoleOutput(`Error: ${result.message}`);
+                                    }
+                                })
+                                .catch(error => {
+                                    toggle.checked = !toggle.checked;
+                                    updateConsoleOutput(`Error toggling auto-execute: ${error.message}`);
+                                });
+                        } else {
+                            toggle.checked = !toggle.checked;
+                            updateConsoleOutput('Auto-execute toggle not available in this environment');
+                        }
                     });
                 });
 
@@ -1974,31 +3002,35 @@
             }
             
             function loadLocalScript(scriptName) {
-                window.pywebview.api.getLocalScripts()
-                    .then(data => {
-                        if (data.status === 'success') {
-                            const script = data.scripts.find(s => s.name === scriptName);
-                            
-                            if (script) {
-                                const id = `script${nextId++}`;
-                                scripts[id] = {name: script.name, content: script.content};
-                                const tabsScrollableArea = document.querySelector('.tabs-scrollable-area');
-                                tabsScrollableArea.appendChild(createTab(id, script.name));
-                                switchTab(id);
-                                updateTabBtn();
-                                toggleSidebar();
+                if (electronAPI.isElectron && electronAPI.ipcRenderer) {
+                    electronAPI.ipcRenderer.invoke('get-local-scripts')
+                        .then(data => {
+                            if (data.status === 'success') {
+                                const script = data.scripts.find(s => s.name === scriptName);
                                 
-                                output.innerHTML = `Local script "${script.name}" loaded successfully.`;
+                                if (script) {
+                                    const id = `script${nextId++}`;
+                                    scripts[id] = {name: script.name, content: script.content};
+                                    const tabsScrollableArea = document.querySelector('.tabs-scrollable-area');
+                                    tabsScrollableArea.appendChild(createTab(id, script.name));
+                                    switchTab(id);
+                                    updateTabBtn();
+                                    toggleSidebar();
+                                    
+                                    output.innerHTML = `Local script "${script.name}" loaded successfully.`;
+                                } else {
+                                    output.innerHTML = `Error: Script "${scriptName}" not found.`;
+                                }
                             } else {
-                                output.innerHTML = `Error: Script "${scriptName}" not found.`;
+                                output.innerHTML = `Error loading local scripts: ${data.message}`;
                             }
-                        } else {
-                            output.innerHTML = `Error loading local scripts: ${data.message}`;
-                        }
-                    })
-                    .catch(error => {
-                        output.innerHTML = `Error loading script: ${error.message}`;
-                    });
+                        })
+                        .catch(error => {
+                            output.innerHTML = `Error loading script: ${error.message}`;
+                        });
+                } else {
+                    output.innerHTML = 'Script loading not available in this environment';
+                }
             }
             
             function fetchScripts(searchTerm = '') {
@@ -2010,19 +3042,23 @@
                 
                 lastScriptBloxSearch = searchTerm;
                 
-                window.pywebview.api.getScripts(searchTerm)
-                    .then(data => {
-                        if (data.result && data.result.scripts && data.result.scripts.length > 0) {
-                            window.scriptHubScripts = data.result.scripts;
-                            displayScripts(data.result.scripts);
-                        } else {
-                            scripthubContent.innerHTML = '<p style="padding: 20px;">No scripts found</p>';
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error fetching scripts:', error);
-                        scripthubContent.innerHTML = '<p style="padding: 20px;">Error fetching scripts</p>';
-                    });
+                if (electronAPI.isElectron && electronAPI.ipcRenderer) {
+                    electronAPI.ipcRenderer.invoke('get-scripts', searchTerm)
+                        .then(data => {
+                            if (data.result && data.result.scripts && data.result.scripts.length > 0) {
+                                window.scriptHubScripts = data.result.scripts;
+                                displayScripts(data.result.scripts);
+                            } else {
+                                scripthubContent.innerHTML = '<p style="padding: 20px;">No scripts found</p>';
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error fetching scripts:', error);
+                            scripthubContent.innerHTML = '<p style="padding: 20px;">Error fetching scripts</p>';
+                        });
+                } else {
+                    scripthubContent.innerHTML = '<p style="padding: 20px;">Script fetching not available in this environment</p>';
+                }
             }
             
             function displayScripts(scripts) {
@@ -2095,47 +3131,55 @@
                 const script = window.scriptHubScripts.find(s => s._id === scriptId);
                 
                 if (script && script.script) {
-                    window.pywebview.api.execute_script(script.script)
-                        .then(data => {
-                            toggleSidebar();
-                            updateConsoleOutput(`Executing: "${script.title}"`);
-                            updateConsoleOutput(data.message);
-                            if (data.details && Array.isArray(data.details)) {
-                                data.details.forEach(detail => updateConsoleOutput(detail));
-                            }
-                        })
-                        .catch(error => updateConsoleOutput(`Error: ${error.message}`));
+                    if (electronAPI.isElectron && electronAPI.ipcRenderer) {
+                        electronAPI.ipcRenderer.invoke('execute-script', script.script)
+                            .then(data => {
+                                toggleSidebar();
+                                updateConsoleOutput(`Executing: "${script.title}"`);
+                                updateConsoleOutput(data.message);
+                                if (data.details && Array.isArray(data.details)) {
+                                    data.details.forEach(detail => updateConsoleOutput(detail));
+                                }
+                            })
+                            .catch(error => updateConsoleOutput(`Error: ${error.message}`));
+                    } else {
+                        updateConsoleOutput('Script execution not available in this environment');
+                    }
                 } else {
                     updateConsoleOutput(`Error: Could not execute script. Script content not available.`);
                 }
             }
             
             function directExecuteLocalScript(scriptName) {
-                window.pywebview.api.getLocalScripts()
-                    .then(data => {
-                        if (data.status === 'success') {
-                            const script = data.scripts.find(s => s.name === scriptName);
-                            
-                            if (script && script.content) {
-                                window.pywebview.api.execute_script(script.content)
-                                    .then(data => {
-                                        updateConsoleOutput(`Executing: "${scriptName}"`);
-                                        updateConsoleOutput(data.message);
-                                        if (data.details && Array.isArray(data.details)) {
-                                            data.details.forEach(detail => updateConsoleOutput(detail));
-                                        }
-                                    })
-                                    .catch(error => updateConsoleOutput(`Error: ${error.message}`));
+                if (electronAPI.isElectron && electronAPI.ipcRenderer) {
+                    electronAPI.ipcRenderer.invoke('get-local-scripts')
+                        .then(data => {
+                            if (data.status === 'success') {
+                                const script = data.scripts.find(s => s.name === scriptName);
+                                
+                                if (script && script.content) {
+                                    electronAPI.ipcRenderer.invoke('execute-script', script.content)
+                                        .then(data => {
+                                            updateConsoleOutput(`Executing: "${scriptName}"`);
+                                            updateConsoleOutput(data.message);
+                                            if (data.details && Array.isArray(data.details)) {
+                                                data.details.forEach(detail => updateConsoleOutput(detail));
+                                            }
+                                        })
+                                        .catch(error => updateConsoleOutput(`Error: ${error.message}`));
+                                } else {
+                                    updateConsoleOutput(`Error: Script "${scriptName}" not found or has no content.`);
+                                }
                             } else {
-                                updateConsoleOutput(`Error: Script "${scriptName}" not found or has no content.`);
+                                updateConsoleOutput(`Error loading local scripts: ${data.message}`);
                             }
-                        } else {
-                            updateConsoleOutput(`Error loading local scripts: ${data.message}`);
-                        }
-                    })
-                    .catch(error => {
-                        updateConsoleOutput(`Error loading script: ${error.message}`);
-                    });
+                        })
+                        .catch(error => {
+                            updateConsoleOutput(`Error loading script: ${error.message}`);
+                        });
+                } else {
+                    updateConsoleOutput('Script execution not available in this environment');
+                }
             }
             
             scripthubBtn.addEventListener('click', toggleSidebar);
@@ -2156,7 +3200,6 @@
             }
             }, 250)); 
             
-            const contextMenu = document.getElementById('tab-context-menu');
             const modalOverlay = document.getElementById('modal-overlay');
             const modalTitle = document.getElementById('modal-title');
             const modalInput = document.getElementById('modal-input');
@@ -2200,15 +3243,19 @@
                 const scriptName = scripts[id].name;
                 const autoExec = scripts[id].autoExec || false;
                 
-                window.pywebview.api.saveScript(scriptName, scripts[id].content, autoExec)
-                    .then(result => {
-                        updateConsoleOutput(result.status === 'success' ? 
-                            `Script saved successfully as: ${scriptName}${autoExec ? ' (Auto-Execute enabled)' : ''}` : 
-                            `Error saving script: ${result.message}`);
-                    })
-                    .catch(error => {
-                        updateConsoleOutput(`Error saving script: ${error.message}`);
-                    });
+                if (electronAPI.isElectron && electronAPI.ipcRenderer) {
+                    electronAPI.ipcRenderer.invoke('save-script', scriptName, scripts[id].content, autoExec)
+                        .then(result => {
+                            updateConsoleOutput(result.status === 'success' ? 
+                                `Script saved successfully as: ${scriptName}${autoExec ? ' (Auto-Execute enabled)' : ''}` : 
+                                `Error saving script: ${result.message}`);
+                        })
+                        .catch(error => {
+                            updateConsoleOutput(`Error saving script: ${error.message}`);
+                        });
+                } else {
+                    updateConsoleOutput('Script saving not available in this environment');
+                }
             }
             
             function showModal(title, defaultValue, callback, type = 'rename', showAutoExec = false) {
@@ -2246,26 +3293,43 @@
                 modalCallback = null;
             }
             
-            function showContextMenu(e) {
-                e.preventDefault();
+            function updateChangelogModal(releaseInfo) {
+                const versionElement = document.getElementById('changelog-version');
+                const dateElement = document.getElementById('changelog-date');
+                const contentElement = document.getElementById('changelog-content');
                 
-                const selectedText = cm.getSelection();
-                const copyOption = document.getElementById('context-copy');
-                copyOption.style.display = selectedText ? 'block' : 'none';
+                if (!releaseInfo) {
+                    versionElement.textContent = 'Loading...';
+                    dateElement.textContent = '';
+                    contentElement.textContent = 'Loading release information...';
+                    return;
+                }
                 
-                contextMenu.style.left = `${e.pageX + 5}px`;
-                contextMenu.style.top = `${e.pageY - 10}px`;
-                contextMenu.style.display = 'block';
+                if (releaseInfo.version) {
+                    versionElement.textContent = releaseInfo.version;
+                } else {
+                    versionElement.textContent = 'Latest Release';
+                }
                 
-                setTimeout(() => {
-                    document.addEventListener('click', hideContextMenu);
-                }, 0);
-            }
-            
-            function hideContextMenu() {
-                contextMenu.style.display = 'none';
-                document.removeEventListener('click', hideContextMenu);
-                cm.focus();
+                if (releaseInfo.published_at) {
+                    const date = new Date(releaseInfo.published_at);
+                    dateElement.textContent = date.toLocaleDateString();
+                } else {
+                    dateElement.textContent = '';
+                }
+                
+                if (releaseInfo.description) {
+                    let formattedContent = releaseInfo.description
+                        .replace(/^### (.*$)/gim, '<h3>$1</h3>')
+                        .replace(/^## (.*$)/gim, '<h2>$1</h2>')
+                        .replace(/^# (.*$)/gim, '<h1>$1</h1>')
+                        .replace(/^\* (.*$)/gim, '• $1')
+                        .replace(/^- (.*$)/gim, '• $1');
+                    
+                    contentElement.innerHTML = formattedContent;
+                } else {
+                    contentElement.textContent = 'Visit Nitrogen.lol for the latest updates, changelogs, information, community support, and news for Nitrogen!';
+                }
             }
             
             function renameScript(id) {
@@ -2294,42 +3358,7 @@
                 }, 'new');
             }
             
-            document.querySelector('.tabs-scrollable-area').addEventListener('contextmenu', e => {
-                const tab = e.target.closest('.tab');
-                if (!tab) return;
-                e.preventDefault(); 
-            });
-            
-            cm.on('contextmenu', (cm, e) => {
-                e.preventDefault();
-                showContextMenu(e);
-            });
-            
-            document.getElementById('context-copy').addEventListener('click', () => {
-                const selectedText = cm.getSelection();
-                if (selectedText) {
-                    navigator.clipboard.writeText(selectedText)
-                        .catch(err => console.error('Could not copy text: ', err));
-                }
-                hideContextMenu();
-            });
-            
-            document.getElementById('context-paste').addEventListener('click', () => {
-                window.pywebview.api.get_clipboard_content()
-                    .then(result => {
-                        if (result.status === 'success' && result.content) {
-                            cm.replaceSelection(result.content);
-                        } else {
-                            updateConsoleOutput(`Error: ${result.message || 'Could not paste text from clipboard'}`);
-                        }
-                        hideContextMenu();
-                    })
-                    .catch(err => {
-                        console.error('Could not paste text: ', err);
-                        updateConsoleOutput('Error: Failed to paste from clipboard');
-                        hideContextMenu();
-                    });
-            });
+            const editorElement = document.getElementById('code-editor');
             
             modalCancel.addEventListener('click', hideModal);
             
@@ -2354,18 +3383,27 @@
             
             newTabBtn.addEventListener('click', createNewScript);
             
-            document.addEventListener('click', (e) => {
-                if (!contextMenu.contains(e.target)) {
-                    contextMenu.style.display = 'none';
-                }
-            });
-            
             modalOverlay.addEventListener('click', (e) => {
                 if (e.target === modalOverlay) hideModal();
             });
 
             document.getElementById('roblox-btn').addEventListener('click', () => {
-                window.pywebview.api.openRoblox()
+                if (electronAPI.isElectron && electronAPI.ipcRenderer) {
+                    electronAPI.ipcRenderer.invoke('open-roblox')
+                        .then(result => {
+                            if (result.status === 'success') {
+                                updateConsoleOutput(result.message);
+                            } else {
+                                updateConsoleOutput(`Error: ${result.message}`);
+                            }
+                        })
+                        .catch(error => {
+                            updateConsoleOutput(`Error opening Roblox: ${error.message}`);
+                        });
+                } else {
+                    window.open('roblox://');
+                    updateConsoleOutput('Roblox launch requested');
+                }
             });
 
             function renameLocalScript(scriptName) {
@@ -2373,50 +3411,58 @@
                     if (newName && newName.trim() !== '' && newName !== scriptName) {
                         const updatedName = newName.endsWith('.lua') ? newName : `${newName}.lua`;
                         
-                        window.pywebview.api.renameScript(scriptName, updatedName)
-                            .then(result => {
-                                if (result.status === 'success') {
-                                    updateConsoleOutput(`Script "${scriptName}" renamed to "${updatedName}"`);
-                                    fetchLocalScripts(); 
-                                    
-                                    Object.keys(scripts).forEach(id => {
-                                        if (scripts[id].name === scriptName) {
-                                            scripts[id].name = updatedName;
-                                            document.querySelector(`.tab[data-tab-id="${id}"]`).innerHTML = 
-                                                `${updatedName}<span class="tab-close">×</span>`;
-                                        }
-                                    });
-                                } else {
-                                    updateConsoleOutput(`Error renaming script: ${result.message}`);
-                                }
-                            })
-                            .catch(error => {
-                                updateConsoleOutput(`Error renaming script: ${error.message}`);
-                            });
+                        if (electronAPI.isElectron && electronAPI.ipcRenderer) {
+                            electronAPI.ipcRenderer.invoke('rename-script', scriptName, updatedName)
+                                .then(result => {
+                                    if (result.status === 'success') {
+                                        updateConsoleOutput(`Script "${scriptName}" renamed to "${updatedName}"`);
+                                        fetchLocalScripts(); 
+                                        
+                                        Object.keys(scripts).forEach(id => {
+                                            if (scripts[id].name === scriptName) {
+                                                scripts[id].name = updatedName;
+                                                document.querySelector(`.tab[data-tab-id="${id}"]`).innerHTML = 
+                                                    `${updatedName}<span class="tab-close">×</span>`;
+                                            }
+                                        });
+                                    } else {
+                                        updateConsoleOutput(`Error renaming script: ${result.message}`);
+                                    }
+                                })
+                                .catch(error => {
+                                    updateConsoleOutput(`Error renaming script: ${error.message}`);
+                                });
+                        } else {
+                            updateConsoleOutput('Script renaming not available in this environment');
+                        }
                     }
                 }, 'rename');
             }
 
             function deleteLocalScript(scriptName) {
                 if (confirm(`Are you sure you want to delete "${scriptName}"?`)) {
-                    window.pywebview.api.deleteScript(scriptName)
-                        .then(result => {
-                            if (result.status === 'success') {
-                                updateConsoleOutput(`Script "${scriptName}" deleted successfully`);
-                                fetchLocalScripts(); 
-                                
-                                Object.keys(scripts).forEach(id => {
-                                    if (scripts[id].name === scriptName) {
-                                        closeTab(id);
-                                    }
-                                });
-                            } else {
-                                updateConsoleOutput(`Error deleting script: ${result.message}`);
-                            }
-                        })
-                        .catch(error => {
-                            updateConsoleOutput(`Error deleting script: ${error.message}`);
-                        });
+                    if (electronAPI.isElectron && electronAPI.ipcRenderer) {
+                        electronAPI.ipcRenderer.invoke('delete-script', scriptName)
+                            .then(result => {
+                                if (result.status === 'success') {
+                                    updateConsoleOutput(`Script "${scriptName}" deleted successfully`);
+                                    fetchLocalScripts(); 
+                                    
+                                    Object.keys(scripts).forEach(id => {
+                                        if (scripts[id].name === scriptName) {
+                                            closeTab(id);
+                                        }
+                                    });
+                                } else {
+                                    updateConsoleOutput(`Error deleting script: ${result.message}`);
+                                }
+                            })
+                            .catch(error => {
+                                updateConsoleOutput(`Error deleting script: ${error.message}`);
+                            });
+                    } else {
+                        updateConsoleOutput('Script deletion not available in this environment');
+                    }
                 }
             }
             
@@ -2478,11 +3524,19 @@
             });
 
             document.getElementById('close-app-btn').addEventListener('click', () => {
-                window.pywebview.api.quit_app();
+                if (electronAPI.isElectron && electronAPI.ipcRenderer) {
+                    electronAPI.ipcRenderer.invoke('quit-app');
+                } else {
+                    window.close();
+                }
             });
 
             document.getElementById('minimize-app-btn').addEventListener('click', () => {
-                window.pywebview.api.minimize_app();
+                if (electronAPI.isElectron && electronAPI.ipcRenderer) {
+                    electronAPI.ipcRenderer.invoke('minimize-app');
+                } else {
+                    window.blur();
+                }
             });
 
             const settingsBtn = document.getElementById('settings-btn');
@@ -2505,34 +3559,29 @@
             });
             
             function loadSavedTheme() {
-                // Always apply glassmorphism first as fallback
-                applyTheme('glassmorphism');
-                
-                if (!window.pywebview || !window.pywebview.api) {
-                    setTimeout(loadSavedTheme, 300);
-                    return;
-                }
-                
                 try {
-                    window.pywebview.api.get_theme()
-                        .then(response => {
-                            if (response && response.status === 'success' && response.theme) {
-                                applyTheme(response.theme);
-                            } else {
-                                applyTheme('glassmorphism'); 
-                            }
-                        })
-                        .catch(() => {
-                            applyTheme('glassmorphism');
-                        });
+                    const savedTheme = localStorage.getItem('nitrogen-theme') || 'glassmorphism';
+                    applyTheme(savedTheme);
+                    
+                    const hasVisited = localStorage.getItem('nitrogen-modal-showed');
+                    if (!hasVisited) {
+                        localStorage.setItem('nitrogen-modal-showed', 'true');
+                        
+                        setTimeout(() => {
+                            showWebsiteModal();
+                        }, 1000);
+                    }
                 } catch(error) {
-                    console.log('Error loading theme, using glassmorphism:', error);
+                    console.log('Error loading theme from localStorage, using glassmorphism:', error);
                     applyTheme('glassmorphism');
                 }
             }
             
+            function showWebsiteModal() {
+                websiteModalOverlay.classList.add('active');
+            }
+            
             function applyTheme(themeName) {
-                // Always fallback to glassmorphism if themeName is invalid or empty
                 const validThemes = ['glassmorphism', 'classic', 'diamond', 'emerald', 'redstone', 'midnight'];
                 if (!themeName || !validThemes.includes(themeName)) {
                     themeName = 'glassmorphism';
@@ -2541,11 +3590,14 @@
                 try {
                     document.body.className = document.body.className.replace(/theme-\w+/g, '').trim();
                     document.body.classList.add(`theme-${themeName}`);
+                    
+                    localStorage.setItem('nitrogen-theme', themeName);
                 } catch(error) {
                     console.log('Error applying theme, using glassmorphism:', error);
                     document.body.className = document.body.className.replace(/theme-\w+/g, '').trim();
                     document.body.classList.add('theme-glassmorphism');
                     themeName = 'glassmorphism';
+                    localStorage.setItem('nitrogen-theme', 'glassmorphism');
                 }
                 
                 try {
@@ -2564,14 +3616,11 @@
             }
             
             window.addEventListener('load', () => {
-                // Apply glassmorphism immediately on load
-                applyTheme('glassmorphism');
-                
-                setTimeout(loadSavedTheme, 300);
+                loadSavedTheme();
                 
                 setTimeout(() => {
-                    if (window.pywebview && window.pywebview.api) {
-                        window.pywebview.api.start_log_monitoring();
+                    if (electronAPI.isElectron && electronAPI.ipcRenderer) {
+                        electronAPI.ipcRenderer.invoke('start-log-monitoring');
                     }
                 }, 1000);
             });
@@ -2582,27 +3631,24 @@
                         const selectedTheme = e.target.value;
                         applyTheme(selectedTheme);
                         
-                        if (window.pywebview && window.pywebview.api) {
-                            window.pywebview.api.save_theme(selectedTheme).catch(() => {
-                                console.log('Failed to save theme, but theme is still applied');
-                            });
-                        }
+                        localStorage.setItem('nitrogen-theme', selectedTheme);
+                        
+                        console.log(`Theme changed to: ${selectedTheme}`);
                     } catch(error) {
                         console.log('Error changing theme, falling back to glassmorphism:', error);
                         applyTheme('glassmorphism');
+                        localStorage.setItem('nitrogen-theme', 'glassmorphism');
                     }
                 });
             });
             
-            const openWorkspaceBtn = document.getElementById('open-workspace-btn');
             const openScriptsBtn = document.getElementById('open-scripts-btn');
-            const openWorkspaceIcon = document.getElementById('open-workspace-icon');
             const openScriptsIcon = document.getElementById('open-scripts-icon');
             const versionNumber = document.getElementById('version-number');
             
             function setVersionNumber() {
-                if (window.pywebview && window.pywebview.api) {
-                    window.pywebview.api.get_version()
+                if (electronAPI.isElectron && electronAPI.ipcRenderer) {
+                    electronAPI.ipcRenderer.invoke('get-version')
                         .then(response => {
                             if (response && response.version) {
                                 versionNumber.textContent = response.version;
@@ -2616,27 +3662,15 @@
             
             setTimeout(setVersionNumber, 500);
             
-            openWorkspaceBtn.addEventListener('click', () => {
-                if (window.pywebview && window.pywebview.api) {
-                    window.pywebview.api.open_workspace_folder();
-                }
-            });
-            
             openScriptsBtn.addEventListener('click', () => {
-                if (window.pywebview && window.pywebview.api) {
-                    window.pywebview.api.open_scripts_folder();
-                }
-            });
-            
-            openWorkspaceIcon.addEventListener('click', () => {
-                if (window.pywebview && window.pywebview.api) {
-                    window.pywebview.api.open_workspace_folder();
+                if (electronAPI.isElectron && electronAPI.ipcRenderer) {
+                    electronAPI.ipcRenderer.invoke('open-scripts-folder');
                 }
             });
             
             openScriptsIcon.addEventListener('click', () => {
-                if (window.pywebview && window.pywebview.api) {
-                    window.pywebview.api.open_scripts_folder();
+                if (electronAPI.isElectron && electronAPI.ipcRenderer) {
+                    electronAPI.ipcRenderer.invoke('open-scripts-folder');
                 }
             });
 
@@ -2727,29 +3761,16 @@
             });
             
             aiInput.addEventListener('keydown', e => {
-                if (commandDropdown.style.display === 'block') {
-                    const visibleItems = [...commandDropdown.querySelectorAll('.command-item')];
-                    
-                    if (e.key === 'ArrowDown' || e.key === 'Tab') {
-                        e.preventDefault();
-                        const focusedItem = document.querySelector('.command-item:focus');
-                        const currentIndex = focusedItem ? visibleItems.indexOf(focusedItem) : -1;
-                        const nextIndex = (currentIndex + 1) % visibleItems.length;
-                        if (visibleItems[nextIndex]) visibleItems[nextIndex].focus();
-                    } else if (e.key === 'ArrowUp') {
-                        e.preventDefault();
-                        const focusedItem = document.querySelector('.command-item:focus');
-                        const currentIndex = focusedItem ? visibleItems.indexOf(focusedItem) : 0;
-                        const prevIndex = (currentIndex - 1 + visibleItems.length) % visibleItems.length;
-                        if (visibleItems[prevIndex]) visibleItems[prevIndex].focus();
-                    } else if (e.key === 'Enter' && document.activeElement.classList.contains('command-item')) {
-                        e.preventDefault();
-                        const command = document.activeElement.getAttribute('data-command');
-                        handleCommandSelection(command);
-                    } else if (e.key === 'Escape') {
+                if (e.key === 'Enter') {
+                    if (e.shiftKey) {
+                        return;
+                    } else {
                         e.preventDefault();
                         commandDropdown.style.display = 'none';
+                        processAiMessage();
                     }
+                } else if (e.key === 'Escape') {
+                    commandDropdown.style.display = 'none';
                 }
             });
             
@@ -2778,50 +3799,54 @@
                 
                 const editorContent = cm.getValue();
                 
-                window.pywebview.api.send_ai_prompt(message, editorContent)
-                    .then(response => {
-                        removeLoadingIndicator();
-                        
-                        if (response.status === 'success') {
-                            const result = response.result || '';
-                            const explanation = response.explanation || '';
+                if (electronAPI.isElectron && electronAPI.ipcRenderer) {
+                    electronAPI.ipcRenderer.invoke('send-ai-prompt', message, editorContent)
+                        .then(response => {
+                            removeLoadingIndicator();
                             
-                            if (result && result.trim() !== '' && result.trim() !== editorContent.trim()) {
-                                scripts[activeId].content = result;
+                            if (response.status === 'success') {
+                                const result = response.result || '';
+                                const explanation = response.explanation || '';
                                 
-                                cm.setValue(result);
+                                if (result && result.trim() !== '' && result.trim() !== editorContent.trim()) {
+                                    scripts[activeId].content = result;
+                                    
+                                    cm.setValue(result);
+                                    
+                                    setTimeout(() => {
+                                        try {
+                                            cm.autoFormatRange();
+                                        } catch (e) {
+                                            console.log("Auto-formatting unavailable");
+                                        }
+                                    }, 50);
+                                }
                                 
-                                setTimeout(() => {
-                                    try {
-                                        const totalLines = cm.lineCount();
-                                        cm.autoFormatRange({line: 0, ch: 0}, {line: totalLines, ch: 0});
-                                    } catch (e) {
-                                        console.log("Auto-formatting unavailable");
-                                    }
-                                }, 50);
+                                if (explanation) {
+                                    appendMessage(explanation);
+                                } else if (!result || result.trim() === editorContent.trim()) {
+                                    appendMessage("I understand! Let me know if you need any help with your code.");
+                                }
+                            } else {
+                                const errorMessage = response.message || "Unknown error occurred";
+                                appendMessage(`Error: ${errorMessage}`);
+                                
+                                updateConsoleOutput(`Error: ${errorMessage}`);
                             }
+                        })
+                        .catch(error => {
+                            removeLoadingIndicator();
                             
-                            if (explanation) {
-                                appendMessage(explanation);
-                            } else if (!result || result.trim() === editorContent.trim()) {
-                                appendMessage("I understand! Let me know if you need any help with your code.");
-                            }
-                        } else {
-                            const errorMessage = response.message || "Unknown error occurred";
-                            appendMessage(`Error: ${errorMessage}`);
+                            const errorMessage = error.message || "Failed to get AI response";
+                            let formattedError = `Error: ${errorMessage}`;
                             
+                            appendMessage(formattedError);
                             updateConsoleOutput(`Error: ${errorMessage}`);
-                        }
-                    })
-                    .catch(error => {
-                        removeLoadingIndicator();
-                        
-                        const errorMessage = error.message || "Failed to get AI response";
-                        let formattedError = `Error: ${errorMessage}`;
-                        
-                        appendMessage(formattedError);
-                        updateConsoleOutput(`Error: ${errorMessage}`);
-                    });
+                        });
+                } else {
+                    removeLoadingIndicator();
+                    appendMessage("AI functionality not available in this environment");
+                }
             }
             
             aiBtn.addEventListener('click', toggleAiSidebar);
@@ -2831,18 +3856,6 @@
             sidebarOverlay.addEventListener('click', () => {
                 if (aiSidebar.classList.contains('active')) {
                     toggleAiSidebar();
-                }
-            });
-            
-            aiInput.addEventListener('keydown', e => {
-                if (e.key === 'Enter') {
-                    if (e.shiftKey) {
-                        return;
-                    } else {
-                        e.preventDefault();
-                        commandDropdown.style.display = 'none';
-                        processAiMessage();
-                    }
                 }
             });
             
