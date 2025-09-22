@@ -1,6 +1,8 @@
 # Nitrogen ❄️
 
-Nitrogen is a modern, clean and feature-packed custom UI/wrapper for Hydrogen with a sleek interface. It provides a streamlined experience for executing, managing, and discovering scripts.
+Nitrogen is a modern, clean and feature-packed custom UI/wrapper for Hydrogen, MacSploit, and Opiumware with a sleek interface. It provides a streamlined experience for executing, managing, and discovering scripts.
+
+🌐 **Website**: [nitrogen.lol](https://nitrogen.lol)
 
 ## ✨ Features
 
@@ -26,9 +28,10 @@ curl -fsSL https://raw.githubusercontent.com/JadXV/Nitrogen/refs/heads/main/inst
 
 1. Download the latest release from [GitHub Releases](https://github.com/JadXV/Nitrogen/releases)
 2. Extract the ZIP file
-3. Move the Nitrogen.app to your Applications folder
-4. Run `xattr -rd com.apple.quarantine /Applications/Nitrogen.app`
-5. Launch Nitrogen from your Applications folder
+3. Rename the version matching your Macs architecture to Nitrogen.app (for example Intel would be x86, M chips would be ARM64)
+4. Move the Nitrogen.app to your Applications folder
+5. Run `xattr -rd com.apple.quarantine /Applications/Nitrogen.app`
+6. Launch Nitrogen from your Applications folder
 
 ## 🔧 Usage
 
@@ -46,6 +49,7 @@ curl -fsSL https://raw.githubusercontent.com/JadXV/Nitrogen/refs/heads/main/inst
 | ⌘+W | Close current tab |
 | ⌘+[1-9] | Switch to specified tab (e.g., ⌘+1 for first tab) |
 | ⌘+I | Open AI sidebar |
+| ⌘+. | Open Nitrogen Direct from any app (system-wide shortcut) |
 
 ### Themes and Customization
 Access the settings menu to customize your Nitrogen experience:
