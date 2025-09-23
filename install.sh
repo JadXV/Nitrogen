@@ -42,7 +42,7 @@ fi
 
 
 echo "Cleaning up temporary files..."
-rm -rf /tmp/Nitrogen*.app /tmp/Nitrogen-*.app
+rm -rf /tmp/Nitrogen*.app /tmp/Nitrogen-*.app /tmp/NitrogenCompressed
 
 echo "Downloading Nitrogen..."
 curl -fsSL "$Nitrogen_URL" -o "$TMP_ZIP" || {
@@ -57,7 +57,7 @@ unzip -o -q "$TMP_ZIP" -d /tmp || {
 }
 
 echo "Installing $ARCH_FOLDER..."
-mv "/tmp/$ARCH_FOLDER.app" "/tmp/Nitrogen.app" || {
+mv "/tmp/NitrogenCompressed/$ARCH_FOLDER.app" "/tmp/Nitrogen.app" || {
   echo "❌ Failed to rename app folder"
   exit 1
 }
@@ -70,6 +70,7 @@ mv "/tmp/Nitrogen.app" "/Applications" || {
 xattr -rd com.apple.quarantine /Applications/Nitrogen.app
 
 rm "$TMP_ZIP"
+rm -rf /tmp/NitrogenCompressed
 
 echo ""
 echo "✅ Nitrogen installed successfully!"
