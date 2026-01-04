@@ -3,177 +3,92 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nitrogen ❄️ - Modern Executor UI</title>
+    <title>Nitrogen</title>
     <meta name="description" content="Nitrogen is a modern, clean and feature-packed custom UI/wrapper for multiple executors with a sleek interface for script execution and management.">
     
-    <!-- Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     
-    <!-- Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.29.0/feather.min.css">
     
-    <!-- Chart.js -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
     
     <style>
-        :root {
-            --primary-color: #6366f1;
-            --secondary-color: #8b5cf6;
-            --accent-color: #06b6d4;
-            --bg-dark: #0a0a0b;
-            --bg-card: rgba(15, 15, 17, 0.95);
-            --bg-glass: rgba(255, 255, 255, 0.02);
-            --bg-glass-hover: rgba(255, 255, 255, 0.05);
-            --text-primary: #f8fafc;
-            --text-secondary: #94a3b8;
-            --text-muted: #64748b;
-            --border-color: rgba(148, 163, 184, 0.1);
-            --border-hover: rgba(99, 102, 241, 0.3);
-            --code-bg: #0f172a;
-            --code-border: rgba(148, 163, 184, 0.2);
-            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-            --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
-            --gradient-primary: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
-            --gradient-secondary: linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%);
-        }
-
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
 
-        body {
-            font-family: 'Inter', sans-serif;
-            background: var(--bg-dark);
-            color: var(--text-primary);
+        html {
+            background: #000;
             overflow-x: hidden;
-            line-height: 1.6;
-            font-feature-settings: "cv02", "cv03", "cv04", "cv11";
-        }
-
-        /* Background Animation */
-        .bg-animation {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
             height: 100%;
-            z-index: -1;
-            background: radial-gradient(ellipse at top, rgba(99, 102, 241, 0.1) 0%, var(--bg-dark) 50%),
-                        radial-gradient(ellipse at bottom, rgba(139, 92, 246, 0.1) 0%, var(--bg-dark) 50%);
-            animation: subtleShift 30s ease-in-out infinite;
+            scroll-behavior: smooth;
         }
 
-        .bg-animation::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="0.3" fill="white" opacity="0.02"/><circle cx="75" cy="75" r="0.2" fill="white" opacity="0.01"/><circle cx="50" cy="10" r="0.25" fill="white" opacity="0.015"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
-        }
-
-        @keyframes subtleShift {
-            0%, 100% { transform: scale(1) rotate(0deg); }
-            50% { transform: scale(1.05) rotate(0.5deg); }
-        }
-
-        /* Navigation */
-        nav {
-            position: fixed;
-            top: 0;
-            width: 100%;
-            z-index: 1000;
-            padding: 1rem 2rem;
-            backdrop-filter: blur(24px) saturate(180%);
-            border-bottom: 1px solid var(--border-color);
-            background: rgba(10, 10, 11, 0.8);
-            transition: all 0.3s ease;
-        }
-
-        .nav-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 3rem;
-        }
-
-        .logo {
-            font-size: 1.5rem;
-            font-weight: 700;
-            background: var(--gradient-primary);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .nav-links {
-            display: flex;
-            list-style: none;
-            gap: 2rem;
-        }
-
-        .nav-links a {
-            color: var(--text-secondary);
-            text-decoration: none;
-            transition: all 0.3s ease;
-            font-weight: 500;
-            position: relative;
-            padding: 0.5rem 0;
-        }
-
-        .nav-links a::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 0;
-            height: 2px;
-            background: var(--gradient-primary);
-            transition: width 0.3s ease;
-        }
-
-        .nav-links a:hover {
-            color: var(--primary-color);
-        }
-
-        .nav-links a:hover::after {
-            width: 100%;
-        }
-
-        .download-btn {
-            padding: 0.75rem 1.5rem;
-            background: var(--gradient-primary);
-            border: none;
-            border-radius: 12px;
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            background: radial-gradient(ellipse at 20% 20%, rgba(88, 28, 135, 0.25) 0%, transparent 50%),
+                        radial-gradient(ellipse at 80% 80%, rgba(109, 40, 217, 0.2) 0%, transparent 50%),
+                        #050208;
             color: white;
-            text-decoration: none;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            box-shadow: var(--shadow-md);
+            min-height: 100vh;
+            line-height: 1.6;
+            font-size: 14px;
         }
 
-        .download-btn:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 6px 16px rgba(99, 102, 241, 0.3);
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
         }
 
-        /* Hero Section */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem;
+        }
+
         .hero {
-            min-height: 85vh;
+            min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
             text-align: center;
             padding: 2rem;
             position: relative;
-            margin-top: 80px;
+        }
+
+        .scroll-indicator {
+            position: absolute;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+            color: rgba(255, 255, 255, 0.4);
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+        .scroll-indicator:hover {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .scroll-arrow {
+            width: 20px;
+            height: 20px;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(6px); }
+            60% { transform: translateY(3px); }
         }
 
         .hero-content {
@@ -182,27 +97,29 @@
         }
 
         .hero h1 {
-            font-size: clamp(3rem, 8vw, 6rem);
+            font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
+            font-size: clamp(3rem, 8vw, 5rem);
             font-weight: 700;
             margin-bottom: 1rem;
-            background: var(--gradient-primary);
+            background: linear-gradient(90deg, rgb(216, 180, 254), rgb(192, 132, 252), rgb(168, 85, 247), rgb(147, 51, 234));
+            background-size: 300% 300%;
             -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
             background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: gradientShift 3s ease-in-out infinite;
             letter-spacing: -0.025em;
         }
 
         .hero .subtitle {
-            font-size: 1.5rem;
-            color: var(--text-secondary);
+            font-size: 1.25rem;
+            color: rgba(255, 255, 255, 0.5);
             margin-bottom: 2rem;
             font-weight: 400;
-            letter-spacing: -0.01em;
         }
 
         .hero .description {
-            font-size: 1.1rem;
-            color: var(--text-muted);
+            font-size: 1rem;
+            color: rgba(255, 255, 255, 0.6);
             margin-bottom: 3rem;
             max-width: 600px;
             margin-left: auto;
@@ -218,500 +135,164 @@
         }
 
         .btn-primary, .btn-secondary {
-            padding: 1rem 2rem;
-            border-radius: 12px;
+            padding: 0.875rem 1.75rem;
+            border-radius: 8px;
             text-decoration: none;
             font-weight: 600;
-            transition: all 0.3s ease;
             display: inline-flex;
             align-items: center;
             gap: 0.5rem;
-            box-shadow: var(--shadow-md);
             border: 1px solid transparent;
         }
 
         .btn-primary {
-            background: var(--gradient-primary);
+            background: linear-gradient(135deg, #a855f7, #7c3aed);
             color: white;
         }
 
-        .btn-secondary {
-            background: var(--bg-glass);
-            color: var(--text-primary);
-            border: 1px solid var(--border-color);
-            backdrop-filter: blur(20px);
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #9333ea, #6d28d9);
         }
 
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(99, 102, 241, 0.25);
+        .btn-secondary {
+            background: rgba(0, 0, 0, 0.25);
+            color: rgba(255, 255, 255, 0.9);
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .btn-secondary:hover {
-            background: var(--bg-glass-hover);
-            border-color: var(--border-hover);
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(99, 102, 241, 0.08);
-        }
-
-        /* Features Section */
-        .features {
-            padding: 5rem 2rem;
-            max-width: 1200px;
-            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.05);
         }
 
         .section-title {
+            font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
             text-align: center;
-            font-size: 2.5rem;
+            font-size: 2rem;
             font-weight: 700;
-            margin-bottom: 3rem;
-            background: var(--gradient-primary);
+            margin-bottom: 2.5rem;
+            background: linear-gradient(90deg, rgb(216, 180, 254), rgb(192, 132, 252), rgb(168, 85, 247), rgb(147, 51, 234));
+            background-size: 300% 300%;
             -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
             background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: gradientShift 3s ease-in-out infinite;
             letter-spacing: -0.025em;
+        }
+
+        .features {
+            padding: 4rem 1.5rem;
+            max-width: 1400px;
+            margin: 0 auto;
         }
 
         .features-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-            margin-top: 3rem;
+            gap: 1rem;
+            margin-top: 2rem;
         }
 
         .feature-card {
-            background: var(--bg-glass);
-            border: 1px solid var(--border-color);
-            border-radius: 16px;
-            padding: 2rem;
-            backdrop-filter: blur(20px);
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .feature-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 1px;
-            background: var(--gradient-primary);
-            opacity: 0;
-            transition: opacity 0.3s ease;
+            background: rgba(0, 0, 0, 0.25);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            border-radius: 10px;
+            padding: 1.5rem;
         }
 
         .feature-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
-            border-color: var(--border-hover);
-            background: var(--bg-glass-hover);
-        }
-
-        .feature-card:hover::before {
-            opacity: 1;
+            background: rgba(255, 255, 255, 0.03);
         }
 
         .feature-icon {
-            width: 60px;
-            height: 60px;
-            background: var(--gradient-primary);
-            border-radius: 12px;
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, #a855f7, #7c3aed);
+            border-radius: 10px;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin-bottom: 1.5rem;
-            font-size: 1.5rem;
-            box-shadow: var(--shadow-md);
+            margin-bottom: 1.25rem;
+            font-size: 1.25rem;
         }
 
         .feature-card h3 {
-            font-size: 1.3rem;
+            font-size: 1.125rem;
             font-weight: 600;
-            margin-bottom: 1rem;
-            color: var(--text-primary);
+            margin-bottom: 0.75rem;
+            color: rgba(255, 255, 255, 0.95);
         }
 
         .feature-card p {
-            color: var(--text-muted);
-            line-height: 1.7;
+            color: rgba(255, 255, 255, 0.6);
+            line-height: 1.6;
+            font-size: 0.9375rem;
         }
 
-        /* Installation Section */
-        .installation {
-            padding: 6rem 2rem;
-            max-width: 1400px;
-            margin: 0 auto;
-            position: relative;
-        }
-
-        .installation-content {
-            max-width: 1000px;
-            margin: 0 auto;
-            text-align: center;
-        }
-
-        .installation-description {
-            font-size: 1.3rem;
-            color: var(--text-secondary);
-            margin-bottom: 4rem;
-            max-width: 750px;
-            margin-left: auto;
-            margin-right: auto;
-            line-height: 1.8;
-            font-weight: 400;
-        }
-
-        .code-block {
-            background: linear-gradient(135deg, 
-                rgba(10, 10, 11, 0.95), 
-                rgba(15, 15, 17, 0.9)
-            );
-            border: 1px solid rgba(64, 748, 184, 0.15);
-            border-radius: 16px;
-            margin: 3rem 0;
-            position: relative;
-            overflow: hidden;
-            backdrop-filter: blur(20px) saturate(180%);
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            display: flex;
-            align-items: center;
-            padding: 1.5rem;
-            max-width: 800px;
-            margin-left: auto;
-            margin-right: auto;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
-        }
-
-        .code-block:hover {
-            border-color: rgba(99, 102, 241, 0.4);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
-            transform: translateY(-2px);
-            background: linear-gradient(135deg, 
-                rgba(10, 10, 11, 0.98), 
-                rgba(15, 15, 17, 0.95)
-            );
-        }
-
-        .code-content {
-            flex: 1;
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            min-height: 60px;
-        }
-
-        .code-block code {
-            color: #e2e8f0;
-            font-family: 'SF Mono', Monaco, 'Cascadia Code', 'JetBrains Mono', 'Fira Code', monospace;
-            font-size: 1rem;
-            font-weight: 500;
-            line-height: 1.5;
-            letter-spacing: 0.02em;
-            word-break: break-all;
-            flex: 1;
-        }
-
-        /* Enhanced shell syntax highlighting */
-        .shell-command { color: #e6edf3; }
-        .shell-pipe { color: #ff7b72; font-weight: 700; }
-        .shell-flag { color: #a5d6ff; font-weight: 600; }
-        .shell-url { color: #7ee787; }
-        .shell-executable { 
-            color: #ffa657; 
-            font-weight: 700;
-            text-shadow: 0 0 10px rgba(255, 166, 87, 0.3);
-        }
-
-        .copy-btn {
-            background: linear-gradient(135deg, 
-                rgba(31, 41, 55, 0.9), 
-                rgba(55, 65, 81, 0.8)
-            );
-            border: 1px solid rgba(99, 102, 241, 0.3);
-            border-radius: 12px;
-            padding: 1rem;
-            color: #e5e7eb;
-            cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            width: 48px;
-            height: 48px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-            position: relative;
-            overflow: hidden;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-        }
-
-        .copy-btn:hover {
-            transform: scale(1.05);
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
-            border-color: rgba(99, 102, 241, 0.5);
-            background: linear-gradient(135deg, 
-                rgba(31, 41, 55, 1), 
-                rgba(55, 65, 81, 0.9)
-            );
-            color: #f3f4f6;
-        }
-
-        .copy-btn:active {
-            transform: scale(0.95);
-        }
-
-        .installation-flow {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-            gap: 2.5rem;
-            margin: 5rem 0;
-            max-width: 1200px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-
-        .step-card {
-            background: var(--bg-glass);
-            border: 1px solid var(--border-color);
-            border-radius: 28px;
-            padding: 3rem;
-            backdrop-filter: blur(28px) saturate(200%);
-            transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
-            position: relative;
-            overflow: hidden;
-            text-align: left;
-        }
-
-        .step-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 1px;
-            background: var(--gradient-primary);
-            opacity: 0;
-            transition: opacity 0.6s ease;
-        }
-
-        .step-card::after {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, 
-                rgba(99, 102, 241, 0.06) 0%, 
-                transparent 70%
-            );
-            opacity: 0;
-            transition: opacity 0.6s ease;
-            pointer-events: none;
-        }
-
-        .step-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
-            border-color: var(--border-hover);
-            background: var(--bg-glass-hover);
-        }
-
-        .step-card:hover::before {
-            opacity: 1;
-        }
-
-        .step-card:hover::after {
-            opacity: 1;
-        }
-
-        .step-header {
-            display: flex;
-            align-items: center;
-            gap: 1.5rem;
-            margin-bottom: 2rem;
-        }
-
-        .step-number {
-            width: 54px;
-            height: 54px;
-            background: linear-gradient(135deg, 
-                #06b6d4 0%, 
-                #3b82f6 100%
-            );
-            border-radius: 18px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 800;
-            font-size: 1.4rem;
-            color: white;
-            box-shadow: 
-                0 12px 24px rgba(6, 182, 212, 0.25),
-                0 0 0 1px rgba(255, 255, 255, 0.1);
-            flex-shrink: 0;
-            transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .step-card:hover .step-number {
-            transform: scale(1.05);
-            box-shadow: 
-                0 8px 16px rgba(6, 182, 212, 0.3),
-                0 0 0 1px rgba(255, 255, 255, 0.1);
-        }
-
-        .step-title {
-            font-size: 1.5rem;
-            font-weight: 800;
-            color: var(--text-primary);
-            margin: 0;
-            letter-spacing: -0.025em;
-            background: linear-gradient(135deg, 
-                #f1f5f9, 
-                #cbd5e1
-            );
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            transition: all 0.4s ease;
-        }
-
-        .step-card:hover .step-title {
-            background: linear-gradient(135deg, 
-                #ffffff, 
-                #e2e8f0
-            );
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            transform: translateX(2px);
-        }
-
-        .step-description {
-            color: var(--text-muted);
-            line-height: 1.8;
-            font-size: 1.05rem;
-            font-weight: 400;
-            margin-top: 0.8rem;
-            transition: all 0.4s ease;
-        }
-
-        .step-card:hover .step-description {
-            color: rgba(226, 232, 240, 0.9);
-            transform: translateX(2px);
-        }
-
-        .step-shortcut {
-            margin-top: 1.5rem;
-            padding: 1rem;
-            background: rgba(99, 102, 241, 0.05);
-            border: 1px solid rgba(99, 102, 241, 0.1);
-            border-radius: 12px;
-            font-size: 0.9rem;
-            color: var(--text-secondary);
-            font-family: 'SF Mono', Monaco, monospace;
-        }
-
-
-
-        /* Stats Section */
         .stats {
-            padding: 5rem 2rem;
-            max-width: 1200px;
+            padding: 4rem 1.5rem;
+            max-width: 1400px;
             margin: 0 auto;
         }
 
         .stats-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 2rem;
-            margin-top: 3rem;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 2rem;
         }
 
         .stat-card {
-            background: var(--bg-glass);
-            border: 1px solid var(--border-color);
-            border-radius: 16px;
-            padding: 2.5rem 2rem;
-            backdrop-filter: blur(20px);
-            transition: all 0.3s ease;
+            background: rgba(0, 0, 0, 0.25);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            border-radius: 8px;
+            padding: 1.5rem;
             text-align: center;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .stat-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 1px;
-            background: var(--gradient-secondary);
-            opacity: 0;
-            transition: opacity 0.3s ease;
         }
 
         .stat-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
-            border-color: var(--border-hover);
-            background: var(--bg-glass-hover);
-        }
-
-        .stat-card:hover::before {
-            opacity: 1;
+            background: rgba(255, 255, 255, 0.03);
         }
 
         .stat-number {
-            font-size: 3rem;
-            font-weight: 700;
-            background: var(--gradient-secondary);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            font-size: 2rem;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.95);
             margin-bottom: 0.5rem;
-            display: block;
+            line-height: 1;
         }
 
         .stat-label {
-            color: var(--text-muted);
-            font-size: 1.1rem;
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.8125rem;
             font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
         }
 
         .loading-stats {
             text-align: center;
-            color: var(--text-muted);
+            color: rgba(255, 255, 255, 0.5);
             font-style: italic;
             padding: 2rem;
         }
 
-        /* Chart Styles */
         .chart-container {
-            background: var(--bg-glass);
-            border: 1px solid var(--border-color);
-            border-radius: 16px;
-            padding: 2rem;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 10px;
+            padding: 1.5rem;
             margin: 2rem 0;
-            backdrop-filter: blur(20px);
-            transition: all 0.3s ease;
         }
 
         .chart-container:hover {
-            border-color: var(--border-hover);
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+            border-color: rgba(255, 255, 255, 0.1);
         }
 
         .chart-title {
-            font-size: 1.5rem;
+            font-size: 1.125rem;
             font-weight: 600;
-            color: var(--text-primary);
-            margin-bottom: 1.5rem;
+            color: rgba(255, 255, 255, 0.95);
+            margin-bottom: 1.25rem;
             text-align: center;
         }
 
@@ -721,12 +302,324 @@
             width: 100%;
         }
 
-        /* Footer */
+        .recognition-cards {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .recognition-card {
+            background: rgba(0, 0, 0, 0.25);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            border-radius: 10px;
+            padding: 2rem;
+        }
+
+        .recognition-card:hover {
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .recognition-icon {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .recognition-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.95);
+            margin-bottom: 0.75rem;
+            text-align: center;
+        }
+
+        .recognition-desc {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 1rem;
+            line-height: 1.6;
+            text-align: center;
+        }
+
+        .installation {
+            padding: 4rem 1.5rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .installation-content {
+            max-width: 1000px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .installation-description {
+            font-size: 1.1rem;
+            color: rgba(255, 255, 255, 0.6);
+            margin-bottom: 3rem;
+            max-width: 750px;
+            margin-left: auto;
+            margin-right: auto;
+            line-height: 1.7;
+        }
+
+        .code-block {
+            background: rgba(0, 0, 0, 0.35);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 10px;
+            margin: 2rem auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1.25rem 1.5rem;
+            max-width: 850px;
+            gap: 1rem;
+        }
+
+        .code-block:hover {
+            border-color: rgba(168, 85, 247, 0.3);
+        }
+
+        .code-content {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            min-height: 50px;
+        }
+
+        .code-block code {
+            color: #e2e8f0;
+            font-family: 'JetBrains Mono', 'SF Mono', Monaco, 'Fira Code', monospace;
+            font-size: 0.8125rem;
+            font-weight: 500;
+            line-height: 1.5;
+            letter-spacing: 0.02em;
+            word-break: break-all;
+            flex: 1;
+            text-align: left;
+            white-space: nowrap;
+        }
+
+        .shell-command { color: #e6edf3; }
+        .shell-pipe { color: #ff7b72; font-weight: 700; }
+        .shell-flag { color: #a5d6ff; font-weight: 600; }
+        .shell-url { color: #7ee787; }
+        .shell-executable { 
+            color: #ffa657; 
+            font-weight: 700;
+        }
+
+        .copy-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 8px;
+            padding: 0.75rem;
+            color: rgba(255, 255, 255, 0.75);
+            cursor: pointer;
+            width: 44px;
+            height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .copy-btn:hover {
+            background: rgba(255, 255, 255, 0.15);
+            color: white;
+        }
+
+        .copy-btn.copied {
+            background: rgba(34, 197, 94, 0.2);
+            border-color: rgba(34, 197, 94, 0.4);
+            color: #22c55e;
+        }
+
+        .copy-tooltip {
+            position: absolute;
+            top: -32px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.8);
+            color: #22c55e;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            white-space: nowrap;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.2s ease;
+        }
+
+        .copy-btn.copied .copy-tooltip {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .installation-flow {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+            margin: 3rem 0;
+            max-width: 1200px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .step-card {
+            background: rgba(0, 0, 0, 0.25);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            border-radius: 10px;
+            padding: 1.75rem;
+            text-align: left;
+        }
+
+        .step-card:hover {
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .step-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.25rem;
+        }
+
+        .step-number {
+            width: 44px;
+            height: 44px;
+            background: linear-gradient(135deg, #a855f7, #7c3aed);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.25rem;
+            color: white;
+            flex-shrink: 0;
+        }
+
+        .step-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.95);
+            margin: 0;
+        }
+
+        .step-description {
+            color: rgba(255, 255, 255, 0.6);
+            line-height: 1.7;
+            font-size: 0.9375rem;
+            margin-top: 0.5rem;
+        }
+
+        .step-shortcut {
+            margin-top: 1.25rem;
+            padding: 0.875rem;
+            background: rgba(168, 85, 247, 0.08);
+            border: 1px solid rgba(168, 85, 247, 0.15);
+            border-radius: 8px;
+            font-size: 0.875rem;
+            color: rgba(255, 255, 255, 0.7);
+            font-family: 'SF Mono', Monaco, monospace;
+        }
+
+        .section-description {
+            text-align: center;
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 1rem;
+            margin-bottom: 2.5rem;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .console-preview {
+            background: #0d0d12;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 8px;
+            margin-top: 1rem;
+            overflow: hidden;
+            font-family: 'SF Mono', Monaco, 'Cascadia Code', 'JetBrains Mono', 'Fira Code', monospace;
+            font-size: 0.75rem;
+        }
+
+        .console-header {
+            background: rgba(255, 255, 255, 0.03);
+            padding: 0.5rem 0.75rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .console-header-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .console-header-dot.red { background: #ff5f56; }
+        .console-header-dot.yellow { background: #ffbd2e; }
+        .console-header-dot.green { background: #27c93f; }
+
+        .console-header-title {
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.7rem;
+            margin-left: 0.5rem;
+        }
+
+        .console-body {
+            padding: 0.75rem;
+            max-height: 140px;
+            overflow-y: auto;
+        }
+
+        .console-line {
+            line-height: 1.6;
+            white-space: nowrap;
+            animation: fadeInLine 0.3s ease-out;
+        }
+
+        @keyframes fadeInLine {
+            from { opacity: 0; transform: translateY(-5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .console-line .log-output {
+            color: #58ACFA;
+        }
+
+        .console-line .log-warning {
+            color: #FFA500;
+        }
+
+        .console-line .log-error {
+            color: #FF4500;
+        }
+
+        .console-line .log-info {
+            color: #27ae60;
+        }
+
+        .console-line .log-text {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .console-line .log-success {
+            color: #2ecc71;
+        }
+
         footer {
-            background: var(--bg-card);
-            backdrop-filter: blur(20px);
-            border-top: 1px solid var(--border-color);
-            padding: 3rem 2rem 2rem;
+            background: rgba(0, 0, 0, 0.3);
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+            padding: 2.5rem 1.5rem 2rem;
             text-align: center;
         }
 
@@ -739,40 +632,53 @@
             display: flex;
             justify-content: center;
             gap: 2rem;
-            margin-bottom: 2rem;
+            margin-bottom: 1.5rem;
             flex-wrap: wrap;
         }
 
         .footer-links a {
-            color: var(--text-secondary);
+            color: rgba(255, 255, 255, 0.6);
             text-decoration: none;
-            transition: color 0.3s ease;
         }
 
         .footer-links a:hover {
-            color: var(--primary-color);
+            color: #a855f7;
         }
 
         .footer-note {
-            color: var(--text-secondary);
-            font-size: 0.9rem;
-            margin-top: 2rem;
-            padding-top: 2rem;
-            border-top: 1px solid var(--border-color);
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.875rem;
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
         }
 
-        /* Responsive Design */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 3px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        
+        html {
+            scrollbar-width: thin;
+            scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+        }
+
         @media (max-width: 768px) {
-            nav {
-                padding: 1rem;
-            }
-
-            .nav-links {
-                display: none;
-            }
-
             .hero {
                 padding: 1rem;
+            }
+
+            .hero h1 {
+                font-size: 2.5rem;
             }
 
             .cta-buttons {
@@ -784,29 +690,37 @@
                 padding: 3rem 1rem;
             }
 
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .recognition-cards {
+                grid-template-columns: 1fr;
+            }
+
             .installation {
-                padding: 4rem 1rem;
+                padding: 3rem 1rem;
             }
 
             .installation-description {
-                font-size: 1.1rem;
-                margin-bottom: 3rem;
+                font-size: 1rem;
+                margin-bottom: 2rem;
             }
 
             .code-block {
-                border-radius: 12px;
-                margin: 2rem 0;
+                border-radius: 8px;
+                margin: 1.5rem 0;
                 padding: 1rem;
                 flex-direction: column;
                 gap: 1rem;
             }
 
             .code-content {
-                min-height: 50px;
+                min-height: auto;
             }
 
             .code-block code {
-                font-size: 0.85rem;
+                font-size: 0.8rem;
             }
 
             .copy-btn {
@@ -816,64 +730,66 @@
             }
 
             .installation-flow {
-                grid-template-columns: 1fr;
-                gap: 2rem;
-                margin: 4rem 0;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 1rem;
+                margin: 2rem 0;
             }
 
             .step-card {
-                padding: 2rem;
-                border-radius: 16px;
+                padding: 1.5rem;
             }
 
             .step-header {
-                gap: 1rem;
-                margin-bottom: 1.5rem;
+                gap: 0.875rem;
+                margin-bottom: 1rem;
             }
 
             .step-number {
-                width: 44px;
-                height: 44px;
-                font-size: 1.2rem;
+                width: 40px;
+                height: 40px;
+                font-size: 1.125rem;
             }
 
             .step-title {
-                font-size: 1.3rem;
+                font-size: 1.125rem;
             }
 
             .step-description {
-                font-size: 0.95rem;
+                font-size: 0.875rem;
             }
 
             .step-shortcut {
                 margin-top: 1rem;
                 padding: 0.75rem;
-                font-size: 0.85rem;
+                font-size: 0.8rem;
             }
 
             .footer-links {
                 flex-direction: column;
                 gap: 1rem;
             }
+
+            .chart-wrapper {
+                height: 280px;
+            }
         }
 
         @media (max-width: 480px) {
             .installation {
-                padding: 3rem 0.75rem;
+                padding: 2rem 0.75rem;
             }
 
             .code-block {
                 padding: 0.75rem;
-                margin: 1.5rem 0;
+                margin: 1rem 0;
             }
 
             .code-content {
                 gap: 0.75rem;
-                min-height: 44px;
             }
 
             .code-block code {
-                font-size: 0.8rem;
+                font-size: 0.75rem;
             }
 
             .copy-btn {
@@ -882,56 +798,19 @@
             }
 
             .step-card {
-                padding: 1.5rem;
+                padding: 1.25rem;
             }
-        }
-
-        /* Animations */
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .fade-in-up {
-            animation: fadeInUp 0.8s ease-out;
-        }
-
-        /* Smooth scrolling */
-        html {
-            scroll-behavior: smooth;
         }
     </style>
 </head>
 <body>
-    <!-- Background Animation -->
-    <div class="bg-animation"></div>
-
-    <!-- Navigation -->
-    <nav>
-        <div class="nav-container">
-            <ul class="nav-links">
-                <li><a href="#stats">Stats</a></li>
-                <li><a href="#features">Features</a></li>
-                <li><a href="#executors">Executors</a></li>
-                <li><a href="#installation">Installation</a></li>
-            </ul>
-        </div>
-    </nav>
-
-    <!-- Hero Section -->
     <section class="hero">
-        <div class="hero-content fade-in-up">
-            <h1>Nitrogen ❄️</h1>
+        <div class="hero-content">
+            <h1>Nitrogen</h1>
             <div class="subtitle">Modern Executor UI</div>
             <p class="description">
                 A clean, modern and feature-packed custom UI/wrapper for multiple executors with a sleek interface. 
-                Streamlined experience for executing, managing, and discovering scripts with style.
+                Featuring a powerful Alt Manager, Smart AI Assistant (NitroBot), and a streamlined experience for executing, managing, and discovering scripts with style.
             </p>
             <div class="cta-buttons">
                 <a href="#installation" class="btn-primary">
@@ -943,12 +822,15 @@
                     View on GitHub
                 </a>
             </div>
+            <div class="scroll-indicator" onclick="document.getElementById('stats').scrollIntoView({behavior: 'smooth'})">
+                <span>Scroll down</span>
+                <svg class="scroll-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M7 13l5 5 5-5M7 6l5 5 5-5"/>
+                </svg>
+            </div>
         </div>
     </section>
 
-
-
-    <!-- Stats Section -->
     <section class="stats" id="stats" style="display: none;">
         <h2 class="section-title">Statistics - The most downloaded executor UI</h2>
         <div class="stats-grid" id="statsGrid" style="display: none;">
@@ -967,7 +849,6 @@
         </div>
         <div class="loading-stats" id="statsLoading">Loading statistics...</div>
         
-        <!-- Chart Container -->
         <div class="chart-container" id="chartContainer" style="display: none;">
             <h3 class="chart-title">Cumulative Downloads Over Time</h3>
             <div class="chart-wrapper">
@@ -976,23 +857,22 @@
         </div>
     </section>
 
-    <!-- Community Recognition Section -->
     <section class="features" id="recognition">
-        <div style="text-align: center; margin-bottom: 3rem;">
-            <h2 class="section-title">Community Recognition</h2>
-            <div style="background: linear-gradient(135deg, rgba(6, 182, 212, 0.1), rgba(99, 102, 241, 0.1)); border: 1px solid rgba(6, 182, 212, 0.2); border-radius: 16px; padding: 2rem; max-width: 800px; margin: 0 auto 2rem auto; backdrop-filter: blur(20px);">
-                <div style="font-size: 2rem; margin-bottom: 1rem;">🏆</div>
-                <h3 style="font-size: 1.5rem; font-weight: 700; color: var(--text-primary); margin-bottom: 1rem;">Voted #1 Custom UI & New Default for Hydrogen</h3>
-                <p style="color: var(--text-secondary); font-size: 1.1rem; line-height: 1.6;">
+        <h2 class="section-title">Community Recognition</h2>
+        <div class="recognition-cards">
+            <div class="recognition-card">
+                <div class="recognition-icon">🏆</div>
+                <h3 class="recognition-title">Voted #1 Custom UI & New Default for Hydrogen</h3>
+                <p class="recognition-desc">
                     Nitrogen has been voted as the official custom UI of Hydrogen by the majority of community members, 
                     making it the preferred interface for enhanced scripting experiences. It was changed later on for miscellaneous reasons.
                 </p>
             </div>
             
-            <div style="background: linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(6, 182, 212, 0.1)); border: 1px solid rgba(139, 92, 246, 0.2); border-radius: 16px; padding: 2rem; max-width: 800px; margin: 0 auto; backdrop-filter: blur(20px);">
-                <div style="font-size: 2rem; margin-bottom: 1rem;">⭐</div>
-                <h3 style="font-size: 1.5rem; font-weight: 700; color: var(--text-primary); margin-bottom: 1rem;">Most Downloaded & Praised Executor UI</h3>
-                <p style="color: var(--text-secondary); font-size: 1.1rem; line-height: 1.6;">
+            <div class="recognition-card">
+                <div class="recognition-icon">⭐</div>
+                <h3 class="recognition-title">Most Downloaded & Praised Executor UI</h3>
+                <p class="recognition-desc">
                     With many downloads and positive community feedback (MiniLuv excluded), Nitrogen stands as the most popular 
                     and highly-rated custom executor interface, praised for its features, reliability, and stunning design.
                 </p>
@@ -1000,7 +880,6 @@
         </div>
     </section>
 
-    <!-- Features Section -->
     <section class="features" id="features">
         <h2 class="section-title">Features</h2>
         <div class="features-grid">
@@ -1056,8 +935,16 @@
                 <div class="feature-icon">
                     <i data-feather="cpu"></i>
                 </div>
-                <h3>AI Code Assistant</h3>
-                <p>Integrated AI-powered code generation and assistance with context-aware suggestions and explanations via NitroBot API.</p>
+                <h3>Smart AI Assistant</h3>
+                <p>NitroBot — Your intelligent coding companion with context-aware code generation, smart suggestions, explanations, and real-time assistance for all your Lua scripting needs.</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i data-feather="users"></i>
+                </div>
+                <h3>Alt Manager</h3>
+                <p>Powerful account manager with encrypted storage, one-click account switching, multi-instance support, search & sort, import/export functionality, and automatic Roblox avatar syncing.</p>
             </div>
             
             <div class="feature-card">
@@ -1102,10 +989,9 @@
         </div>
     </section>
 
-    <!-- Supported Executors Section -->
     <section class="features" id="executors">
         <h2 class="section-title">Supported Executors</h2>
-        <p style="text-align: center; color: var(--text-secondary); font-size: 1.1rem; margin-bottom: 3rem; max-width: 700px; margin-left: auto; margin-right: auto;">
+        <p class="section-description">
             Nitrogen is designed to work seamlessly with multiple popular macOS executors through intelligent port detection and HTTP communication protocols.
         </p>
         <div class="features-grid">
@@ -1135,7 +1021,6 @@
         </div>
     </section>
 
-    <!-- Installation Section -->
     <section class="installation" id="installation">
         <div class="installation-content">
             <h2 class="section-title">Quick Installation</h2>
@@ -1150,6 +1035,7 @@
                     <code id="install-command"><span class="shell-executable">curl</span> <span class="shell-flag">-fsSL</span> <span class="shell-url">https://raw.githubusercontent.com/JadXV/Nitrogen/refs/heads/main/install.sh</span> <span class="shell-pipe">|</span> <span class="shell-executable">bash</span></code>
                 </div>
                 <button class="copy-btn" onclick="copyToClipboard()">
+                    <span class="copy-tooltip">Copied!</span>
                     <i data-feather="copy"></i>
                 </button>
             </div>
@@ -1164,7 +1050,7 @@
                         Launch the Terminal application on your Mac. You can find it in Applications > Utilities, or use Spotlight search for quick access.
                     </div>
                     <div class="step-shortcut">
-                        💡 Quick access: Press ⌘ + Space, then type "Terminal"
+                        Quick access: Press ⌘ + Space, then type "Terminal"
                     </div>
                 </div>
                 
@@ -1177,7 +1063,7 @@
                         Copy the installation command above and paste it into your Terminal window. Press Enter to start the automated installation process.
                     </div>
                     <div class="step-shortcut">
-                        💡 Use ⌘ + V to paste, then press Enter to execute
+                        Use ⌘ + V to paste, then press Enter to execute
                     </div>
                 </div>
                 
@@ -1190,7 +1076,7 @@
                         The installer will automatically download and configure Nitrogen. You'll see progress updates in the Terminal as it completes.
                     </div>
                     <div class="step-shortcut">
-                        ⏱️ Installation typically takes 5-30 seconds
+                        Installation typically takes 5-30 seconds
                     </div>
                 </div>
 
@@ -1203,14 +1089,13 @@
                         Once installation is complete, start your executor and enjoy Nitrogen's modern interface with all its powerful features and sleek design.
                     </div>
                     <div class="step-shortcut">
-                        🚀 Ready to enhance your scripting experience!
+                        Ready to enhance your scripting experience!
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Footer -->
     <footer>
         <div class="footer-content">
             <div class="footer-links">
@@ -1232,13 +1117,10 @@
         </div>
     </footer>
 
-    <!-- Feather Icons Script -->
     <script src="https://unpkg.com/feather-icons"></script>
     <script>
-        // Initialize Feather icons
         feather.replace();
 
-        // Nitrogen Stats API
         async function loadNitrogenStats() {
             try {
                 const response = await fetch('https://api.github.com/repos/jadxv/nitrogen/releases');
@@ -1249,28 +1131,26 @@
                 const releases = await response.json();
                 
                 if (releases && releases.length > 0) {
-                    // Calculate total downloads
-                    const totalDownloads = releases.reduce((total, release) => {
+                    let totalDownloads = releases.reduce((total, release) => {
                         return total + release.assets.reduce((sum, asset) => sum + asset.download_count, 0);
                     }, 0);
+
+                    // we add 352 downloads to v4.1 since the release was deleted.
+                    totalDownloads += 352;
+                    // im not cheating it, you could check the release dates.
                     
-                    // Get total releases
                     const totalReleases = releases.length;
                     
-                    // Get latest version
                     const latestVersion = releases[0]?.tag_name || "N/A";
                     
-                    // Update the UI
                     document.getElementById('totalDownloads').textContent = totalDownloads.toLocaleString();
                     document.getElementById('totalReleases').textContent = totalReleases;
                     document.getElementById('latestVersion').textContent = latestVersion;
                     
-                    // Show stats section and stats grid, hide loading
                     document.getElementById('stats').style.display = 'block';
                     document.getElementById('statsGrid').style.display = 'grid';
                     document.getElementById('statsLoading').style.display = 'none';
                     
-                    // Create chart if there are multiple releases
                     if (releases.length > 1) {
                         createNitrogenChart(releases);
                         document.getElementById('chartContainer').style.display = 'block';
@@ -1280,7 +1160,6 @@
                 }
             } catch (error) {
                 console.error('Error loading Nitrogen stats:', error);
-                // Hide the entire stats section on error
                 document.getElementById('stats').style.display = 'none';
             }
         }
@@ -1305,6 +1184,19 @@
                 }))
                 .sort((a, b) => a.date - b.date);
 
+            const modifiedVersion = 'v4.1';
+
+            // we add 352 downloads to v4.1 since the release was deleted.
+            const additionalDownloads = 352;
+            // im not cheating it, you could check the release dates.
+            
+            chartData.forEach(item => {
+                if (item.version === modifiedVersion) {
+                    item.downloads += additionalDownloads;
+                    item.modified = true;
+                }
+            });
+
             let cumulativeDownloads = 0;
             const cumulativeData = chartData.map(item => {
                 cumulativeDownloads += item.downloads;
@@ -1316,17 +1208,12 @@
 
             const labels = cumulativeData.map(item => item.version);
             const downloadData = cumulativeData.map(item => item.cumulativeDownloads);
+            const modifiedFlags = cumulativeData.map(item => item.modified || false);
 
             const ctx = canvas.getContext('2d');
             const gradient = ctx.createLinearGradient(0, 0, 0, 400);
-            gradient.addColorStop(0, 'rgba(99, 102, 241, 0.8)');
-            gradient.addColorStop(0.5, 'rgba(139, 92, 246, 0.6)');
-            gradient.addColorStop(1, 'rgba(6, 182, 212, 0.4)');
-
-            const borderGradient = ctx.createLinearGradient(0, 0, 0, 400);
-            borderGradient.addColorStop(0, '#6366f1');
-            borderGradient.addColorStop(0.5, '#8b5cf6');
-            borderGradient.addColorStop(1, '#06b6d4');
+            gradient.addColorStop(0, 'rgba(168, 85, 247, 0.15)');
+            gradient.addColorStop(1, 'rgba(168, 85, 247, 0.05)');
 
             const chart = new Chart(ctx, {
                 type: 'line',
@@ -1336,39 +1223,56 @@
                         label: 'Total Downloads',
                         data: downloadData,
                         backgroundColor: gradient,
-                        borderColor: borderGradient,
-                        borderWidth: 3,
+                        borderColor: '#a855f7',
+                        borderWidth: 2,
                         fill: true,
-                        tension: 0.4,
-                        pointBackgroundColor: '#6366f1',
-                        pointBorderColor: '#ffffff',
+                        tension: 0.3,
+                        pointBackgroundColor: '#a855f7',
+                        pointBorderColor: 'rgba(0, 0, 0, 0.4)',
                         pointBorderWidth: 2,
-                        pointRadius: 6,
-                        pointHoverRadius: 8,
-                        pointHoverBackgroundColor: '#8b5cf6',
-                        pointHoverBorderColor: '#ffffff',
+                        pointRadius: labels.length > 15 ? 2 : 4,
+                        pointHoverRadius: 6,
+                        pointHoverBackgroundColor: '#a855f7',
+                        pointHoverBorderColor: 'rgba(0, 0, 0, 0.4)',
                         pointHoverBorderWidth: 2
                     }]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
+                    animation: {
+                        duration: 400,
+                        easing: 'easeOutQuart'
+                    },
                     interaction: {
                         intersect: false,
                         mode: 'index'
+                    },
+                    elements: {
+                        line: {
+                            borderJoinStyle: 'round'
+                        }
                     },
                     plugins: {
                         legend: {
                             display: false
                         },
                         tooltip: {
-                            backgroundColor: 'rgba(10, 10, 11, 0.95)',
-                            borderColor: 'rgba(99, 102, 241, 0.5)',
+                            backgroundColor: 'rgba(0, 0, 0, 0.45)',
+                            borderColor: 'rgba(255, 255, 255, 0.06)',
                             borderWidth: 1,
-                            titleColor: '#f8fafc',
-                            bodyColor: '#f8fafc',
+                            titleColor: 'white',
+                            bodyColor: 'rgba(255, 255, 255, 0.95)',
                             cornerRadius: 8,
                             displayColors: false,
+                            padding: 12,
+                            titleFont: {
+                                size: 14,
+                                weight: '600'
+                            },
+                            bodyFont: {
+                                size: 13
+                            },
                             callbacks: {
                                 title: function(context) {
                                     return `Version ${context[0].label}`;
@@ -1379,10 +1283,17 @@
                                     const previousTotal = currentIndex > 0 ? downloadData[currentIndex - 1] : 0;
                                     const versionDownloads = currentTotal - previousTotal;
                                     
-                                    return [
+                                    const lines = [
                                         `Total Downloads: ${currentTotal.toLocaleString()}`,
                                         `This Version: ${versionDownloads.toLocaleString()}`
                                     ];
+                                    
+                                    if (modifiedFlags[currentIndex]) {
+                                        lines.push('');
+                                        lines.push('⚠ Modified: release was deleted');
+                                    }
+                                    
+                                    return lines;
                                 }
                             }
                         }
@@ -1390,46 +1301,43 @@
                     scales: {
                         x: {
                             grid: {
-                                color: 'rgba(255, 255, 255, 0.08)',
-                                borderColor: 'rgba(255, 255, 255, 0.1)'
+                                color: 'rgba(255, 255, 255, 0.06)',
+                                borderColor: 'rgba(255, 255, 255, 0.06)'
                             },
                             ticks: {
-                                color: '#94a3b8',
+                                color: 'rgba(255, 255, 255, 0.75)',
                                 font: {
-                                    family: 'Inter',
-                                    size: 12
+                                    family: '-apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif',
+                                    size: 11,
+                                    weight: '500'
                                 },
                                 maxRotation: 45,
-                                maxTicksLimit: Math.min(labels.length, 20) 
+                                maxTicksLimit: Math.min(labels.length, 15) 
                             },
                             border: {
-                                color: 'rgba(255, 255, 255, 0.1)'
+                                color: 'rgba(255, 255, 255, 0.06)'
                             }
                         },
                         y: {
                             min: 0,
                             grid: {
-                                color: 'rgba(255, 255, 255, 0.08)',
-                                borderColor: 'rgba(255, 255, 255, 0.1)'
+                                color: 'rgba(255, 255, 255, 0.06)',
+                                borderColor: 'rgba(255, 255, 255, 0.06)'
                             },
                             ticks: {
-                                color: '#94a3b8',
+                                color: 'rgba(255, 255, 255, 0.75)',
                                 font: {
-                                    family: 'Inter',
-                                    size: 12
+                                    family: '-apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif',
+                                    size: 11,
+                                    weight: '500'
                                 },
                                 callback: function(value) {
                                     return value.toLocaleString();
                                 }
                             },
                             border: {
-                                color: 'rgba(255, 255, 255, 0.1)'
+                                color: 'rgba(255, 255, 255, 0.06)'
                             }
-                        }
-                    },
-                    elements: {
-                        point: {
-                            hoverBackgroundColor: '#8b5cf6'
                         }
                     }
                 }
@@ -1438,26 +1346,26 @@
             return chart;
         }
 
-        // Load stats when page loads
         loadNitrogenStats();
 
-        // Copy to clipboard function
         function copyToClipboard() {
             const command = "curl -fsSL https://raw.githubusercontent.com/JadXV/Nitrogen/refs/heads/main/install.sh | bash";
             navigator.clipboard.writeText(command).then(() => {
                 const btn = document.querySelector('.copy-btn');
                 const icon = btn.querySelector('i');
+                
+                btn.classList.add('copied');
                 icon.setAttribute('data-feather', 'check');
                 feather.replace();
                 
                 setTimeout(() => {
+                    btn.classList.remove('copied');
                     icon.setAttribute('data-feather', 'copy');
                     feather.replace();
                 }, 2000);
             });
         }
 
-        // Smooth scrolling for navigation links
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
                 e.preventDefault();
@@ -1471,28 +1379,48 @@
             });
         });
 
-        // Add fade-in animation on scroll
-        const observerOptions = {
-            threshold: 0.1,
-            rootMargin: '0px 0px -50px 0px'
-        };
+        const consoleMessages = [
+            { type: 'info', prefix: '[Info]:', text: 'Monitoring log file...' },
+            { type: 'output', prefix: '[Output]:', text: 'Script executed successfully' },
+            { type: 'output', prefix: '[Output]:', text: 'Hello from Nitrogen!' },
+            { type: 'warning', prefix: '[Warning]:', text: 'Deprecated function called' },
+            { type: 'output', prefix: '[Output]:', text: 'Player position: 125, 64, -89' },
+            { type: 'error', prefix: '[Error]:', text: 'attempt to index nil value' },
+            { type: 'success', prefix: '[Success]:', text: 'Connection established' },
+            { type: 'output', prefix: '[Output]:', text: 'Loading game assets...' },
+            { type: 'info', prefix: '[Info]:', text: 'Memory usage: 256MB' },
+            { type: 'output', prefix: '[Output]:', text: 'Remote event fired: UpdateStats' },
+            { type: 'warning', prefix: '[Warning]:', text: 'High ping detected: 150ms' },
+            { type: 'output', prefix: '[Output]:', text: 'Character spawned at spawn point' },
+            { type: 'success', prefix: '[Success]:', text: 'Data saved successfully' },
+            { type: 'error', prefix: '[Error]:', text: 'ServerScriptService denied access' },
+            { type: 'output', prefix: '[Output]:', text: 'GUI element created' }
+        ];
 
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.style.opacity = '1';
-                    entry.target.style.transform = 'translateY(0)';
+        function animateConsole() {
+            const consoleBody = document.getElementById('console-demo');
+            if (!consoleBody) return;
+
+            let messageIndex = 7;
+            
+            setInterval(() => {
+                const msg = consoleMessages[messageIndex % consoleMessages.length];
+                const line = document.createElement('div');
+                line.className = 'console-line';
+                line.innerHTML = `<span class="log-${msg.type}">${msg.prefix}</span> <span class="log-text">${msg.text}</span>`;
+                
+                consoleBody.appendChild(line);
+                consoleBody.scrollTop = consoleBody.scrollHeight;
+                
+                while (consoleBody.children.length > 10) {
+                    consoleBody.removeChild(consoleBody.firstChild);
                 }
-            });
-        }, observerOptions);
+                
+                messageIndex++;
+            }, 2500);
+        }
 
-        // Observe all feature cards and sections
-        document.querySelectorAll('.feature-card, .installation-content, .screenshot-container').forEach(el => {
-            el.style.opacity = '0';
-            el.style.transform = 'translateY(30px)';
-            el.style.transition = 'opacity 0.8s ease, transform 0.8s ease';
-            observer.observe(el);
-        });
+        animateConsole();
     </script>
 </body>
 </html>

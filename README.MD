@@ -6,7 +6,9 @@ Nitrogen is a modern, clean and feature-packed custom UI/wrapper for Hydrogen, M
 
 ## ✨ Features
 
+- **Alt Manager** — Full-featured account manager with encrypted storage, one-click account switching, multi-instance support, import/export functionality, and automatic profile syncing with Roblox avatars
 - **Clean, Modern Interface** — A beautiful code editor with syntax highlighting and auto-completion
+- **Smart AI Assistant (NitroBot)** — Integrated AI-powered code generation and assistance with context-aware suggestions, code explanations, and intelligent help for all your scripting needs
 - **ScriptBlox Integration** — Discover and use scripts directly from ScriptBlox
 - **Local Script Management** — Save, organize, rename, and delete your scripts
 - **Auto-Execute** — Configure scripts to run automatically when joining games

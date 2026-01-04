@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain, Tray, Menu, nativeImage, shell, dialog, globalShortcut } = require('electron');
+const { app, BrowserWindow, ipcMain, Tray, Menu, nativeImage, shell, dialog, globalShortcut, session } = require('electron');
 const path = require('path');
 const fs = require('fs');
 const os = require('os');
@@ -6,6 +6,8 @@ const axios = require('axios');
 const net = require('net');
 const { spawn, exec } = require('child_process');
 const zlib = require('zlib');
+const crypto = require('crypto');
+const https = require('https');
 
 function getAppVersion() {
     const packagePath = path.join(__dirname, 'package.json');
@@ -26,6 +28,9 @@ class NitrogenAPI {
         this.tray = null;
         this.directory = path.join(os.homedir(), 'Nitrogen');
         this.scriptsDirectory = path.join(this.directory, 'scripts');
+        this.accountsDirectory = path.join(this.directory, 'accounts');
+        this.accountsFile = path.join(this.accountsDirectory, 'accounts.dat');
+        this.metadataFile = path.join(this.directory, 'metadata.json');
         this.hydrogenAutoexecDir = path.join(os.homedir(), 'Hydrogen', 'autoexecute');
         this.macsploitAutoexecDir = path.join(os.homedir(), 'Documents', 'Macsploit Automatic Execution');
         this.opiumwareAutoexecDir = path.join(os.homedir(), 'Opiumware', 'autoexec');
@@ -41,96 +46,42 @@ class NitrogenAPI {
         if (!fs.existsSync(this.scriptsDirectory)) {
             fs.mkdirSync(this.scriptsDirectory, { recursive: true });
         }
+        if (!fs.existsSync(this.accountsDirectory)) {
+            fs.mkdirSync(this.accountsDirectory, { recursive: true });
+        }
     }
 
     syncAutoexecFolders() {
         try {
-            const hydrogenExists = fs.existsSync(this.hydrogenAutoexecDir);
-            const macsploitExists = fs.existsSync(this.macsploitAutoexecDir);
-            const opiumwareExists = fs.existsSync(this.opiumwareAutoexecDir);
+            const dirs = [
+                { path: this.hydrogenAutoexecDir, name: 'Hydrogen' },
+                { path: this.macsploitAutoexecDir, name: 'MacSploit' },
+                { path: this.opiumwareAutoexecDir, name: 'OpiumWare' }
+            ].filter(d => fs.existsSync(d.path));
 
-            if (!hydrogenExists && !macsploitExists && !opiumwareExists) {
-                return;
-            }
+            if (dirs.length === 0) return;
 
-            const hydrogenScripts = {};
-            const macsploitScripts = {};
-            const opiumwareScripts = {};
-
-            if (hydrogenExists) {
-                fs.readdirSync(this.hydrogenAutoexecDir)
-                    .filter(file => file.endsWith('.lua'))
-                    .forEach(filename => {
-                        try {
-                            const filePath = path.join(this.hydrogenAutoexecDir, filename);
-                            hydrogenScripts[filename] = fs.readFileSync(filePath, 'utf8');
-                        } catch (e) {
-                            console.error(`Error reading Hydrogen script ${filename}: ${e.message}`);
+            const allScripts = {};
+            dirs.forEach(({ path: dir, name }) => {
+                fs.readdirSync(dir).filter(f => f.endsWith('.lua')).forEach(filename => {
+                    try {
+                        if (!allScripts[filename]) {
+                            allScripts[filename] = fs.readFileSync(path.join(dir, filename), 'utf8');
                         }
-                    });
-            }
-
-            if (macsploitExists) {
-                fs.readdirSync(this.macsploitAutoexecDir)
-                    .filter(file => file.endsWith('.lua'))
-                    .forEach(filename => {
-                        try {
-                            const filePath = path.join(this.macsploitAutoexecDir, filename);
-                            macsploitScripts[filename] = fs.readFileSync(filePath, 'utf8');
-                        } catch (e) {
-                            console.error(`Error reading MacSploit script ${filename}: ${e.message}`);
-                        }
-                    });
-            }
-
-            if (opiumwareExists) {
-                fs.readdirSync(this.opiumwareAutoexecDir)
-                    .filter(file => file.endsWith('.lua'))
-                    .forEach(filename => {
-                        try {
-                            const filePath = path.join(this.opiumwareAutoexecDir, filename);
-                            opiumwareScripts[filename] = fs.readFileSync(filePath, 'utf8');
-                        } catch (e) {
-                            console.error(`Error reading OpiumWare script ${filename}: ${e.message}`);
-                        }
-                    });
-            }
-
-            const allScripts = { ...hydrogenScripts, ...macsploitScripts, ...opiumwareScripts };
+                    } catch (e) {
+                        console.error(`Error reading ${name} script ${filename}: ${e.message}`);
+                    }
+                });
+            });
 
             for (const [scriptName, content] of Object.entries(allScripts)) {
-                if (hydrogenExists) {
-                    const hydrogenPath = path.join(this.hydrogenAutoexecDir, scriptName);
-                    if (!fs.existsSync(hydrogenPath)) {
-                        try {
-                            fs.writeFileSync(hydrogenPath, content);
-                        } catch (e) {
-                            console.error(`Error syncing ${scriptName} to Hydrogen: ${e.message}`);
-                        }
+                dirs.forEach(({ path: dir, name }) => {
+                    const scriptPath = path.join(dir, scriptName);
+                    if (!fs.existsSync(scriptPath)) {
+                        try { fs.writeFileSync(scriptPath, content); }
+                        catch (e) { console.error(`Error syncing ${scriptName} to ${name}: ${e.message}`); }
                     }
-                }
-
-                if (macsploitExists) {
-                    const macsploitPath = path.join(this.macsploitAutoexecDir, scriptName);
-                    if (!fs.existsSync(macsploitPath)) {
-                        try {
-                            fs.writeFileSync(macsploitPath, content);
-                        } catch (e) {
-                            console.error(`Error syncing ${scriptName} to MacSploit: ${e.message}`);
-                        }
-                    }
-                }
-
-                if (opiumwareExists) {
-                    const opiumwarePath = path.join(this.opiumwareAutoexecDir, scriptName);
-                    if (!fs.existsSync(opiumwarePath)) {
-                        try {
-                            fs.writeFileSync(opiumwarePath, content);
-                        } catch (e) {
-                            console.error(`Error syncing ${scriptName} to OpiumWare: ${e.message}`);
-                        }
-                    }
-                }
+                });
             }
         } catch (e) {
             console.error(`Error syncing autoexec folders: ${e.message}`);
@@ -153,16 +104,46 @@ class NitrogenAPI {
 
     async getLatestReleaseInfo() {
         try {
-            const response = await axios.get('https://api.github.com/repos/JadXV/Nitrogen/releases/latest');
+            const currentVersion = getAppVersion();
+            const response = await axios.get('https://api.github.com/repos/JadXV/Nitrogen/releases');
             if (response.status === 200) {
-                const releaseData = response.data;
+                const releases = response.data;
+                const latestRelease = releases[0];
+                
+                let currentRelease = releases.find(r => r.tag_name === currentVersion);
+                let currentReleaseIndex = releases.findIndex(r => r.tag_name === currentVersion);
+                
+                if (!currentRelease && currentVersion.endsWith('.0')) {
+                    const shortenedVersion = currentVersion.slice(0, -2);
+                    currentRelease = releases.find(r => r.tag_name === shortenedVersion);
+                    currentReleaseIndex = releases.findIndex(r => r.tag_name === shortenedVersion);
+                }
+                
+                const latestTag = latestRelease?.tag_name;
+                const currentTag = currentRelease?.tag_name;
+                const isOutdated = latestRelease && currentTag && latestTag !== currentTag;
+                
+                const releaseData = currentRelease || latestRelease;
+                
+                const allReleases = releases.map(r => ({
+                    version: r.tag_name,
+                    name: r.name || r.tag_name,
+                    description: r.body || 'No changelog available.',
+                    published_at: r.published_at || '',
+                    html_url: r.html_url
+                }));
+                
                 return {
                     status: 'success',
-                    version: releaseData.tag_name || 'Unknown',
-                    name: releaseData.name || 'Latest Release',
-                    description: releaseData.body || 'No changelog available.',
-                    published_at: releaseData.published_at || '',
-                    html_url: releaseData.html_url || 'https://github.com/JadXV/Nitrogen/releases'
+                    version: releaseData?.tag_name || currentVersion,
+                    name: releaseData?.name || 'Release',
+                    description: releaseData?.body || 'No changelog available for this version.',
+                    published_at: releaseData?.published_at || '',
+                    html_url: releaseData?.html_url || 'https://github.com/JadXV/Nitrogen/releases',
+                    isOutdated: isOutdated,
+                    latestVersion: latestRelease?.tag_name || null,
+                    allReleases: allReleases,
+                    currentReleaseIndex: currentReleaseIndex >= 0 ? currentReleaseIndex : 0
                 };
             } else {
                 return {
@@ -178,29 +159,114 @@ class NitrogenAPI {
         }
     }
 
-    getVersion() {
-        return { version: getAppVersion() };
-    }
+    getVersion() { return { version: getAppVersion() }; }
 
     openScriptsFolder() {
+        try { shell.openPath(this.scriptsDirectory); }
+        catch (e) { console.error(`Error opening scripts folder: ${e.message}`); }
+    }
+
+    static HYDRO_START = 6969;
+    static HYDRO_END = 7069;
+    static MACSPLOIT_START = 5553;
+    static MACSPLOIT_END = 5563;
+    static OPIUM_START = 8392;
+    static OPIUM_END = 8397;
+
+    async checkPortStatus() {
+        const portStatus = [];
+        
+        for (let port = NitrogenAPI.MACSPLOIT_START; port <= NitrogenAPI.MACSPLOIT_END; port++) {
+            try {
+                const client = new net.Socket();
+                const isOnline = await new Promise((resolve) => {
+                    const timeout = setTimeout(() => {
+                        client.destroy();
+                        resolve(false);
+                    }, 500);
+
+                    client.connect(port, '127.0.0.1', () => {
+                        clearTimeout(timeout);
+                        client.destroy();
+                        resolve(true);
+                    });
+
+                    client.on('error', () => {
+                        clearTimeout(timeout);
+                        resolve(false);
+                    });
+                });
+
+                portStatus.push({
+                    port: port,
+                    type: 'macsploit',
+                    online: isOnline,
+                    label: `MacSploit :${port}`
+                });
+            } catch (e) {
+                portStatus.push({
+                    port: port,
+                    type: 'macsploit',
+                    online: false,
+                    label: `MacSploit :${port}`
+                });
+            }
+        }
+
+        return portStatus;
+    }
+
+    async executeScriptOnPort(scriptContent, targetPort) {
+        if (!targetPort || targetPort === 'auto') {
+            return this.executeScript(scriptContent);
+        }
+
+        const port = parseInt(targetPort);
+        const messages = [];
+
         try {
-            shell.openPath(this.scriptsDirectory);
+            const client = new net.Socket();
+            await new Promise((resolve, reject) => {
+                const timeout = setTimeout(() => {
+                    client.destroy();
+                    reject(new Error('Timeout'));
+                }, 3000);
+
+                client.connect(port, '127.0.0.1', () => {
+                    clearTimeout(timeout);
+                    const header = Buffer.alloc(16);
+                    header.writeUInt32LE(scriptContent.length + 1, 8);
+                    const data = Buffer.concat([header, Buffer.from(scriptContent), Buffer.from('\0')]);
+                    
+                    client.write(data);
+                    client.end();
+                    resolve();
+                });
+
+                client.on('error', (err) => {
+                    clearTimeout(timeout);
+                    reject(err);
+                });
+            });
+
+            return {
+                status: 'success',
+                message: `Script executed successfully via MacSploit on port ${port}`,
+                details: messages
+            };
         } catch (e) {
-            console.error(`Error opening scripts folder: ${e.message}`);
+            return {
+                status: 'error',
+                message: `Error: Failed to execute on port ${port}. Make sure the instance is running.`,
+                details: messages
+            };
         }
     }
 
     async executeScript(scriptContent) {
-        const HYDRO_START = 6969;
-        const HYDRO_END = 7069;
-        const MACSPLOIT_START = 5553;
-        const MACSPLOIT_END = 5563;
-        const OPIUM_START = 8392;
-        const OPIUM_END = 8397;
+        const { HYDRO_START, HYDRO_END, MACSPLOIT_START, MACSPLOIT_END, OPIUM_START, OPIUM_END } = NitrogenAPI;
         let serverPort = null;
-        const messages = [];
 
-        // Try Hydrogen first
         try {
             for (let port = HYDRO_START; port <= HYDRO_END; port++) {
                 try {
@@ -230,16 +296,13 @@ class NitrogenAPI {
                 if (response.status === 200) {
                     return {
                         status: 'success',
-                        message: 'Script executed successfully via Hydrogen',
-                        details: messages
+                        message: 'Script executed successfully via Hydrogen'
                     };
                 }
             }
         } catch (e) {
-            // Continue to try other executors
         }
 
-        // Try OpiumWare second
         for (let port = OPIUM_START; port <= OPIUM_END; port++) {
             try {
                 const client = new net.Socket();
@@ -268,187 +331,105 @@ class NitrogenAPI {
 
                 return {
                     status: 'success',
-                    message: `Script executed successfully via OpiumWare on port ${port}`,
-                    details: messages
+                    message: `Script executed successfully via OpiumWare on port ${port}`
                 };
             } catch (e) {
                 continue;
             }
         }
 
-        // Try MacSploit last
+        const macsploitResults = [];
+        const macsploitPromises = [];
+        
         for (let port = MACSPLOIT_START; port <= MACSPLOIT_END; port++) {
-            try {
-                const client = new net.Socket();
-                await new Promise((resolve, reject) => {
-                    const timeout = setTimeout(() => {
-                        client.destroy();
-                        reject(new Error('Timeout'));
-                    }, 3000);
+            macsploitPromises.push(
+                (async (currentPort) => {
+                    try {
+                        const client = new net.Socket();
+                        await new Promise((resolve, reject) => {
+                            const timeout = setTimeout(() => {
+                                client.destroy();
+                                reject(new Error('Timeout'));
+                            }, 3000);
 
-                    client.connect(port, '127.0.0.1', () => {
-                        clearTimeout(timeout);
-                        const header = Buffer.alloc(16);
-                        header.writeUInt32LE(scriptContent.length + 1, 8);
-                        const data = Buffer.concat([header, Buffer.from(scriptContent), Buffer.from('\0')]);
-                        
-                        client.write(data);
-                        client.end();
-                        resolve();
-                    });
+                            client.connect(currentPort, '127.0.0.1', () => {
+                                clearTimeout(timeout);
+                                const header = Buffer.alloc(16);
+                                header.writeUInt32LE(scriptContent.length + 1, 8);
+                                const data = Buffer.concat([header, Buffer.from(scriptContent), Buffer.from('\0')]);
+                                
+                                client.write(data);
+                                client.end();
+                                resolve();
+                            });
 
-                    client.on('error', (err) => {
-                        clearTimeout(timeout);
-                        reject(err);
-                    });
-                });
+                            client.on('error', (err) => {
+                                clearTimeout(timeout);
+                                reject(err);
+                            });
+                        });
 
-                return {
-                    status: 'success',
-                    message: `Script executed successfully via MacSploit on port ${port}`,
-                    details: messages
-                };
-            } catch (e) {
-                continue;
-            }
+                        macsploitResults.push({ port: currentPort, success: true });
+                    } catch (e) {
+                    }
+                })(port)
+            );
         }
 
-        // If all executors failed
+        await Promise.all(macsploitPromises);
+
+        if (macsploitResults.length > 0) {
+            return {
+                status: 'success',
+                message: `Script executed successfully via MacSploit on port(s): ${macsploitResults.map(r => r.port).join(', ')}`
+            };
+        }
+
         return {
             status: 'error',
-            message: 'Error: No compatible executor detected. Make sure Roblox is running and a compatible executor is installed.',
-            details: messages
+            message: 'Error: No compatible executor detected. Make sure Roblox is running and a compatible executor is installed.'
         };
     }
 
     async getGameName(universeId) {
         try {
-            const gameInfoUrl = `https://games.roblox.com/v1/games?universeIds=${universeId}`;
-            const response = await axios.get(gameInfoUrl);
-            
-            if (response.status === 200) {
-                const gameData = response.data;
-                if (gameData && gameData.data && gameData.data.length > 0) {
-                    const gameName = gameData.data[0].name;
-                    return {
-                        status: 'success',
-                        game_name: gameName
-                    };
-                }
-            }
-
-            return {
-                status: 'error',
-                message: 'Game not found'
-            };
+            const response = await axios.get(`https://games.roblox.com/v1/games?universeIds=${universeId}`);
+            const game = response.data?.data?.[0];
+            return game?.name 
+                ? { status: 'success', game_name: game.name }
+                : { status: 'error', message: 'Game not found' };
         } catch (e) {
-            return {
-                status: 'error',
-                message: e.message
-            };
+            return { status: 'error', message: e.message };
         }
     }
 
     async getScripts(script) {
         try {
-            let url;
-            if (script === "") {
-                url = "https://scriptblox.com/api/script/fetch";
-            } else {
-                url = `https://scriptblox.com/api/script/search?q=${encodeURIComponent(script)}`;
-            }
-
+            const url = script === "" 
+                ? "https://scriptblox.com/api/script/fetch"
+                : `https://scriptblox.com/api/script/search?q=${encodeURIComponent(script)}`;
             const response = await axios.get(url);
-            if (response.status === 200) {
-                return response.data;
-            } else {
-                throw new Error(`HTTP ${response.status}: ${response.data}`);
-            }
+            return response.status === 200 ? response.data : { status: 'error', message: `HTTP ${response.status}` };
         } catch (e) {
-            return {
-                status: 'error',
-                message: e.message
-            };
+            return { status: 'error', message: e.message };
         }
     }
 
     async openRoblox() {
         try {
-            const { stdout } = await new Promise((resolve, reject) => {
-                exec("ps aux | grep Roblox | grep -v grep", (error, stdout, stderr) => {
-                    if (error && error.code !== 1) {
-                        reject(error);
-                    } else {
-                        resolve({ stdout });
-                    }
-                });
-            });
-
-            const robloxProcesses = stdout.split('\n')
-                .filter(line => line.trim())
-                .map(line => line.split(/\s+/)[1])
-                .filter(pid => pid);
-
-            if (robloxProcesses.length > 1) {
-                const choice = await dialog.showMessageBox(this.mainWindow, {
-                    type: 'warning',
-                    buttons: ['Open New Instance', 'Quit All Roblox Processes', 'Cancel'],
-                    defaultId: 0,
-                    cancelId: 2,
-                    title: 'Multiple Roblox Instances',
-                    message: 'If you want to use proper multi-instances of Roblox properly:\n\n• Set scripts you want to use as auto-execute\n• Play your game on the first client\n• For additional instances, log out, log into a different account, then join the game\n• Repeat for more instances as needed'
-                });
-
-                if (choice.response === 0) {
-                    spawn('/Applications/Roblox.app/Contents/MacOS/RobloxPlayer', [], {
-                        stdio: 'ignore',
-                        detached: true
-                    });
-                    return {
-                        status: 'success',
-                        message: 'Roblox instance launched successfully'
-                    };
-                } else if (choice.response === 1) {
-                    for (const pid of robloxProcesses) {
-                        exec(`kill -9 ${pid}`);
-                    }
-                    return {
-                        status: 'success',
-                        message: 'All Roblox processes have been closed'
-                    };
-                } else {
-                    return {
-                        status: 'cancelled',
-                        message: 'Operation cancelled'
-                    };
-                }
-            } else {
-                shell.openExternal('roblox://');
-                return {
-                    status: 'success',
-                    message: 'Roblox launched successfully'
-                };
-            }
+            spawn('/Applications/Roblox.app/Contents/MacOS/RobloxPlayer', [], { stdio: 'ignore', detached: true });
+            return { status: 'success', message: 'Roblox instance launched successfully' };
         } catch (e) {
-            return {
-                status: 'error',
-                message: `Failed to open Roblox: ${e.message}`
-            };
+            return { status: 'error', message: `Failed to open Roblox: ${e.message}` };
         }
     }
 
     joinWebsite() {
         try {
             shell.openExternal('https://nitrogen.lol');
-            return {
-                status: 'success',
-                message: 'Website opened successfully'
-            };
+            return { status: 'success', message: 'Website opened successfully' };
         } catch (e) {
-            return {
-                status: 'error',
-                message: `Failed to open website: ${e.message}`
-            };
+            return { status: 'error', message: `Failed to open website: ${e.message}` };
         }
     }
 
@@ -468,24 +449,15 @@ class NitrogenAPI {
             const filePath = path.join(this.scriptsDirectory, name);
             fs.writeFileSync(filePath, content);
 
-            if (autoExec) {
-                if (fs.existsSync(this.hydrogenAutoexecDir)) {
-                    fs.writeFileSync(path.join(this.hydrogenAutoexecDir, name), content);
+            const autoexecDirs = [this.hydrogenAutoexecDir, this.macsploitAutoexecDir, this.opiumwareAutoexecDir];
+            autoexecDirs.forEach(dir => {
+                const autoexecPath = path.join(dir, name);
+                if (autoExec && fs.existsSync(dir)) {
+                    fs.writeFileSync(autoexecPath, content);
+                } else if (fs.existsSync(autoexecPath)) {
+                    fs.unlinkSync(autoexecPath);
                 }
-                if (fs.existsSync(this.macsploitAutoexecDir)) {
-                    fs.writeFileSync(path.join(this.macsploitAutoexecDir, name), content);
-                }
-                if (fs.existsSync(this.opiumwareAutoexecDir)) {
-                    fs.writeFileSync(path.join(this.opiumwareAutoexecDir, name), content);
-                }
-            } else {
-                [this.hydrogenAutoexecDir, this.macsploitAutoexecDir, this.opiumwareAutoexecDir].forEach(dir => {
-                    const autoexecPath = path.join(dir, name);
-                    if (fs.existsSync(autoexecPath)) {
-                        fs.unlinkSync(autoexecPath);
-                    }
-                });
-            }
+            });
 
             this.updateTrayMenu();
 
@@ -506,40 +478,25 @@ class NitrogenAPI {
     toggleAutoExec(scriptName, enabled) {
         try {
             const scriptPath = path.join(this.scriptsDirectory, scriptName);
-
             if (!fs.existsSync(scriptPath)) {
-                return {
-                    status: 'error',
-                    message: `Script ${scriptName} not found`
-                };
+                return { status: 'error', message: `Script ${scriptName} not found` };
             }
 
-            if (enabled) {
-                const content = fs.readFileSync(scriptPath, 'utf8');
+            const content = enabled ? fs.readFileSync(scriptPath, 'utf8') : null;
+            const autoexecDirs = [this.hydrogenAutoexecDir, this.macsploitAutoexecDir, this.opiumwareAutoexecDir];
+            
+            autoexecDirs.forEach(dir => {
+                const autoexecPath = path.join(dir, scriptName);
+                if (enabled && fs.existsSync(dir)) {
+                    fs.writeFileSync(autoexecPath, content);
+                } else if (fs.existsSync(autoexecPath)) {
+                    fs.unlinkSync(autoexecPath);
+                }
+            });
 
-                [this.hydrogenAutoexecDir, this.macsploitAutoexecDir, this.opiumwareAutoexecDir].forEach(dir => {
-                    if (fs.existsSync(dir)) {
-                        fs.writeFileSync(path.join(dir, scriptName), content);
-                    }
-                });
-            } else {
-                [this.hydrogenAutoexecDir, this.macsploitAutoexecDir, this.opiumwareAutoexecDir].forEach(dir => {
-                    const autoexecPath = path.join(dir, scriptName);
-                    if (fs.existsSync(autoexecPath)) {
-                        fs.unlinkSync(autoexecPath);
-                    }
-                });
-            }
-
-            return {
-                status: 'success',
-                message: `Auto-execute ${enabled ? 'enabled' : 'disabled'} for ${scriptName}`
-            };
+            return { status: 'success', message: `Auto-execute ${enabled ? 'enabled' : 'disabled'} for ${scriptName}` };
         } catch (e) {
-            return {
-                status: 'error',
-                message: `Failed to update auto-execute status: ${e.message}`
-            };
+            return { status: 'error', message: `Failed to update auto-execute status: ${e.message}` };
         }
     }
 
@@ -549,71 +506,47 @@ class NitrogenAPI {
                 fs.mkdirSync(this.scriptsDirectory, { recursive: true });
             }
 
-            const files = [];
-            const scriptFiles = fs.readdirSync(this.scriptsDirectory).filter(file => file.endsWith('.lua'));
+            const autoexecDirs = [this.hydrogenAutoexecDir, this.macsploitAutoexecDir, this.opiumwareAutoexecDir];
+            const scripts = fs.readdirSync(this.scriptsDirectory)
+                .filter(file => file.endsWith('.lua'))
+                .map(filename => {
+                    try {
+                        const filePath = path.join(this.scriptsDirectory, filename);
+                        return {
+                            name: filename,
+                            path: filePath,
+                            content: fs.readFileSync(filePath, 'utf8'),
+                            autoExec: autoexecDirs.some(dir => fs.existsSync(path.join(dir, filename)))
+                        };
+                    } catch (e) {
+                        console.error(`Error reading file ${filename}: ${e.message}`);
+                        return null;
+                    }
+                }).filter(Boolean);
 
-            for (const filename of scriptFiles) {
-                try {
-                    const filePath = path.join(this.scriptsDirectory, filename);
-                    const content = fs.readFileSync(filePath, 'utf8');
-
-                    const autoExec = [this.hydrogenAutoexecDir, this.macsploitAutoexecDir, this.opiumwareAutoexecDir]
-                        .some(dir => fs.existsSync(path.join(dir, filename)));
-
-                    files.push({
-                        name: filename,
-                        path: filePath,
-                        content: content,
-                        autoExec: autoExec
-                    });
-                } catch (e) {
-                    console.error(`Error reading file ${filename}: ${e.message}`);
-                }
-            }
-
-            return {
-                status: 'success',
-                scripts: files
-            };
+            return { status: 'success', scripts };
         } catch (e) {
-            return {
-                status: 'error',
-                message: e.message
-            };
+            return { status: 'error', message: e.message };
         }
     }
 
     deleteScript(scriptName) {
         try {
             const scriptPath = path.join(this.scriptsDirectory, scriptName);
-
             if (!fs.existsSync(scriptPath)) {
-                return {
-                    status: 'error',
-                    message: `Script "${scriptName}" not found`
-                };
+                return { status: 'error', message: `Script "${scriptName}" not found` };
             }
 
             fs.unlinkSync(scriptPath);
-
             [this.hydrogenAutoexecDir, this.macsploitAutoexecDir, this.opiumwareAutoexecDir].forEach(dir => {
                 const autoexecPath = path.join(dir, scriptName);
-                if (fs.existsSync(autoexecPath)) {
-                    fs.unlinkSync(autoexecPath);
-                }
+                if (fs.existsSync(autoexecPath)) fs.unlinkSync(autoexecPath);
             });
 
             this.updateTrayMenu();
-
-            return {
-                status: 'success',
-                message: `Script "${scriptName}" deleted successfully`
-            };
+            return { status: 'success', message: `Script "${scriptName}" deleted successfully` };
         } catch (e) {
-            return {
-                status: 'error',
-                message: `Failed to delete script: ${e.message}`
-            };
+            return { status: 'error', message: `Failed to delete script: ${e.message}` };
         }
     }
 
@@ -643,8 +576,8 @@ class NitrogenAPI {
                 };
             }
 
-            const content = fs.readFileSync(oldPath, 'utf8');
             fs.renameSync(oldPath, newPath);
+            const content = fs.readFileSync(newPath, 'utf8');
 
             [this.hydrogenAutoexecDir, this.macsploitAutoexecDir, this.opiumwareAutoexecDir].forEach(dir => {
                 const oldAutoexecPath = path.join(dir, oldName);
@@ -670,90 +603,605 @@ class NitrogenAPI {
         }
     }
 
-    async sendAiPrompt(prompt, editorContent = "") {
+    async sendAiPrompt(prompt, editorContent = "", history = []) {
         try {
-            const currentTime = Date.now() / 1000;
             const url = "http://nitrobot.vercel.app/generate";
-            const payload = {
-                prompt: prompt,
+            const response = await axios.post(url, {
+                prompt,
                 context: editorContent,
-                timestamp: currentTime
-            };
-
-            const response = await axios.post(url, payload);
+                history,
+                timestamp: Date.now() / 1000
+            });
 
             if (response.status === 429) {
-                return {
-                    status: 'error',
-                    message: 'Rate limit exceeded. Please wait a moment before trying again.'
-                };
+                return { status: 'error', message: 'Rate limit exceeded. Please wait a moment before trying again.' };
             }
 
-            const responseJson = response.data;
+            const { error, code = '', explanation = '' } = response.data;
+            if (error) return { status: 'error', message: error };
 
-            if (responseJson.error) {
-                return {
-                    status: 'error',
-                    message: responseJson.error
+            return { status: 'success', result: code.trim(), explanation: explanation.trim() };
+        } catch (e) {
+            const errorMessages = {
+                429: 'Rate limit exceeded. Please wait a moment before trying again.',
+                404: 'AI service endpoint could not be reached.',
+                ECONNREFUSED: 'Connection error. Please check your internet connection.',
+                ENOTFOUND: 'Connection error. Please check your internet connection.',
+                ECONNABORTED: 'Request timed out. Please try again.'
+            };
+            
+            let message = errorMessages[e.response?.status] || errorMessages[e.code];
+            if (!message && e.response?.status >= 500) message = 'AI service is currently unavailable. Please try again later.';
+            
+            return { status: 'error', message: message || `Error: ${e.message}` };
+        }
+    }
+
+    quitApp() { app.quit(); }
+    minimizeApp() { this.mainWindow?.hide(); }
+
+    getMetadata() {
+        try {
+            if (!fs.existsSync(this.metadataFile)) {
+                return { 
+                    status: 'new',
+                    data: { theme: 'glassmorphism' }
                 };
             }
-
-            const code = responseJson.code || '';
-            const explanation = responseJson.explanation || '';
-
-            return {
+            const data = fs.readFileSync(this.metadataFile, 'utf8');
+            const metadata = JSON.parse(data);
+            return { 
                 status: 'success',
-                result: code.trim(),
-                explanation: explanation.trim()
+                data: metadata
             };
         } catch (e) {
-            if (e.response) {
-                const statusCode = e.response.status;
-                let errorMessage;
+            console.error('Error reading metadata:', e);
+            return { 
+                status: 'error',
+                data: { theme: 'glassmorphism' }
+            };
+        }
+    }
 
-                if (statusCode === 429) {
-                    errorMessage = "Rate limit exceeded. Please wait a moment before trying again.";
-                } else if (statusCode === 404) {
-                    errorMessage = "AI service endpoint could not be reached.";
-                } else if (statusCode >= 500) {
-                    errorMessage = "AI service is currently unavailable. Please try again later.";
-                } else {
-                    errorMessage = `HTTP Error ${statusCode}: ${e.message}`;
-                }
+    saveMetadata(metadata) {
+        try {
+            fs.writeFileSync(this.metadataFile, JSON.stringify(metadata, null, 2), 'utf8');
+            return { status: 'success' };
+        } catch (e) {
+            console.error('Error saving metadata:', e);
+            return { status: 'error', message: e.message };
+        }
+    }
 
-                return {
-                    status: 'error',
-                    message: errorMessage
-                };
-            } else if (e.code === 'ECONNREFUSED' || e.code === 'ENOTFOUND') {
-                return {
-                    status: 'error',
-                    message: 'Connection error. Please check your internet connection.'
-                };
-            } else if (e.code === 'ECONNABORTED') {
-                return {
-                    status: 'error',
-                    message: 'Request timed out. Please try again.'
-                };
-            } else {
-                return {
-                    status: 'error',
-                    message: `Error: ${e.message}`
-                };
+    getEncryptionKey() {
+        const machineId = `${process.env.USER || 'user'}-${process.platform}-nitrogen-accounts-v1`;
+        return crypto.createHash('sha256').update(machineId).digest();
+    }
+
+    encryptData(data) {
+        const key = this.getEncryptionKey();
+        const iv = crypto.randomBytes(16);
+        const cipher = crypto.createCipheriv('aes-256-gcm', key, iv);
+        
+        const jsonString = JSON.stringify(data);
+        let encrypted = cipher.update(jsonString, 'utf8', 'base64');
+        encrypted += cipher.final('base64');
+        
+        const authTag = cipher.getAuthTag();
+        
+        return `${iv.toString('base64')}:${authTag.toString('base64')}:${encrypted}`;
+    }
+
+    decryptData(encryptedString) {
+        try {
+            const key = this.getEncryptionKey();
+            const parts = encryptedString.split(':');
+            
+            if (parts.length !== 3) {
+                throw new Error('Invalid encrypted data format');
             }
+            
+            const iv = Buffer.from(parts[0], 'base64');
+            const authTag = Buffer.from(parts[1], 'base64');
+            const encryptedData = parts[2];
+            
+            const decipher = crypto.createDecipheriv('aes-256-gcm', key, iv);
+            decipher.setAuthTag(authTag);
+            
+            let decrypted = decipher.update(encryptedData, 'base64', 'utf8');
+            decrypted += decipher.final('utf8');
+            
+            return JSON.parse(decrypted);
+        } catch (error) {
+            throw new Error('Failed to decrypt data: ' + error.message);
         }
     }
 
-    quitApp() {
-        app.quit();
+    isEncrypted(content) {
+        const parts = content.split(':');
+        if (parts.length !== 3) return false;
+        
+        const base64Regex = /^[A-Za-z0-9+/]+=*$/;
+        return parts.every(part => base64Regex.test(part) && part.length > 0);
     }
 
-    minimizeApp() {
-        if (this.mainWindow) {
-            this.mainWindow.hide();
+    loadAccounts() {
+        try {
+            if (fs.existsSync(this.accountsFile)) {
+                const content = fs.readFileSync(this.accountsFile, 'utf8').trim();
+                
+                if (!content) return [];
+                
+                if (this.isEncrypted(content)) {
+                    return this.decryptData(content);
+                } else {
+                    try {
+                        const accounts = JSON.parse(content);
+                        this.saveAccounts(accounts);
+                        return accounts;
+                    } catch {
+                        return [];
+                    }
+                }
+            }
+        } catch (e) {
+            console.error('Error loading accounts:', e);
+        }
+        return [];
+    }
+
+    saveAccounts(accounts) {
+        try {
+            const encrypted = this.encryptData(accounts);
+            fs.writeFileSync(this.accountsFile, encrypted, 'utf8');
+        } catch (e) {
+            console.error('Error saving accounts:', e);
         }
     }
 
+    httpsRequest(options) {
+        return new Promise((resolve, reject) => {
+            const req = https.request(options, (res) => {
+                let data = '';
+                res.on('data', (chunk) => data += chunk);
+                res.on('end', () => {
+                    if (res.statusCode === 403) {
+                        const error = new Error('Account access forbidden');
+                        error.statusCode = 403;
+                        reject(error);
+                    } else if (res.statusCode !== 200) {
+                        const error = new Error(`Request failed: ${res.statusCode}`);
+                        error.statusCode = res.statusCode;
+                        reject(error);
+                    } else {
+                        try {
+                            resolve(JSON.parse(data));
+                        } catch {
+                            reject(new Error('Failed to parse response'));
+                        }
+                    }
+                });
+            });
+            req.on('error', reject);
+            req.end();
+        });
+    }
+
+    async getRobloxProfile(cookie) {
+        const json = await this.httpsRequest({
+            hostname: 'users.roblox.com',
+            path: '/v1/users/authenticated',
+            method: 'GET',
+            headers: {
+                'Cookie': `.ROBLOSECURITY=${cookie}`,
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+            }
+        });
+        return { id: json.id, name: json.name, displayName: json.displayName };
+    }
+
+    async getRobloxThumbnail(userId, size = '150x150', retries = 3) {
+        const json = await this.httpsRequest({
+            hostname: 'thumbnails.roblox.com',
+            path: `/v1/users/avatar-bust?userIds=${userId}&size=${size}&format=Png&isCircular=true`,
+            method: 'GET',
+            headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36' }
+        });
+
+        if (!json.data?.length) throw new Error('No thumbnail data found');
+
+        const thumbnail = json.data[0];
+        if (thumbnail.state !== 'Completed') {
+            if (thumbnail.state === 'Pending' && retries > 0) {
+                await new Promise(r => setTimeout(r, 1500));
+                return this.getRobloxThumbnail(userId, size, retries - 1);
+            }
+            return `https://www.roblox.com/headshot-thumbnail/image?userId=${userId}&width=150&height=150&format=png`;
+        }
+        return thumbnail.imageUrl;
+    }
+
+    async getRobloxUserData(cookie) {
+        try {
+            const profile = await this.getRobloxProfile(cookie);
+            const thumbnail = await this.getRobloxThumbnail(profile.id);
+            return { ...profile, thumbnail };
+        } catch (error) {
+            if (error.statusCode === 403) {
+                const newError = new Error('Account access forbidden (403)');
+                newError.code = 'FORBIDDEN';
+                throw newError;
+            }
+            throw error;
+        }
+    }
+
+    toCocoaTimestamp(unixMillis) {
+        return (unixMillis / 1000) - 978307200;
+    }
+
+    buildBinaryCookies(cookieValue) {
+        const now = Date.now();
+        const expirationDate = now + (30 * 24 * 60 * 60 * 1000);
+
+        const creationTime = this.toCocoaTimestamp(now);
+        const expirationTime = this.toCocoaTimestamp(expirationDate);
+
+        const domain = '.roblox.com';
+        const name = '.ROBLOSECURITY';
+        const pathStr = '/';
+        const value = cookieValue;
+
+        const domainBytes = Buffer.from(domain + '\0', 'utf8');
+        const nameBytes = Buffer.from(name + '\0', 'utf8');
+        const pathBytes = Buffer.from(pathStr + '\0', 'utf8');
+        const valueBytes = Buffer.from(value + '\0', 'utf8');
+
+        const domainOffset = 56;
+        const nameOffset = domainOffset + domainBytes.length;
+        const pathOffset = nameOffset + nameBytes.length;
+        const valueOffset = pathOffset + pathBytes.length;
+        const cookieSize = valueOffset + valueBytes.length;
+
+        const flags = 0x5;
+
+        const cookieBuffer = Buffer.alloc(cookieSize);
+        let offset = 0;
+
+        cookieBuffer.writeUInt32LE(cookieSize, offset); offset += 4;
+        cookieBuffer.writeUInt32LE(1, offset); offset += 4;
+        cookieBuffer.writeUInt32LE(flags, offset); offset += 4;
+        cookieBuffer.writeUInt32LE(0, offset); offset += 4;
+        cookieBuffer.writeUInt32LE(domainOffset, offset); offset += 4;
+        cookieBuffer.writeUInt32LE(nameOffset, offset); offset += 4;
+        cookieBuffer.writeUInt32LE(pathOffset, offset); offset += 4;
+        cookieBuffer.writeUInt32LE(valueOffset, offset); offset += 4;
+        cookieBuffer.writeUInt32LE(0, offset); offset += 4;
+        cookieBuffer.writeUInt32LE(0, offset); offset += 4;
+        cookieBuffer.writeDoubleLE(expirationTime, offset); offset += 8;
+        cookieBuffer.writeDoubleLE(creationTime, offset); offset += 8;
+
+        domainBytes.copy(cookieBuffer, offset); offset += domainBytes.length;
+        nameBytes.copy(cookieBuffer, offset); offset += nameBytes.length;
+        pathBytes.copy(cookieBuffer, offset); offset += pathBytes.length;
+        valueBytes.copy(cookieBuffer, offset);
+
+        const pageHeader = Buffer.from([0x00, 0x00, 0x01, 0x00]);
+        const numCookies = Buffer.alloc(4);
+        numCookies.writeUInt32LE(1, 0);
+        
+        const cookieOffsetInPage = 12;
+        const cookieOffsetBuffer = Buffer.alloc(4);
+        cookieOffsetBuffer.writeUInt32LE(cookieOffsetInPage, 0);
+
+        const pageData = Buffer.concat([
+            pageHeader,
+            numCookies,
+            cookieOffsetBuffer,
+            cookieBuffer
+        ]);
+
+        let checksum = 0;
+        for (let i = 0; i < pageData.length; i += 4) {
+            checksum += pageData[i];
+        }
+
+        const fileHeader = Buffer.from([0x63, 0x6F, 0x6F, 0x6B]);
+        const fileFooter = Buffer.from([0x07, 0x17, 0x20, 0x05, 0x00, 0x00, 0x00, 0x4B]);
+        
+        const numPages = Buffer.alloc(4);
+        numPages.writeUInt32BE(1, 0);
+        
+        const pageSize = Buffer.alloc(4);
+        pageSize.writeUInt32BE(pageData.length, 0);
+        
+        const checksumBuffer = Buffer.alloc(4);
+        checksumBuffer.writeUInt32BE(checksum, 0);
+
+        return Buffer.concat([
+            fileHeader,
+            numPages,
+            pageSize,
+            pageData,
+            checksumBuffer,
+            fileFooter
+        ]);
+    }
+
+    async writeRobloxCookie(cookieValue, profileId = 'default') {
+        const homeDir = os.homedir();
+        const cookieFile = path.join(homeDir, 'Library', 'HTTPStorages', `com.roblox.RobloxPlayer.${profileId}.binarycookies`);
+
+        const cookiesDir = path.dirname(cookieFile);
+        if (!fs.existsSync(cookiesDir)) {
+            fs.mkdirSync(cookiesDir, { recursive: true });
+        }
+
+        const binaryCookies = this.buildBinaryCookies(cookieValue);
+        fs.writeFileSync(cookieFile, binaryCookies);
+
+        return cookieFile;
+    }
+
+    modifyBundleIdentifier(robloxAppPath, profileId) {
+        const plistPath = path.join(robloxAppPath, 'Contents', 'Info.plist');
+        if (!fs.existsSync(plistPath)) throw new Error(`Info.plist not found at: ${plistPath}`);
+
+        let plistContent = fs.readFileSync(plistPath, 'utf8');
+        const bundleIdRegex = /<key>CFBundleIdentifier<\/key>\s*<string>com\.roblox\.RobloxPlayer(\.\w+)?<\/string>/;
+        const newBundleId = `<key>CFBundleIdentifier</key>\n\t<string>com.roblox.RobloxPlayer.${profileId}</string>`;
+
+        if (!bundleIdRegex.test(plistContent)) throw new Error('Could not find CFBundleIdentifier in Info.plist');
+        fs.writeFileSync(plistPath, plistContent.replace(bundleIdRegex, newBundleId), 'utf8');
+    }
+
+    resetBundleIdentifier(robloxAppPath) {
+        const plistPath = path.join(robloxAppPath, 'Contents', 'Info.plist');
+        if (!fs.existsSync(plistPath)) return;
+
+        let plistContent = fs.readFileSync(plistPath, 'utf8');
+        const bundleIdRegex = /<key>CFBundleIdentifier<\/key>\s*<string>com\.roblox\.RobloxPlayer(\.\w+)?<\/string>/;
+        const defaultBundleId = `<key>CFBundleIdentifier</key>\n\t<string>com.roblox.RobloxPlayer</string>`;
+
+        if (bundleIdRegex.test(plistContent)) {
+            fs.writeFileSync(plistPath, plistContent.replace(bundleIdRegex, defaultBundleId), 'utf8');
+        }
+    }
+
+    async getAccounts() {
+        const accounts = this.loadAccounts();
+        let hasUpdates = false;
+
+        const validatedAccounts = await Promise.all(
+            accounts.map(async (account) => {
+                try {
+                    const userData = await this.getRobloxUserData(account.cookie);
+                    if (account.name !== userData.name || account.displayName !== userData.displayName || account.thumbnail !== userData.thumbnail) {
+                        hasUpdates = true;
+                        return { ...account, ...userData, expired: false };
+                    }
+                    return { ...account, expired: false };
+                } catch {
+                    return { ...account, expired: true };
+                }
+            })
+        );
+
+        if (hasUpdates) {
+            this.saveAccounts(validatedAccounts.map(({ expired, ...acc }) => acc));
+        }
+        return validatedAccounts;
+    }
+
+    async deleteAccount(userId) {
+        const accounts = this.loadAccounts().filter(acc => acc.userId !== userId);
+        this.saveAccounts(accounts);
+        return accounts;
+    }
+
+    async exportAccounts() {
+        const accounts = this.loadAccounts();
+        if (accounts.length === 0) throw new Error('No accounts to export');
+
+        const warningResult = await dialog.showMessageBox(this.mainWindow, {
+            type: 'warning',
+            title: 'Security Warning',
+            message: 'Exported accounts are NOT encrypted!',
+            detail: 'The exported file will contain your account cookies in plain text. Anyone with this file can add and use ALL your accounts.\n\nOnly share this file with people you absolutely trust.',
+            buttons: ['Cancel', 'I Understand, Export Anyway'],
+            defaultId: 0,
+            cancelId: 0
+        });
+
+        if (warningResult.response === 0) return { cancelled: true };
+
+        const result = await dialog.showSaveDialog(this.mainWindow, {
+            title: 'Export Accounts',
+            defaultPath: 'nitrogen-accounts.json',
+            filters: [{ name: 'JSON Files', extensions: ['json'] }]
+        });
+
+        if (result.canceled) return { cancelled: true };
+        fs.writeFileSync(result.filePath, JSON.stringify(accounts, null, 2), 'utf8');
+        return { success: true, count: accounts.length };
+    }
+
+    async importAccounts() {
+        const result = await dialog.showOpenDialog(this.mainWindow, {
+            title: 'Import Accounts',
+            filters: [{ name: 'JSON Files', extensions: ['json'] }],
+            properties: ['openFile']
+        });
+
+        if (result.canceled) return { cancelled: true, imported: 0 };
+
+        const importedAccounts = JSON.parse(fs.readFileSync(result.filePaths[0], 'utf8'));
+        if (!Array.isArray(importedAccounts)) throw new Error('Invalid file format: expected an array of accounts');
+
+        const existingAccounts = this.loadAccounts();
+        const existingUserIds = new Set(existingAccounts.map(acc => acc.userId));
+        const newAccounts = importedAccounts.filter(acc => acc.userId && acc.cookie && !existingUserIds.has(acc.userId));
+
+        if (newAccounts.length > 0) {
+            this.saveAccounts([...existingAccounts, ...newAccounts]);
+        }
+        return { imported: newAccounts.length };
+    }
+
+    async killAllRoblox() {
+        return new Promise((resolve) => {
+            exec('pgrep -x RobloxPlayer', (error, stdout) => {
+                if (error || !stdout.trim()) return resolve({ count: 0 });
+
+                const count = stdout.trim().split('\n').filter(p => p).length;
+                exec('killall -9 RobloxPlayer 2>/dev/null; killall -9 Roblox 2>/dev/null', () => resolve({ count }));
+            });
+        });
+    }
+
+    async launchAccount(userId) {
+        const accounts = this.loadAccounts();
+        const account = accounts.find(acc => acc.userId === userId);
+        if (!account) throw new Error('Account not found');
+
+        const robloxPaths = ['/Applications/Roblox.app', path.join(process.env.HOME, 'Applications', 'Roblox.app')];
+        const robloxPath = robloxPaths.find(p => fs.existsSync(p));
+        if (!robloxPath) throw new Error('Roblox not found. Please install Roblox first.');
+
+        await this.writeRobloxCookie(account.cookie, String(userId));
+
+        return new Promise((resolve, reject) => {
+            try {
+                this.modifyBundleIdentifier(robloxPath, String(userId));
+            } catch (err) {
+                return reject(new Error(`Failed to modify bundle identifier: ${err.message}`));
+            }
+
+            exec(`xattr -cr "${robloxPath}" && codesign --force --deep --sign - "${robloxPath}" 2>/dev/null || true`, () => {
+                const execPath = path.join(robloxPath, 'Contents', 'MacOS', 'RobloxPlayer');
+                if (!fs.existsSync(execPath)) return reject(new Error('RobloxPlayer executable not found'));
+
+                try {
+                    const child = spawn(execPath, [], { detached: true, stdio: 'ignore' });
+                    child.unref();
+                    setTimeout(() => { try { this.resetBundleIdentifier(robloxPath); } catch {} }, 5000);
+                    resolve({ success: true, pid: child.pid });
+                } catch (err) {
+                    reject(new Error(`Failed to launch Roblox: ${err.message}`));
+                }
+            });
+        });
+    }
+
+    async openAccountWebsite(userId) {
+        const accounts = this.loadAccounts();
+        const account = accounts.find(acc => acc.userId === userId);
+        if (!account) throw new Error('Account not found');
+
+        const webSession = session.fromPartition(`website-${userId}`, { cache: true });
+        await webSession.cookies.set({
+            url: 'https://www.roblox.com',
+            name: '.ROBLOSECURITY',
+            value: account.cookie,
+            domain: '.roblox.com',
+            path: '/',
+            secure: true,
+            httpOnly: true
+        });
+
+        const webWindow = new BrowserWindow({
+            width: 1200,
+            height: 800,
+            parent: this.mainWindow,
+            webPreferences: { session: webSession, nodeIntegration: false, contextIsolation: true }
+        });
+        webWindow.loadURL('https://www.roblox.com');
+        return { success: true };
+    }
+
+    async openLoginWindow() {
+        return new Promise((resolve) => {
+            const loginSession = session.fromPartition('login-session', { cache: false });
+
+            const loginWindow = new BrowserWindow({
+                width: 800,
+                height: 700,
+                parent: this.mainWindow,
+                modal: true,
+                webPreferences: { session: loginSession, nodeIntegration: false, contextIsolation: true }
+            });
+
+            loginSession.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36');
+            loginSession.clearStorageData({ storages: ['cookies', 'localstorage', 'sessionstorage', 'cachestorage', 'serviceworkers'] });
+
+            const checkCookie = async () => {
+                try {
+                    const cookies = await loginSession.cookies.get({ domain: '.roblox.com', name: '.ROBLOSECURITY' });
+                    if (cookies.length > 0) {
+                        const robloSecurity = cookies[0].value;
+                        let userData;
+                        try {
+                            userData = await this.getRobloxUserData(robloSecurity);
+                        } catch (err) {
+                            loginWindow.close();
+                            resolve({ error: { type: err.code === 'FORBIDDEN' ? 'forbidden' : 'unknown', message: err.message } });
+                            return;
+                        }
+
+                        const accounts = this.loadAccounts();
+                        const existingIndex = accounts.findIndex(acc => acc.userId === userData.id);
+                        
+                        const newAccount = {
+                            cookie: robloSecurity,
+                            userId: userData.id,
+                            name: userData.name,
+                            displayName: userData.displayName,
+                            thumbnail: userData.thumbnail,
+                            addedAt: new Date().toISOString()
+                        };
+                        
+                        if (existingIndex >= 0) {
+                            accounts[existingIndex] = newAccount;
+                        } else {
+                            accounts.push(newAccount);
+                        }
+                        
+                        this.saveAccounts(accounts);
+                        loginWindow.close();
+                        resolve(newAccount);
+                    }
+                } catch {}
+            };
+
+            const cookieCheckInterval = setInterval(checkCookie, 500);
+            loginWindow.loadURL('https://www.roblox.com/login');
+
+            loginWindow.webContents.on('did-finish-load', () => {
+                loginWindow.webContents.executeJavaScript(`
+                    document.getElementById('header')?.remove();
+                    document.getElementById('footer-container')?.remove();
+                    const loginBtn = document.getElementById('login-button');
+                    if (loginBtn) loginBtn.textContent = 'Add Account';
+                    const header = document.querySelector('.login-header');
+                    if (header) header.textContent = 'Nitrogen';
+                    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') window.close(); });
+                    new MutationObserver(() => {
+                        const btn = document.getElementById('login-button');
+                        if (btn && btn.textContent !== 'Add Account') btn.textContent = 'Add Account';
+                        const h = document.querySelector('.login-header');
+                        if (h && h.textContent !== 'Nitrogen') h.textContent = 'Nitrogen';
+                        document.getElementById('footer-container')?.remove();
+                    }).observe(document.body, { childList: true, subtree: true, characterData: true });
+                `).catch(() => {});
+            });
+
+            loginWindow.on('closed', () => {
+                clearInterval(cookieCheckInterval);
+                loginSession.clearStorageData({ storages: ['cookies', 'localstorage', 'sessionstorage', 'cachestorage', 'serviceworkers'] });
+                resolve(null);
+            });
+        });
+    }
 
 
     startLogMonitoring() {
@@ -894,19 +1342,12 @@ class NitrogenAPI {
     }
 
     setLogRefreshRate(rate) {
-        try {
-            this.logRefreshRate = parseFloat(rate);
-            if (this.logRefreshRate <= 0) {
-                this.logRefreshRate = 0.5; 
-            }
-            return { status: 'success', message: `Log refresh rate set to ${this.logRefreshRate}` };
-        } catch (e) {
-            return { status: 'error', message: `Failed to set log refresh rate: ${e.message}` };
-        }
+        this.logRefreshRate = Math.max(parseFloat(rate) || 0.5, 0.1);
+        return { status: 'success', message: `Log refresh rate set to ${this.logRefreshRate}` };
     }
 
     sendToRenderer(channel, data) {
-        if (this.mainWindow && !this.mainWindow.isDestroyed()) {
+        if (this.mainWindow?.webContents && !this.mainWindow.isDestroyed()) {
             this.mainWindow.webContents.send(channel, data);
         }
     }
@@ -1016,6 +1457,20 @@ function createWindow() {
     nitrogenAPI.mainWindow = mainWindow;
     mainWindow.loadFile('index.html');
 
+    mainWindow.webContents.setWindowOpenHandler(({ url }) => {
+        if (url.startsWith('http://') || url.startsWith('https://')) {
+            shell.openExternal(url);
+        }
+        return { action: 'deny' };
+    });
+
+    mainWindow.webContents.on('will-navigate', (event, url) => {
+        if (!url.startsWith('file://')) {
+            event.preventDefault();
+            shell.openExternal(url);
+        }
+    });
+
     mainWindow.webContents.on('dom-ready', () => {
         mainWindow.webContents.executeJavaScript(`
             const header = document.querySelector('.header');
@@ -1078,6 +1533,8 @@ app.whenReady().then(async () => {
     ipcMain.handle('get-version', () => nitrogenAPI.getVersion());
     ipcMain.handle('open-scripts-folder', () => nitrogenAPI.openScriptsFolder());
     ipcMain.handle('execute-script', (event, scriptContent) => nitrogenAPI.executeScript(scriptContent));
+    ipcMain.handle('execute-script-on-port', (event, scriptContent, targetPort) => nitrogenAPI.executeScriptOnPort(scriptContent, targetPort));
+    ipcMain.handle('check-port-status', () => nitrogenAPI.checkPortStatus());
     ipcMain.handle('get-game-name', (event, universeId) => nitrogenAPI.getGameName(universeId));
     ipcMain.handle('get-scripts', (event, script) => nitrogenAPI.getScripts(script));
     ipcMain.handle('open-roblox', () => nitrogenAPI.openRoblox());
@@ -1087,12 +1544,23 @@ app.whenReady().then(async () => {
     ipcMain.handle('get-local-scripts', () => nitrogenAPI.getLocalScripts());
     ipcMain.handle('delete-script', (event, scriptName) => nitrogenAPI.deleteScript(scriptName));
     ipcMain.handle('rename-script', (event, oldName, newName) => nitrogenAPI.renameScript(oldName, newName));
-    ipcMain.handle('send-ai-prompt', (event, prompt, editorContent) => nitrogenAPI.sendAiPrompt(prompt, editorContent));
+    ipcMain.handle('send-ai-prompt', (event, prompt, editorContent, history) => nitrogenAPI.sendAiPrompt(prompt, editorContent, history));
     ipcMain.handle('quit-app', () => nitrogenAPI.quitApp());
     ipcMain.handle('minimize-app', () => nitrogenAPI.minimizeApp());
     ipcMain.handle('get-latest-release-info', () => nitrogenAPI.getLatestReleaseInfo());
     ipcMain.handle('start-log-monitoring', () => nitrogenAPI.startLogMonitoring());
     ipcMain.handle('set-log-refresh-rate', (event, rate) => nitrogenAPI.setLogRefreshRate(rate));
+    ipcMain.handle('get-metadata', () => nitrogenAPI.getMetadata());
+    ipcMain.handle('save-metadata', (event, metadata) => nitrogenAPI.saveMetadata(metadata));
+    
+    ipcMain.handle('get-accounts', () => nitrogenAPI.getAccounts());
+    ipcMain.handle('delete-account', (event, userId) => nitrogenAPI.deleteAccount(userId));
+    ipcMain.handle('export-accounts', () => nitrogenAPI.exportAccounts());
+    ipcMain.handle('import-accounts', () => nitrogenAPI.importAccounts());
+    ipcMain.handle('kill-all-roblox', () => nitrogenAPI.killAllRoblox());
+    ipcMain.handle('launch-account', (event, userId) => nitrogenAPI.launchAccount(userId));
+    ipcMain.handle('open-account-website', (event, userId) => nitrogenAPI.openAccountWebsite(userId));
+    ipcMain.handle('open-login-window', () => nitrogenAPI.openLoginWindow());
 
     ipcMain.on('window-minimize', () => {
         if (mainWindow) mainWindow.minimize();
