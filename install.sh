@@ -40,6 +40,10 @@ if [ -d "$HOME/Documents/Nitrogen" ]; then
   echo "Nitrogen files migrated to $HOME/Nitrogen"
 fi
 
+if [ -f "$HOME/Nitrogen/metadata.json" ]; then
+  echo "Deleting old metadata.json file.."
+  rm "$HOME/Nitrogen/metadata.json"
+fi
 
 echo "Cleaning up temporary files..."
 rm -rf /tmp/Nitrogen*.app /tmp/Nitrogen-*.app /tmp/NitrogenCompressed
