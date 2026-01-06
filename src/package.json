@@ -1,7 +1,7 @@
 {
   "name": "nitrogen",
   "author": "JadXV",
-  "version": "6.0.0", 
+  "version": "6.1.0", 
   "description": "Nitrogen - Redefining Executor UI",
   "scripts": {
     "start": "electron .",
