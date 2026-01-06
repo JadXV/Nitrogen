@@ -752,6 +752,35 @@
             border-radius: 8px; font-family: inherit; font-size: 0.9rem; margin-bottom: 15px;
         }
         .modal-input:focus {outline: none; border-color: var(--accent-color);}
+        .modal-textarea {
+            width: 100%; 
+            padding: 10px; 
+            background-color: var(--editor-content-bg);
+            border: 1px solid var(--border-color); 
+            color: var(--text-color);
+            border-radius: 8px; 
+            font-family: 'Fira Code', 'Consolas', monospace; 
+            font-size: 0.8rem; 
+            margin-bottom: 15px;
+            resize: none;
+            min-height: 80px;
+        }
+        .modal-textarea:focus {outline: none; border-color: var(--accent-color);}
+        .manual-add-hint {
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.5);
+            margin-bottom: 12px;
+            line-height: 1.4;
+        }
+        .manual-add-error {
+            background: rgba(248, 113, 113, 0.15);
+            color: #f87171;
+            font-size: 0.8rem;
+            padding: 8px 12px;
+            border-radius: 6px;
+            margin-bottom: 12px;
+            border: 1px solid rgba(248, 113, 113, 0.3);
+        }
         .modal-buttons {display: flex; justify-content: flex-end; gap: 10px;}
         .modal-btn {
             padding: 6px 15px; border-radius: 8px; font-size: 0.9rem;
@@ -2291,14 +2320,14 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 8px;
-            padding: 10px 16px;
+            gap: 6px;
+            padding: 10px 12px;
             background: rgba(255, 255, 255, 0.08);
             border: 1px solid rgba(255, 255, 255, 0.15);
             border-radius: 8px;
             color: #ffffff;
             cursor: pointer;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             font-weight: 500;
             transition: all 0.2s ease;
         }
@@ -2309,6 +2338,30 @@
         }
 
         .accounts-add-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        .accounts-manual-add-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: rgba(255, 255, 255, 0.7);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .accounts-manual-add-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.2);
+            color: #ffffff;
+        }
+
+        .accounts-manual-add-btn:disabled {
             opacity: 0.4;
             cursor: not-allowed;
         }
@@ -2837,8 +2890,15 @@
             </div>
         </div>
         <div class="accounts-bottom-actions">
+            <button class="accounts-manual-add-btn" id="accounts-manual-add-btn" title="Manually add account with cookie">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="3"></circle>
+                    <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                    <line x1="12" y1="1" x2="12" y2="3" stroke-width="3"></line>
+                </svg>
+            </button>
             <button class="accounts-add-btn" id="accounts-add-btn">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <line x1="12" y1="5" x2="12" y2="19"></line>
                     <line x1="5" y1="12" x2="19" y2="12"></line>
                 </svg>
@@ -2878,6 +2938,23 @@
                 <div class="modal-buttons">
                     <button class="modal-btn modal-btn-cancel" id="modal-cancel">Cancel</button>
                     <button class="modal-btn modal-btn-submit" id="modal-submit">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="manual-add-modal-overlay">
+        <div class="modal-dialog" style="max-width: 450px;">
+            <div class="modal-header">
+                <h3 class="modal-title">Manual Add Account</h3>
+            </div>
+            <div class="modal-content">
+                <p class="manual-add-hint">If you're having trouble with the regular Add button, paste your .ROBLOSECURITY cookie below.</p>
+                <textarea class="modal-textarea" id="manual-add-cookie-input" placeholder="Paste your .ROBLOSECURITY cookie here..." spellcheck="false" rows="4"></textarea>
+                <div class="manual-add-error" id="manual-add-error" style="display: none;"></div>
+                <div class="modal-buttons">
+                    <button class="modal-btn modal-btn-cancel" id="manual-add-cancel">Cancel</button>
+                    <button class="modal-btn modal-btn-submit" id="manual-add-submit">Add Account</button>
                 </div>
             </div>
         </div>
@@ -4338,9 +4415,10 @@
                     const scriptItem = document.createElement('div');
                     scriptItem.className = 'script-item script-item-with-bg';
                     
-                    const gameImageUrl = script.game.imageUrl === "/images/no-script.webp" ? 
-                        "https://www.publicdomainpictures.net/pictures/220000/velka/planet-1494403454Zmz.jpg" : 
-                        script.game.imageUrl;
+                    const fallbackImage = "https://www.publicdomainpictures.net/pictures/220000/velka/planet-1494403454Zmz.jpg";
+                    const rawImageUrl = script.game?.imageUrl;
+                    const isValidUrl = rawImageUrl && rawImageUrl.startsWith('http');
+                    const gameImageUrl = isValidUrl ? rawImageUrl : fallbackImage;
 
                     scriptItem.innerHTML = `
                         ${gameImageUrl ? `<div class="script-bg-image" style="background-image: url('${gameImageUrl}')"></div>
@@ -4462,15 +4540,15 @@
                 }
             });
             
-            document.getElementById('scripthub-search').addEventListener('input', debounce(function() {
-            const searchTerm = this.value;
-            
-            if (currentScriptsTab === 'local') {
-                filterLocalScripts(searchTerm);
-            } else {
-                fetchScripts(searchTerm);
-            }
-            }, 50)); 
+            document.getElementById('scripthub-search').addEventListener('input', debounce(function(e) {
+                const searchTerm = e.target.value;
+                
+                if (currentScriptsTab === 'local') {
+                    filterLocalScripts(searchTerm);
+                } else {
+                    fetchScripts(searchTerm);
+                }
+            }, 300)); 
             
             const modalOverlay = document.getElementById('modal-overlay');
             const modalTitle = document.getElementById('modal-title');
@@ -5624,6 +5702,83 @@
                     } finally {
                         accountsExportBtn.disabled = false;
                     }
+                }
+            });
+
+            const manualAddModalOverlay = document.getElementById('manual-add-modal-overlay');
+            const manualAddCookieInput = document.getElementById('manual-add-cookie-input');
+            const manualAddError = document.getElementById('manual-add-error');
+            const manualAddSubmit = document.getElementById('manual-add-submit');
+            const manualAddCancel = document.getElementById('manual-add-cancel');
+            const accountsManualAddBtn = document.getElementById('accounts-manual-add-btn');
+
+            function showManualAddModal() {
+                manualAddCookieInput.value = '';
+                manualAddError.style.display = 'none';
+                manualAddError.textContent = '';
+                manualAddModalOverlay.classList.add('active');
+                setTimeout(() => manualAddCookieInput.focus(), 100);
+            }
+
+            function hideManualAddModal() {
+                manualAddModalOverlay.classList.remove('active');
+            }
+
+            accountsManualAddBtn.addEventListener('click', showManualAddModal);
+
+            manualAddCancel.addEventListener('click', hideManualAddModal);
+
+            manualAddModalOverlay.addEventListener('click', (e) => {
+                if (e.target === manualAddModalOverlay) {
+                    hideManualAddModal();
+                }
+            });
+
+            manualAddSubmit.addEventListener('click', async () => {
+                const cookie = manualAddCookieInput.value.trim();
+                
+                if (!cookie) {
+                    manualAddError.textContent = 'Please enter a cookie';
+                    manualAddError.style.display = 'block';
+                    return;
+                }
+
+                if (electronAPI.isElectron && electronAPI.ipcRenderer) {
+                    manualAddSubmit.disabled = true;
+                    manualAddSubmit.textContent = 'Validating...';
+                    manualAddError.style.display = 'none';
+
+                    try {
+                        const account = await electronAPI.ipcRenderer.invoke('add-account-manually', cookie);
+                        
+                        if (account) {
+                            accounts = await electronAPI.ipcRenderer.invoke('get-accounts');
+                            filterAndSortAccounts();
+                            updateConsoleOutput('Account added successfully!');
+                            hideManualAddModal();
+                        }
+                    } catch (error) {
+                        console.error('Error adding account manually:', error);
+                        let errorMsg = error.message || 'Failed to add account';
+                        if (errorMsg.includes('Error: ')) {
+                            errorMsg = errorMsg.split('Error: ').pop();
+                        }
+                        manualAddError.textContent = errorMsg;
+                        manualAddError.style.display = 'block';
+                    } finally {
+                        manualAddSubmit.disabled = false;
+                        manualAddSubmit.textContent = 'Add Account';
+                    }
+                }
+            });
+
+            manualAddCookieInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    manualAddSubmit.click();
+                }
+                if (e.key === 'Escape') {
+                    hideManualAddModal();
                 }
             });
         });

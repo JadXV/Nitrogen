@@ -999,6 +999,48 @@ class NitrogenAPI {
         return accounts;
     }
 
+    async addAccountManually(cookie) {
+        if (!cookie || typeof cookie !== 'string') {
+            throw new Error('Invalid cookie provided');
+        }
+        
+        cookie = cookie.trim();
+        if (cookie.startsWith('_|WARNING:-DO-NOT-SHARE-THIS.--Sharing-this-will-allow-someone-to-log-in-as-you-and-to-steal-your-ROBUX-and-items.|_')) {
+            cookie = cookie.substring(cookie.indexOf('_|WARNING:-DO-NOT-SHARE-THIS.--Sharing-this-will-allow-someone-to-log-in-as-you-and-to-steal-your-ROBUX-and-items.|_') + '_|WARNING:-DO-NOT-SHARE-THIS.--Sharing-this-will-allow-someone-to-log-in-as-you-and-to-steal-your-ROBUX-and-items.|_'.length);
+        }
+        
+        let userData;
+        try {
+            userData = await this.getRobloxUserData(cookie);
+        } catch (err) {
+            if (err.code === 'FORBIDDEN' || err.statusCode === 403 || err.statusCode === 401) {
+                throw new Error('Invalid, expired, or banned account');
+            }
+            throw new Error('Invalid, expired, or banned account');
+        }
+        
+        const accounts = this.loadAccounts();
+        const existingIndex = accounts.findIndex(acc => acc.userId === userData.id);
+        
+        const newAccount = {
+            cookie: cookie,
+            userId: userData.id,
+            name: userData.name,
+            displayName: userData.displayName,
+            thumbnail: userData.thumbnail,
+            addedAt: new Date().toISOString()
+        };
+        
+        if (existingIndex >= 0) {
+            accounts[existingIndex] = newAccount;
+        } else {
+            accounts.push(newAccount);
+        }
+        
+        this.saveAccounts(accounts);
+        return newAccount;
+    }
+
     async exportAccounts() {
         const accounts = this.loadAccounts();
         if (accounts.length === 0) throw new Error('No accounts to export');
@@ -1022,7 +1064,12 @@ class NitrogenAPI {
         });
 
         if (result.canceled) return { cancelled: true };
-        fs.writeFileSync(result.filePath, JSON.stringify(accounts, null, 2), 'utf8');
+        
+        const exportData = accounts.map(acc => ({
+            name: acc.name,
+            cookie: acc.cookie
+        }));
+        fs.writeFileSync(result.filePath, JSON.stringify(exportData, null, 2), 'utf8');
         return { success: true, count: accounts.length };
     }
 
@@ -1040,12 +1087,48 @@ class NitrogenAPI {
 
         const existingAccounts = this.loadAccounts();
         const existingUserIds = new Set(existingAccounts.map(acc => acc.userId));
-        const newAccounts = importedAccounts.filter(acc => acc.userId && acc.cookie && !existingUserIds.has(acc.userId));
-
-        if (newAccounts.length > 0) {
-            this.saveAccounts([...existingAccounts, ...newAccounts]);
+        const existingCookies = new Set(existingAccounts.map(acc => acc.cookie));
+        
+        let importedCount = 0;
+        
+        for (const acc of importedAccounts) {
+            if (!acc.cookie) continue;
+            if (existingCookies.has(acc.cookie)) continue;
+            
+            if (acc.userId && !existingUserIds.has(acc.userId)) {
+                existingAccounts.push(acc);
+                existingUserIds.add(acc.userId);
+                existingCookies.add(acc.cookie);
+                importedCount++;
+                continue;
+            }
+            
+            if (!acc.userId) {
+                try {
+                    const userData = await this.getRobloxUserData(acc.cookie);
+                    if (!existingUserIds.has(userData.id)) {
+                        existingAccounts.push({
+                            cookie: acc.cookie,
+                            userId: userData.id,
+                            name: userData.name,
+                            displayName: userData.displayName,
+                            thumbnail: userData.thumbnail,
+                            addedAt: new Date().toISOString()
+                        });
+                        existingUserIds.add(userData.id);
+                        existingCookies.add(acc.cookie);
+                        importedCount++;
+                    }
+                } catch (error) {
+                    console.error('Failed to validate imported account:', error.message);
+                }
+            }
         }
-        return { imported: newAccounts.length };
+
+        if (importedCount > 0) {
+            this.saveAccounts(existingAccounts);
+        }
+        return { imported: importedCount };
     }
 
     async killAllRoblox() {
@@ -1561,6 +1644,7 @@ app.whenReady().then(async () => {
     ipcMain.handle('launch-account', (event, userId) => nitrogenAPI.launchAccount(userId));
     ipcMain.handle('open-account-website', (event, userId) => nitrogenAPI.openAccountWebsite(userId));
     ipcMain.handle('open-login-window', () => nitrogenAPI.openLoginWindow());
+    ipcMain.handle('add-account-manually', (event, cookie) => nitrogenAPI.addAccountManually(cookie));
 
     ipcMain.on('window-minimize', () => {
         if (mainWindow) mainWindow.minimize();
